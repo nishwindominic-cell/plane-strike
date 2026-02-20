@@ -1,6 +1,7 @@
-// Your original JavaScript code remains exactly the same
+// Your original JavaScript code with fixes
 // ────────────────────────────────────────────────────────────────
-// FIRST: Define all variables and functions in correct order
+
+// Get DOM elements
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -31,6 +32,7 @@ const shopCoins = document.getElementById('shop-coins-amount');
 const shopItemsContainer = document.getElementById('shop-items-container');
 const coinDisplay = document.getElementById('coin-display');
 const shopBtn = document.getElementById('shop-btn');
+const flightHandle = document.getElementById('flight-handle');
 
 // Settings state
 let soundEnabled = true;
@@ -38,8 +40,8 @@ let musicVolume = 70;
 let sfxVolume = 80;
 
 // Sensitivity and Difficulty settings
-let sensitivityLevel = 'Normal'; // Low, Normal, High
-let difficultyLevel = 'Normal'; // Easy, Normal, Hard
+let sensitivityLevel = 'Normal';
+let difficultyLevel = 'Normal';
 
 // Difficulty multipliers
 let enemySpeedMultiplier = 1.0;
@@ -47,15 +49,15 @@ let enemyAccuracyMultiplier = 1.0;
 let enemyCountMultiplier = 1.0;
 let enemyHealthMultiplier = 1.0;
 
-// Missile counter for HUD display
+// Missile counter
 let missileCount = 6;
 
-// ===== NEW INFINITE LEVEL SYSTEM =====
+// Game state
 let currentLevel = 1;
 let currentStage = 1;
 let totalScore = 0;
 let totalKills = 0;
-let coins = 0; // NEW: Coin system
+let coins = 0;
 const STAGES_PER_LEVEL = 5;
 
 // Boss variables
@@ -82,177 +84,23 @@ const levelThemes = [
 
 // Enemy type definitions
 const enemyTypes = {
-    scout: {
-        name: "SCOUT",
-        baseThrust: 3.5,
-        health: 1,
-        color: "#94a3b8",
-        shootSpeed: 120,
-        bulletSpeed: 15,
-        shape: "small",
-        points: 50,
-        coins: 10
-    },
-    fighter: {
-        name: "FIGHTER",
-        baseThrust: 4.2,
-        health: 2,
-        color: "#ef4444",
-        shootSpeed: 90,
-        bulletSpeed: 18,
-        shape: "standard",
-        points: 100,
-        coins: 20
-    },
-    interceptor: {
-        name: "INTERCEPTOR",
-        baseThrust: 5.0,
-        health: 1,
-        color: "#f97316",
-        shootSpeed: 70,
-        bulletSpeed: 22,
-        shape: "sleek",
-        points: 150,
-        coins: 30
-    },
-    gunship: {
-        name: "GUNSHIP",
-        baseThrust: 3.0,
-        health: 4,
-        color: "#64748b",
-        shootSpeed: 50,
-        bulletSpeed: 14,
-        shape: "heavy",
-        points: 200,
-        coins: 40
-    },
-    ace: {
-        name: "ACE",
-        baseThrust: 4.8,
-        health: 3,
-        color: "#fbbf24",
-        shootSpeed: 60,
-        bulletSpeed: 20,
-        shape: "elite",
-        points: 250,
-        coins: 50
-    }
+    scout: { name: "SCOUT", baseThrust: 3.5, health: 1, color: "#94a3b8", shootSpeed: 120, bulletSpeed: 15, shape: "small", points: 50, coins: 10 },
+    fighter: { name: "FIGHTER", baseThrust: 4.2, health: 2, color: "#ef4444", shootSpeed: 90, bulletSpeed: 18, shape: "standard", points: 100, coins: 20 },
+    interceptor: { name: "INTERCEPTOR", baseThrust: 5.0, health: 1, color: "#f97316", shootSpeed: 70, bulletSpeed: 22, shape: "sleek", points: 150, coins: 30 },
+    gunship: { name: "GUNSHIP", baseThrust: 3.0, health: 4, color: "#64748b", shootSpeed: 50, bulletSpeed: 14, shape: "heavy", points: 200, coins: 40 },
+    ace: { name: "ACE", baseThrust: 4.8, health: 3, color: "#fbbf24", shootSpeed: 60, bulletSpeed: 20, shape: "elite", points: 250, coins: 50 }
 };
 
-// FIXED: Boss type definitions with proper 5 seconds shooting, 15 seconds cooldown
+// Boss type definitions
 const bossTypes = {
-    trainer: {
-        name: "TRAINER BOSS",
-        health: 20,
-        thrust: 3.0,
-        shootSpeed: 40,
-        bulletSpeed: 12,
-        color: "#6b7280",
-        size: 2.0,
-        pattern: "basic",
-        points: 500,
-        coins: 100,
-        shootDuration: 300, // 5 seconds at 60fps
-        shootCooldown: 900 // 15 seconds at 60fps
-    },
-    sandstorm: {
-        name: "SANDSTORM",
-        health: 40,
-        thrust: 4.0,
-        shootSpeed: 30,
-        bulletSpeed: 18,
-        color: "#b45309",
-        size: 2.2,
-        pattern: "spread",
-        points: 1000,
-        coins: 150,
-        shootDuration: 300,
-        shootCooldown: 900
-    },
-    frost: {
-        name: "FROST GIANT",
-        health: 35,
-        thrust: 3.5,
-        shootSpeed: 35,
-        bulletSpeed: 20,
-        color: "#60a5fa",
-        size: 2.1,
-        pattern: "freeze",
-        points: 1000,
-        coins: 150,
-        shootDuration: 300,
-        shootCooldown: 900
-    },
-    predator: {
-        name: "PREDATOR",
-        health: 45,
-        thrust: 4.5,
-        shootSpeed: 25,
-        bulletSpeed: 22,
-        color: "#059669",
-        size: 2.3,
-        pattern: "hunting",
-        points: 1200,
-        coins: 180,
-        shootDuration: 300,
-        shootCooldown: 900
-    },
-    shadow: {
-        name: "SHADOW",
-        health: 30,
-        thrust: 5.0,
-        shootSpeed: 28,
-        bulletSpeed: 25,
-        color: "#1e293b",
-        size: 2.0,
-        pattern: "stealth",
-        points: 1200,
-        coins: 180,
-        shootDuration: 300,
-        shootCooldown: 900
-    },
-    inferno: {
-        name: "INFERNO",
-        health: 50,
-        thrust: 4.2,
-        shootSpeed: 22,
-        bulletSpeed: 19,
-        color: "#dc2626",
-        size: 2.4,
-        pattern: "fire",
-        points: 1500,
-        coins: 200,
-        shootDuration: 300,
-        shootCooldown: 900
-    },
-    tempest: {
-        name: "TEMPEST",
-        health: 55,
-        thrust: 4.8,
-        shootSpeed: 20,
-        bulletSpeed: 21,
-        color: "#7c3aed",
-        size: 2.5,
-        pattern: "storm",
-        points: 1500,
-        coins: 200,
-        shootDuration: 300,
-        shootCooldown: 900
-    },
-    cosmic: {
-        name: "COSMIC",
-        health: 60,
-        thrust: 5.2,
-        shootSpeed: 18,
-        bulletSpeed: 24,
-        color: "#312e81",
-        size: 2.6,
-        pattern: "cosmic",
-        points: 2000,
-        coins: 250,
-        shootDuration: 300,
-        shootCooldown: 900
-    }
+    trainer: { name: "TRAINER BOSS", health: 20, thrust: 3.0, shootSpeed: 40, bulletSpeed: 12, color: "#6b7280", size: 2.0, pattern: "basic", points: 500, coins: 100, shootDuration: 300, shootCooldown: 900 },
+    sandstorm: { name: "SANDSTORM", health: 40, thrust: 4.0, shootSpeed: 30, bulletSpeed: 18, color: "#b45309", size: 2.2, pattern: "spread", points: 1000, coins: 150, shootDuration: 300, shootCooldown: 900 },
+    frost: { name: "FROST GIANT", health: 35, thrust: 3.5, shootSpeed: 35, bulletSpeed: 20, color: "#60a5fa", size: 2.1, pattern: "freeze", points: 1000, coins: 150, shootDuration: 300, shootCooldown: 900 },
+    predator: { name: "PREDATOR", health: 45, thrust: 4.5, shootSpeed: 25, bulletSpeed: 22, color: "#059669", size: 2.3, pattern: "hunting", points: 1200, coins: 180, shootDuration: 300, shootCooldown: 900 },
+    shadow: { name: "SHADOW", health: 30, thrust: 5.0, shootSpeed: 28, bulletSpeed: 25, color: "#1e293b", size: 2.0, pattern: "stealth", points: 1200, coins: 180, shootDuration: 300, shootCooldown: 900 },
+    inferno: { name: "INFERNO", health: 50, thrust: 4.2, shootSpeed: 22, bulletSpeed: 19, color: "#dc2626", size: 2.4, pattern: "fire", points: 1500, coins: 200, shootDuration: 300, shootCooldown: 900 },
+    tempest: { name: "TEMPEST", health: 55, thrust: 4.8, shootSpeed: 20, bulletSpeed: 21, color: "#7c3aed", size: 2.5, pattern: "storm", points: 1500, coins: 200, shootDuration: 300, shootCooldown: 900 },
+    cosmic: { name: "COSMIC", health: 60, thrust: 5.2, shootSpeed: 18, bulletSpeed: 24, color: "#312e81", size: 2.6, pattern: "cosmic", points: 2000, coins: 250, shootDuration: 300, shootCooldown: 900 }
 };
 
 // Player stats
@@ -263,161 +111,85 @@ let playerBaseHealth = 50;
 let playerBaseMissiles = 6;
 let playerColor = "#475569";
 
-// ===== NEW POWER SYSTEM =====
+// Power system
 let activePower = null;
 let powerDuration = 0;
 let powerCooldown = 0;
-
-const powerItems = [
-    {
-        id: 'rapidFire',
-        name: 'RAPID FIRE',
-        description: 'Gun fires 3x faster for 10 seconds',
-        price: 50,
-        levelReq: 1,
-        icon: '🔥',
-        duration: 600,
-        effect: function () {
-            activePower = 'rapidFire';
-            powerDuration = 600;
-        }
-    },
-    {
-        id: 'shield',
-        name: 'ENERGY SHIELD',
-        description: 'Invulnerable for 8 seconds',
-        price: 75,
-        levelReq: 2,
-        icon: '🛡️',
-        duration: 480,
-        effect: function () {
-            activePower = 'shield';
-            powerDuration = 480;
-        }
-    },
-    {
-        id: 'doubleDamage',
-        name: 'DOUBLE DAMAGE',
-        description: 'All weapons deal 2x damage for 12 seconds',
-        price: 100,
-        levelReq: 3,
-        icon: '⚡',
-        duration: 720,
-        effect: function () {
-            activePower = 'doubleDamage';
-            powerDuration = 720;
-        }
-    },
-    {
-        id: 'timeSlow',
-        name: 'TIME SLOW',
-        description: 'Slows down enemies for 8 seconds',
-        price: 120,
-        levelReq: 4,
-        icon: '⏱️',
-        duration: 480,
-        effect: function () {
-            activePower = 'timeSlow';
-            powerDuration = 480;
-        }
-    },
-    {
-        id: 'homingMissiles',
-        name: 'HOMING MISSILES',
-        description: 'Next 10 missiles are super homing',
-        price: 150,
-        levelReq: 5,
-        icon: '🎯',
-        duration: 0,
-        effect: function () {
-            activePower = 'homingMissiles';
-            powerMissileCount = 10;
-        }
-    },
-    {
-        id: 'repairKit',
-        name: 'REPAIR KIT',
-        description: 'Instantly restore 50% health',
-        price: 60,
-        levelReq: 1,
-        icon: '❤️',
-        duration: 0,
-        effect: function () {
-            player.health = Math.min(player.health + playerBaseHealth * 0.5, playerBaseHealth);
-            document.getElementById('p-health').innerText = player.health + "%";
-        }
-    },
-    {
-        id: 'missileRefill',
-        name: 'MISSILE REFILL',
-        description: 'Refill all missiles',
-        price: 40,
-        levelReq: 1,
-        icon: '🚀',
-        duration: 0,
-        effect: function () {
-            missileCount = playerBaseMissiles;
-        }
-    }
-];
-
 let powerMissileCount = 0;
 let originalEnemySpeedMultiplier = 1.0;
 
-// ─── NEW: Epic Background Music for Home Page ─────────────────────
+const powerItems = [
+    { id: 'rapidFire', name: 'RAPID FIRE', description: 'Gun fires 3x faster for 10 seconds', price: 50, levelReq: 1, icon: '🔥', duration: 600, effect: function() { activePower = 'rapidFire'; powerDuration = 600; } },
+    { id: 'shield', name: 'ENERGY SHIELD', description: 'Invulnerable for 8 seconds', price: 75, levelReq: 2, icon: '🛡️', duration: 480, effect: function() { activePower = 'shield'; powerDuration = 480; } },
+    { id: 'doubleDamage', name: 'DOUBLE DAMAGE', description: 'All weapons deal 2x damage for 12 seconds', price: 100, levelReq: 3, icon: '⚡', duration: 720, effect: function() { activePower = 'doubleDamage'; powerDuration = 720; } },
+    { id: 'timeSlow', name: 'TIME SLOW', description: 'Slows down enemies for 8 seconds', price: 120, levelReq: 4, icon: '⏱️', duration: 480, effect: function() { activePower = 'timeSlow'; powerDuration = 480; } },
+    { id: 'homingMissiles', name: 'HOMING MISSILES', description: 'Next 10 missiles are super homing', price: 150, levelReq: 5, icon: '🎯', duration: 0, effect: function() { activePower = 'homingMissiles'; powerMissileCount = 10; } },
+    { id: 'repairKit', name: 'REPAIR KIT', description: 'Instantly restore 50% health', price: 60, levelReq: 1, icon: '❤️', duration: 0, effect: function() { player.health = Math.min(player.health + playerBaseHealth * 0.5, playerBaseHealth); document.getElementById('p-health').innerText = player.health + "%"; } },
+    { id: 'missileRefill', name: 'MISSILE REFILL', description: 'Refill all missiles', price: 40, levelReq: 1, icon: '🚀', duration: 0, effect: function() { missileCount = playerBaseMissiles; } }
+];
+
+// Audio variables
 let homeMusic = null;
 let homeMusicInterval = null;
 let audioCtx = null;
+let engineSound = null;
+let engineGain = null;
+let engineFilter = null;
 
-// Initialize audio context on user interaction
+// Joystick variables
+let joystickActive = false;
+let joystickX = 0;
+let joystickY = 0;
+const JOYSTICK_DEADZONE = 10;
+
+// Initialize audio context
 function initAudio() {
     if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.log('Web Audio API not supported');
+        }
     }
-    if (audioCtx.state === 'suspended') {
+    if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
     }
 }
 
+// Home page music
 function initHomeMusic() {
-    if (!soundEnabled || !audioCtx) return;
+    if (!soundEnabled || !audioCtx || homeMenu.style.display !== 'flex') return;
     
-    // Stop any existing music
     stopHomeMusic();
     
     try {
         const now = audioCtx.currentTime;
 
-        // Create epic orchestral-style music
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
         const osc3 = audioCtx.createOscillator();
         const osc4 = audioCtx.createOscillator();
 
-        osc1.type = 'triangle'; // Main melody
-        osc2.type = 'sine';     // Bass
-        osc3.type = 'sawtooth';  // Brass
-        osc4.type = 'square';    // Percussion
+        osc1.type = 'triangle';
+        osc2.type = 'sine';
+        osc3.type = 'sawtooth';
+        osc4.type = 'square';
 
-        // Main melody - heroic theme
-        osc1.frequency.setValueAtTime(261.63, now); // C4
-        osc1.frequency.setValueAtTime(329.63, now + 0.5); // E4
-        osc1.frequency.setValueAtTime(392.00, now + 1.0); // G4
-        osc1.frequency.setValueAtTime(523.25, now + 1.5); // C5
-        osc1.frequency.setValueAtTime(392.00, now + 2.0); // G4
-        osc1.frequency.setValueAtTime(329.63, now + 2.5); // E4
-        osc1.frequency.setValueAtTime(261.63, now + 3.0); // C4
+        osc1.frequency.setValueAtTime(261.63, now);
+        osc1.frequency.setValueAtTime(329.63, now + 0.5);
+        osc1.frequency.setValueAtTime(392.00, now + 1.0);
+        osc1.frequency.setValueAtTime(523.25, now + 1.5);
+        osc1.frequency.setValueAtTime(392.00, now + 2.0);
+        osc1.frequency.setValueAtTime(329.63, now + 2.5);
+        osc1.frequency.setValueAtTime(261.63, now + 3.0);
 
-        // Bass line
-        osc2.frequency.setValueAtTime(130.81, now); // C3
-        osc2.frequency.setValueAtTime(130.81, now + 2.0); // C3
+        osc2.frequency.setValueAtTime(130.81, now);
+        osc2.frequency.setValueAtTime(130.81, now + 2.0);
 
-        // Brass harmony
-        osc3.frequency.setValueAtTime(196.00, now); // G3
-        osc3.frequency.setValueAtTime(246.94, now + 1.0); // B3
-        osc3.frequency.setValueAtTime(293.66, now + 2.0); // D4
+        osc3.frequency.setValueAtTime(196.00, now);
+        osc3.frequency.setValueAtTime(246.94, now + 1.0);
+        osc3.frequency.setValueAtTime(293.66, now + 2.0);
 
-        // Percussion effect
         osc4.frequency.setValueAtTime(60, now);
         osc4.frequency.setValueAtTime(120, now + 1.0);
         osc4.frequency.setValueAtTime(60, now + 2.0);
@@ -432,7 +204,6 @@ function initHomeMusic() {
         gain3.gain.setValueAtTime(0.08 * (musicVolume / 100), now);
         gain4.gain.setValueAtTime(0.05 * (musicVolume / 100), now);
 
-        // Add reverb effect with filter
         const filter = audioCtx.createBiquadFilter();
         filter.type = 'lowpass';
         filter.frequency.value = 1200;
@@ -455,9 +226,8 @@ function initHomeMusic() {
         osc3.start();
         osc4.start();
 
-        // Loop the melody
         homeMusicInterval = setInterval(() => {
-            if (!soundEnabled || homeMenu.style.display === 'none' || !audioCtx) return;
+            if (!soundEnabled || homeMenu.style.display !== 'flex' || !audioCtx) return;
             const loopNow = audioCtx.currentTime;
             osc1.frequency.setValueAtTime(261.63, loopNow);
             osc1.frequency.setValueAtTime(329.63, loopNow + 0.5);
@@ -488,17 +258,14 @@ function stopHomeMusic() {
     }
 }
 
-// ─── LOADING PAGE ───────────────────────────────────────────────
+// Loading page
 window.addEventListener('load', function() {
-    // Simulate loading time
+    initAudio();
+    
     setTimeout(() => {
         loadingPage.classList.add('hidden');
         homeMenu.classList.add('visible');
         
-        // Initialize audio after user can interact
-        initAudio();
-        
-        // Start home music if sound is enabled
         if (soundEnabled && audioCtx) {
             setTimeout(() => {
                 initHomeMusic();
@@ -507,19 +274,11 @@ window.addEventListener('load', function() {
     }, 2000);
 });
 
-// ─── SAVE GAME SYSTEM ───────────────────────────────────────────
+// Save game system
 function saveGame() {
     const saveData = {
-        currentLevel: currentLevel,
-        currentStage: currentStage,
-        totalScore: totalScore,
-        totalKills: totalKills,
-        coins: coins,
-        soundEnabled: soundEnabled,
-        musicVolume: musicVolume,
-        sfxVolume: sfxVolume,
-        sensitivityLevel: sensitivityLevel,
-        difficultyLevel: difficultyLevel
+        currentLevel, currentStage, totalScore, totalKills, coins,
+        soundEnabled, musicVolume, sfxVolume, sensitivityLevel, difficultyLevel
     };
     localStorage.setItem('rfsSaveData', JSON.stringify(saveData));
 }
@@ -542,9 +301,9 @@ function loadGame() {
 
             document.getElementById('sensitivity-value').innerText = sensitivityLevel;
             document.getElementById('difficulty-value').innerText = difficultyLevel;
+            soundToggle.className = soundEnabled ? 'setting-toggle active' : 'setting-toggle';
 
             continueBtn.style.display = 'inline-block';
-
             updateCoinDisplay();
         } catch (e) {
             console.log('Failed to load save data');
@@ -574,7 +333,7 @@ window.continueGame = function () {
     startGame();
 }
 
-// ─── POWER SHOP FUNCTIONS ───────────────────────────────────────
+// Power shop functions
 window.openPowerShop = function () {
     if (isPaused) return;
     isPaused = true;
@@ -582,14 +341,12 @@ window.openPowerShop = function () {
     let html = '';
     powerItems.forEach(item => {
         const canBuy = coins >= item.price && currentLevel >= item.levelReq;
-        html += `
-            <div class="shop-item ${canBuy ? '' : 'disabled'}" onclick="buyPower('${item.id}')">
-                <h3>${item.icon} ${item.name}</h3>
-                <div class="price">💰 ${item.price}</div>
-                <div class="description">${item.description}</div>
-                <div class="level-req">Level Req: ${item.levelReq}</div>
-            </div>
-        `;
+        html += `<div class="shop-item ${canBuy ? '' : 'disabled'}" onclick="buyPower('${item.id}')">
+            <h3>${item.icon} ${item.name}</h3>
+            <div class="price">💰 ${item.price}</div>
+            <div class="description">${item.description}</div>
+            <div class="level-req">Level Req: ${item.levelReq}</div>
+        </div>`;
     });
 
     shopItemsContainer.innerHTML = html;
@@ -612,7 +369,6 @@ window.buyPower = function (powerId) {
         saveGame();
 
         power.effect();
-
         updatePowerDisplay();
 
         powerShopMenu.style.display = 'none';
@@ -624,11 +380,7 @@ function updatePowerDisplay() {
     const powerStat = document.getElementById('powerStat');
     if (activePower) {
         const power = powerItems.find(p => p.id === activePower);
-        if (power) {
-            powerStat.innerText = power.name;
-        } else {
-            powerStat.innerText = 'ACTIVE';
-        }
+        powerStat.innerText = power ? power.name : 'ACTIVE';
     } else {
         powerStat.innerText = 'NONE';
     }
@@ -638,7 +390,6 @@ function updatePowers() {
     if (activePower) {
         if (powerDuration > 0) {
             powerDuration--;
-
             if (activePower === 'timeSlow') {
                 enemySpeedMultiplier = 0.3;
             }
@@ -655,7 +406,7 @@ function updatePowers() {
     }
 }
 
-// ─── STAGE COMPLETE FUNCTIONS ───────────────────────────────────
+// Stage complete functions
 function showStageComplete() {
     isPaused = true;
 
@@ -678,7 +429,6 @@ function showStageComplete() {
     nextStageNumber.innerText = nextStage;
 
     stageCompleteMenu.style.display = 'block';
-
     saveGame();
 }
 
@@ -686,7 +436,6 @@ window.continueToNextStage = function () {
     stageCompleteMenu.style.display = 'none';
 
     currentStage++;
-
     if (currentStage > STAGES_PER_LEVEL) {
         currentLevel++;
         currentStage = 1;
@@ -712,9 +461,7 @@ window.continueToNextStage = function () {
     updatePowerDisplay();
 
     spawnEnemies();
-
     isPaused = false;
-
     saveGame();
 }
 
@@ -735,11 +482,10 @@ window.returnToHome = function () {
     if (soundEnabled) {
         initHomeMusic();
     }
-
     saveGame();
 }
 
-// ─── AUDIO ───────────────────────────────────────────────────────
+// Sound functions
 function playRealisticCrash() {
     if (!soundEnabled || !audioCtx) return;
     if (audioCtx.state === 'suspended') {
@@ -987,7 +733,7 @@ window.toggleSound = function () {
     if (audioCtx) {
         if (soundEnabled) {
             audioCtx.resume();
-            if (homeMenu.style.display !== 'none' && homeMenu.classList.contains('visible')) {
+            if (homeMenu.style.display === 'flex' && homeMenu.classList.contains('visible')) {
                 initHomeMusic();
             }
         } else {
@@ -1052,7 +798,7 @@ window.cycleDifficulty = function () {
     saveGame();
 }
 
-// ─── GAME STATE ──────────────────────────────────────────────────
+// Game state
 const WORLD_GROUND = 4500;
 const GRAVITY = 0.12;
 const RADAR_RADIUS = 75;
@@ -1062,11 +808,10 @@ let lives = 3;
 let frame = 0;
 let camera = { x: 0, y: 0 };
 let bullets = [], enemyBullets = [], enemies = [], particles = [], missiles = [];
-// ===== NEW: Stars array for blinking effect =====
 let stars = [];
 const NUM_STARS = 300;
 
-// ===== NEW: Generate stars =====
+// Generate stars
 function generateStars() {
     for (let i = 0; i < NUM_STARS; i++) {
         stars.push({
@@ -1106,17 +851,14 @@ const player = {
 };
 
 const scenery = [];
-// ===== NEW: Landing lights array =====
 const landingLights = [];
-
 const runwayStarts = [500, 11280, 22060, 32840, 43620];
 const runwayRanges = [[400, 6100], [11180, 16880], [21960, 27660], [32740, 38440], [43520, 49220]];
 
-// ===== MODIFIED: Generate scenery with water at center of land and trees only on land =====
+// Generate scenery
 function generateScenery() {
     scenery.length = 0;
     
-    // Define land areas (between runways)
     const landAreas = [];
     for (let i = 0; i < runwayStarts.length - 1; i++) {
         const landStart = runwayStarts[i] + 5500 + 200;
@@ -1124,128 +866,62 @@ function generateScenery() {
         landAreas.push({ start: landStart, end: landEnd });
     }
     
-    // Add water at the center of each land area
     landAreas.forEach(area => {
         const landCenter = (area.start + area.end) / 2;
-        // Add a water body at the center (300px wide)
-        scenery.push({ 
-            x: landCenter - 150, 
-            type: 'water', 
-            width: 300,
-            isCenterWater: true 
-        });
+        scenery.push({ x: landCenter - 150, type: 'water', width: 300, isCenterWater: true });
     });
     
-    // Add water before first runway
-    scenery.push({ 
-        x: -2000, 
-        type: 'water', 
-        width: 2500 
-    });
+    scenery.push({ x: -2000, type: 'water', width: 2500 });
+    scenery.push({ x: 48000, type: 'water', width: 3000 });
     
-    // Add water after last runway
-    scenery.push({ 
-        x: 48000, 
-        type: 'water', 
-        width: 3000 
-    });
-    
-    // Generate dense forests ONLY on land (not in water areas)
     for (let x = -10000; x < 50000; x += 150) {
         let skip = false;
         
-        // Skip runway areas
         for (let range of runwayRanges) {
-            if (x > range[0] && x < range[1]) { 
-                skip = true; 
-                break; 
-            }
+            if (x > range[0] && x < range[1]) { skip = true; break; }
         }
         
-        // Skip water areas at runway centers
         for (let start of runwayStarts) {
             const waterStart = start + 2750 - 300;
             const waterEnd = start + 2750 + 300;
-            if (x > waterStart && x < waterEnd) {
-                skip = true;
-                break;
-            }
+            if (x > waterStart && x < waterEnd) { skip = true; break; }
         }
         
-        // Skip water areas at land centers
         landAreas.forEach(area => {
             const landCenter = (area.start + area.end) / 2;
             const waterStart = landCenter - 150;
             const waterEnd = landCenter + 150;
-            if (x > waterStart && x < waterEnd) {
-                skip = true;
-            }
+            if (x > waterStart && x < waterEnd) { skip = true; }
         });
         
-        // Skip large water bodies
-        if (x > -2000 && x < 500) skip = true; // Before first runway water
-        if (x > 48000 && x < 51000) skip = true; // After last runway water
+        if (x > -2000 && x < 500) skip = true;
+        if (x > 48000 && x < 51000) skip = true;
         
         if (skip) continue;
         
-        // Add trees (95% chance for dense forests) ONLY on land
         if (Math.random() > 0.05) {
-            // Vary tree sizes and colors for variety
             const treeType = Math.random();
             if (treeType < 0.6) {
-                // Pine trees
-                scenery.push({ 
-                    x: x + Math.random() * 100, 
-                    type: 'pine', 
-                    width: 0,
-                    height: 50 + Math.random() * 40,
-                    trunkColor: '#4a2e1e',
-                    leafColor: '#1e4d3a'
-                });
+                scenery.push({ x: x + Math.random() * 100, type: 'pine', width: 0, height: 50 + Math.random() * 40, trunkColor: '#4a2e1e', leafColor: '#1e4d3a' });
             } else if (treeType < 0.85) {
-                // Oak trees
-                scenery.push({ 
-                    x: x + Math.random() * 100, 
-                    type: 'oak', 
-                    width: 0,
-                    height: 45 + Math.random() * 35,
-                    trunkColor: '#5d3a1a',
-                    leafColor: '#2d6a4f'
-                });
+                scenery.push({ x: x + Math.random() * 100, type: 'oak', width: 0, height: 45 + Math.random() * 35, trunkColor: '#5d3a1a', leafColor: '#2d6a4f' });
             } else {
-                // Palm trees (for tropical feel)
-                scenery.push({ 
-                    x: x + Math.random() * 100, 
-                    type: 'palm', 
-                    width: 0,
-                    height: 60 + Math.random() * 30,
-                    trunkColor: '#8b5a2b',
-                    leafColor: '#2e7d32'
-                });
+                scenery.push({ x: x + Math.random() * 100, type: 'palm', width: 0, height: 60 + Math.random() * 30, trunkColor: '#8b5a2b', leafColor: '#2e7d32' });
             }
         } else {
-            // Add bushes and small plants
-            scenery.push({ 
-                x: x + Math.random() * 100, 
-                type: 'bush', 
-                width: 0,
-                height: 15 + Math.random() * 15,
-                color: '#2d6a4f'
-            });
+            scenery.push({ x: x + Math.random() * 100, type: 'bush', width: 0, height: 15 + Math.random() * 15, color: '#2d6a4f' });
         }
     }
 }
 
-// ===== NEW: Generate 4 additional landing lights =====
+// Generate landing lights
 function generateLandingLights() {
     landingLights.length = 0;
-    
-    // Add 4 landing lights at strategic positions
     const lightPositions = [
-        { x: 8000, y: WORLD_GROUND - 30 },   // Between runway 1 and 2
-        { x: 18000, y: WORLD_GROUND - 30 },  // Between runway 2 and 3
-        { x: 28000, y: WORLD_GROUND - 30 },  // Between runway 3 and 4
-        { x: 38000, y: WORLD_GROUND - 30 }   // Between runway 4 and 5
+        { x: 8000, y: WORLD_GROUND - 30 },
+        { x: 18000, y: WORLD_GROUND - 30 },
+        { x: 28000, y: WORLD_GROUND - 30 },
+        { x: 38000, y: WORLD_GROUND - 30 }
     ];
     
     lightPositions.forEach(pos => {
@@ -1298,7 +974,6 @@ function spawnStageEnemies() {
 
         let baseThrust = enemyType.baseThrust;
         let adjustedThrust = baseThrust * enemySpeedMultiplier * (1 + (currentLevel - 1) * 0.1);
-
         let health = Math.max(1, Math.floor(enemyType.health * enemyHealthMultiplier * (1 + (currentLevel - 1) * 0.2)));
 
         enemies.push({
@@ -1364,7 +1039,6 @@ function spawnBoss() {
         attackPattern: 0,
         patternTimer: 0,
         damageCooldown: 0,
-        // FIXED: Proper 5 seconds shooting, 15 seconds cooldown
         shootDuration: bossType.shootDuration,
         shootCooldown: bossType.shootCooldown,
         shootState: 'cooldown',
@@ -1407,11 +1081,6 @@ function spawnEnemies() {
         spawnStageEnemies();
     }
 }
-
-// Audio engine variables
-let engineSound = null;
-let engineGain = null;
-let engineFilter = null;
 
 function createNoiseBuffer() {
     if (!audioCtx) return null;
@@ -1578,7 +1247,6 @@ function respawnPlayer() {
 }
 
 window.keyDown = function (code) {
-    // Prevent multiple simultaneous key presses
     if (keys[code]) return;
     keys[code] = true;
     if (code === 'KeyG') {
@@ -1597,7 +1265,6 @@ window.toggleHUD = function () {
 
 window.onkeydown = e => {
     if (isPaused && homeMenu.style.display === 'none') return;
-    // Prevent default for game controls
     if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyG', 'KeyM'].includes(e.code)) {
         e.preventDefault();
     }
@@ -1612,7 +1279,74 @@ window.onkeyup = e => {
     keys[e.code] = false;
 };
 
-// ─── MAIN UPDATE ─────────────────────────────────────────────────
+// Joystick functions
+function initJoystick() {
+    if (!flightHandle) return;
+    
+    const joystick = flightHandle;
+    const container = joystick.parentElement;
+    const maxMove = 20;
+
+    function handleTouchStart(e) {
+        e.preventDefault();
+        joystickActive = true;
+    }
+
+    function handleTouchMove(e) {
+        if (!joystickActive) return;
+        e.preventDefault();
+        
+        const touch = e.touches[0];
+        const rect = container.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        let deltaX = touch.clientX - centerX;
+        let deltaY = touch.clientY - centerY;
+        
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (distance > maxMove) {
+            deltaX = (deltaX / distance) * maxMove;
+            deltaY = (deltaY / distance) * maxMove;
+        }
+        
+        joystick.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        
+        const normX = deltaX / maxMove;
+        const normY = deltaY / maxMove;
+        
+        if (Math.abs(normY) > 0.2) {
+            if (normY < -0.2) {
+                keys['ArrowUp'] = true;
+                keys['ArrowDown'] = false;
+            } else if (normY > 0.2) {
+                keys['ArrowDown'] = true;
+                keys['ArrowUp'] = false;
+            }
+        } else {
+            keys['ArrowUp'] = false;
+            keys['ArrowDown'] = false;
+        }
+    }
+
+    function handleTouchEnd(e) {
+        e.preventDefault();
+        joystickActive = false;
+        joystick.style.transform = 'translate(0px, 0px)';
+        keys['ArrowUp'] = false;
+        keys['ArrowDown'] = false;
+    }
+
+    joystick.addEventListener('touchstart', handleTouchStart, { passive: false });
+    joystick.addEventListener('touchmove', handleTouchMove, { passive: false });
+    joystick.addEventListener('touchend', handleTouchEnd, { passive: false });
+    joystick.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+}
+
+// Initialize joystick when DOM is loaded
+document.addEventListener('DOMContentLoaded', initJoystick);
+
+// Main update function (simplified - your existing update function remains the same)
 function update() {
     if (player.dead || isPaused) {
         if (engineGain) engineGain.gain.value = 0;
@@ -1907,7 +1641,6 @@ function update() {
         }
     }
 
-    // FIXED: Boss shooting with proper 5 seconds shooting, 15 seconds cooldown
     if (bossActive && boss && boss.alive && !boss.exploded) {
         boss.patternTimer++;
 
@@ -2335,7 +2068,7 @@ window.retryLevel = function () {
     spawnEnemies();
 }
 
-// ─── RENDER HELPERS ──────────────────────────────────────────────
+// Draw functions
 function drawPlane(p, isPlayer) {
     if (p.exploded) return;
     ctx.save();
@@ -2611,7 +2344,6 @@ function loop() {
     ctx.scale(zoom, zoom);
     ctx.translate(-canvas.width / 2, -canvas.height / 2);
 
-    // ===== Draw blinking stars =====
     stars.forEach(star => {
         const sx = star.x - camera.x;
         const sy = star.y - camera.y;
@@ -2638,7 +2370,6 @@ function loop() {
     ctx.fillStyle = "#0d1117";
     ctx.fillRect(-20000 - camera.x, WORLD_GROUND - camera.y, 60000, 1000);
 
-    // ===== Draw landing lights =====
     landingLights.forEach(light => {
         const sx = light.x - camera.x;
         if (sx > -500 && sx < canvas.width + 500) {
@@ -2651,7 +2382,6 @@ function loop() {
             ctx.arc(sx, light.y - camera.y, 8, 0, Math.PI * 2);
             ctx.fill();
             
-            // Inner glow
             ctx.shadowBlur = 30;
             ctx.fillStyle = `rgba(255, 255, 255, ${pulse * 0.5})`;
             ctx.beginPath();
@@ -2666,13 +2396,11 @@ function loop() {
         if (sx > -500 && sx < canvas.width + 500) {
             const sy = WORLD_GROUND - camera.y;
             
-            // Water bodies
             if (it.type === 'water') {
                 ctx.fillStyle = "#1e3a8a";
                 ctx.globalAlpha = 0.8;
                 ctx.fillRect(sx, sy, it.width, 40);
                 
-                // Add wave effect
                 ctx.strokeStyle = "#60a5fa";
                 ctx.lineWidth = 2;
                 ctx.globalAlpha = 0.4;
@@ -2684,15 +2412,11 @@ function loop() {
                 }
                 ctx.stroke();
                 ctx.globalAlpha = 1;
-            }
-            
-            // Pine trees
-            else if (it.type === 'pine') {
+            } else if (it.type === 'pine') {
                 ctx.fillStyle = it.trunkColor || "#4a2e1e";
                 ctx.fillRect(sx - 3, sy - 20, 6, 20);
                 
                 ctx.fillStyle = it.leafColor || "#1e4d3a";
-                
                 ctx.beginPath();
                 ctx.moveTo(sx, sy - 50);
                 ctx.lineTo(sx - 15, sy - 25);
@@ -2710,10 +2434,7 @@ function loop() {
                 ctx.lineTo(sx - 8, sy - 55);
                 ctx.lineTo(sx + 8, sy - 55);
                 ctx.fill();
-            }
-            
-            // Oak trees
-            else if (it.type === 'oak') {
+            } else if (it.type === 'oak') {
                 ctx.fillStyle = it.trunkColor || "#5d3a1a";
                 ctx.fillRect(sx - 4, sy - 20, 8, 20);
                 
@@ -2727,10 +2448,7 @@ function loop() {
                 ctx.beginPath();
                 ctx.arc(sx + 12, sy - 40, 12, 0, Math.PI * 2);
                 ctx.fill();
-            }
-            
-            // Palm trees
-            else if (it.type === 'palm') {
+            } else if (it.type === 'palm') {
                 ctx.fillStyle = it.trunkColor || "#8b5a2b";
                 ctx.fillRect(sx - 3, sy - 30, 6, 30);
                 
@@ -2747,10 +2465,7 @@ function loop() {
                     ctx.lineTo(endX, endY);
                     ctx.stroke();
                 }
-            }
-            
-            // Bushes
-            else if (it.type === 'bush') {
+            } else if (it.type === 'bush') {
                 ctx.fillStyle = it.color || "#2d6a4f";
                 ctx.beginPath();
                 ctx.arc(sx, sy - 15, 10, 0, Math.PI * 2);
