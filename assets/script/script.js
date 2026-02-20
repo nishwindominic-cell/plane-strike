@@ -7,6 +7,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const successMenu = document.getElementById('success-menu');
 const homeMenu = document.getElementById('home-menu');
+const loadingPage = document.getElementById('loading-page');
 const hud = document.getElementById('hud');
 const radar = document.getElementById('radar-container');
 const gsCont = document.getElementById('gs-container');
@@ -87,7 +88,7 @@ const enemyTypes = {
         health: 1,
         color: "#94a3b8",
         shootSpeed: 120,
-        bulletSpeed: 45,
+        bulletSpeed: 15,
         shape: "small",
         points: 50,
         coins: 10
@@ -366,17 +367,25 @@ let originalEnemySpeedMultiplier = 1.0;
 // ─── NEW: Epic Background Music for Home Page ─────────────────────
 let homeMusic = null;
 let homeMusicInterval = null;
+let audioCtx = null;
+
+// Initialize audio context on user interaction
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
 
 function initHomeMusic() {
-    if (!soundEnabled) return;
+    if (!soundEnabled || !audioCtx) return;
+    
+    // Stop any existing music
+    stopHomeMusic();
+    
     try {
-        if (homeMusic) {
-            homeMusic.forEach(osc => osc.stop());
-        }
-        if (homeMusicInterval) {
-            clearInterval(homeMusicInterval);
-        }
-
         const now = audioCtx.currentTime;
 
         // Create epic orchestral-style music
@@ -448,7 +457,7 @@ function initHomeMusic() {
 
         // Loop the melody
         homeMusicInterval = setInterval(() => {
-            if (!soundEnabled || homeMenu.style.display === 'none') return;
+            if (!soundEnabled || homeMenu.style.display === 'none' || !audioCtx) return;
             const loopNow = audioCtx.currentTime;
             osc1.frequency.setValueAtTime(261.63, loopNow);
             osc1.frequency.setValueAtTime(329.63, loopNow + 0.5);
@@ -478,6 +487,25 @@ function stopHomeMusic() {
         homeMusicInterval = null;
     }
 }
+
+// ─── LOADING PAGE ───────────────────────────────────────────────
+window.addEventListener('load', function() {
+    // Simulate loading time
+    setTimeout(() => {
+        loadingPage.classList.add('hidden');
+        homeMenu.classList.add('visible');
+        
+        // Initialize audio after user can interact
+        initAudio();
+        
+        // Start home music if sound is enabled
+        if (soundEnabled && audioCtx) {
+            setTimeout(() => {
+                initHomeMusic();
+            }, 100);
+        }
+    }, 2000);
+});
 
 // ─── SAVE GAME SYSTEM ───────────────────────────────────────────
 function saveGame() {
@@ -712,10 +740,8 @@ window.returnToHome = function () {
 }
 
 // ─── AUDIO ───────────────────────────────────────────────────────
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
 function playRealisticCrash() {
-    if (!soundEnabled) return;
+    if (!soundEnabled || !audioCtx) return;
     if (audioCtx.state === 'suspended') {
         audioCtx.resume();
         return;
@@ -778,7 +804,7 @@ function playRealisticCrash() {
 }
 
 function playSound(type) {
-    if (!soundEnabled) return;
+    if (!soundEnabled || !audioCtx) return;
     if (audioCtx.state === 'suspended') {
         audioCtx.resume();
         return;
@@ -957,10 +983,11 @@ window.closeSettings = function () {
 window.toggleSound = function () {
     soundEnabled = !soundEnabled;
     soundToggle.className = soundEnabled ? 'setting-toggle active' : 'setting-toggle';
+    
     if (audioCtx) {
         if (soundEnabled) {
             audioCtx.resume();
-            if (homeMenu.style.display !== 'none') {
+            if (homeMenu.style.display !== 'none' && homeMenu.classList.contains('visible')) {
                 initHomeMusic();
             }
         } else {
@@ -1387,6 +1414,7 @@ let engineGain = null;
 let engineFilter = null;
 
 function createNoiseBuffer() {
+    if (!audioCtx) return null;
     const length = audioCtx.sampleRate * 2;
     const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -1395,7 +1423,8 @@ function createNoiseBuffer() {
 }
 
 window.startGame = function () {
-    if (audioCtx.state === 'suspended' && soundEnabled) audioCtx.resume();
+    initAudio();
+    if (audioCtx?.state === 'suspended' && soundEnabled) audioCtx.resume();
 
     stopHomeMusic();
 
@@ -1464,25 +1493,29 @@ window.startGame = function () {
 
     try {
         if (engineSound) engineSound.stop();
-        const noiseBuffer = createNoiseBuffer();
-        engineSound = audioCtx.createBufferSource();
-        engineSound.buffer = noiseBuffer;
-        engineSound.loop = true;
-        engineFilter = audioCtx.createBiquadFilter();
-        engineFilter.type = 'lowpass';
-        engineFilter.frequency.value = 250;
-        engineFilter.Q.value = 0.7;
-        const engineFilter2 = audioCtx.createBiquadFilter();
-        engineFilter2.type = 'bandpass';
-        engineFilter2.frequency.value = 800;
-        engineFilter2.Q.value = 0.3;
-        engineGain = audioCtx.createGain();
-        engineGain.gain.value = 0;
-        engineSound.connect(engineFilter);
-        engineFilter.connect(engineFilter2);
-        engineFilter2.connect(engineGain);
-        engineGain.connect(audioCtx.destination);
-        engineSound.start();
+        if (audioCtx) {
+            const noiseBuffer = createNoiseBuffer();
+            if (noiseBuffer) {
+                engineSound = audioCtx.createBufferSource();
+                engineSound.buffer = noiseBuffer;
+                engineSound.loop = true;
+                engineFilter = audioCtx.createBiquadFilter();
+                engineFilter.type = 'lowpass';
+                engineFilter.frequency.value = 250;
+                engineFilter.Q.value = 0.7;
+                const engineFilter2 = audioCtx.createBiquadFilter();
+                engineFilter2.type = 'bandpass';
+                engineFilter2.frequency.value = 800;
+                engineFilter2.Q.value = 0.3;
+                engineGain = audioCtx.createGain();
+                engineGain.gain.value = 0;
+                engineSound.connect(engineFilter);
+                engineFilter.connect(engineFilter2);
+                engineFilter2.connect(engineGain);
+                engineGain.connect(audioCtx.destination);
+                engineSound.start();
+            }
+        }
     } catch (e) {
         console.log('Audio not supported');
     }
@@ -1545,6 +1578,8 @@ function respawnPlayer() {
 }
 
 window.keyDown = function (code) {
+    // Prevent multiple simultaneous key presses
+    if (keys[code]) return;
     keys[code] = true;
     if (code === 'KeyG') {
         player.gearDown = !player.gearDown;
@@ -1562,6 +1597,10 @@ window.toggleHUD = function () {
 
 window.onkeydown = e => {
     if (isPaused && homeMenu.style.display === 'none') return;
+    // Prevent default for game controls
+    if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyG', 'KeyM'].includes(e.code)) {
+        e.preventDefault();
+    }
     keys[e.code] = true;
     if (e.code === 'KeyG') {
         player.gearDown = !player.gearDown;
@@ -1569,7 +1608,9 @@ window.onkeydown = e => {
     }
 };
 
-window.onkeyup = e => keys[e.code] = false;
+window.onkeyup = e => {
+    keys[e.code] = false;
+};
 
 // ─── MAIN UPDATE ─────────────────────────────────────────────────
 function update() {
@@ -2851,10 +2892,7 @@ document.querySelectorAll('.control-btn').forEach(btn => {
     }, { passive: false });
 });
 
-if (soundEnabled) {
-    initHomeMusic();
-}
-
+// Initialize
 loadGame();
 document.getElementById('sensitivity-value').innerText = sensitivityLevel;
 document.getElementById('difficulty-value').innerText = difficultyLevel;
