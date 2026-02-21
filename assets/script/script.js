@@ -2897,3 +2897,150 @@ loadGame();
 document.getElementById('sensitivity-value').innerText = sensitivityLevel;
 document.getElementById('difficulty-value').innerText = difficultyLevel;
 updateCoinDisplay();
+// ===== AUTO SCREEN SIZE DETECTOR =====
+// This detects screen size changes and updates the UI without affecting gameplay
+
+// Store the last screen width to detect changes
+let lastScreenWidth = window.innerWidth;
+let resizeTimeout;
+
+// Function to check and apply mobile/desktop mode
+function checkScreenSize() {
+    const currentWidth = window.innerWidth;
+    
+    // Check if we're in game (not in home menu)
+    const isInGame = homeMenu && homeMenu.style.display === 'none';
+    
+    // Update HUD visibility based on screen size
+    if (hud) {
+        if (currentWidth <= 768) {
+            // Mobile mode
+            if (isInGame) {
+                hud.style.display = 'none';
+            }
+            if (radar) radar.style.display = 'none';
+            if (hudToggle) hudToggle.style.display = 'block';
+            if (gsCont) gsCont.style.display = 'none';
+            if (locCont) locCont.style.display = 'none';
+            if (coinDisplay) coinDisplay.style.display = 'block';
+            if (shopBtn) shopBtn.style.display = 'block';
+        } else {
+            // Desktop mode
+            if (isInGame) {
+                hud.style.display = 'block';
+            }
+            if (radar) radar.style.display = 'block';
+            if (hudToggle) hudToggle.style.display = 'none';
+            if (gsCont && isInGame) gsCont.style.display = 'flex';
+            if (locCont && isInGame) locCont.style.display = 'flex';
+            if (coinDisplay) coinDisplay.style.display = 'block';
+            if (shopBtn) shopBtn.style.display = 'block';
+        }
+    }
+    
+    // Update level stage position
+    if (levelStage) {
+        if (currentWidth <= 768) {
+            levelStage.style.top = '10px';
+            levelStage.style.left = '10px';
+            levelStage.style.transform = 'none';
+        } else {
+            levelStage.style.top = '20px';
+            levelStage.style.left = '50%';
+            levelStage.style.transform = 'translateX(-50%)';
+        }
+    }
+    
+    // Update boss health bar position
+    if (bossHealthContainer) {
+        if (currentWidth <= 768) {
+            bossHealthContainer.style.top = '60px';
+        } else {
+            bossHealthContainer.style.top = '100px';
+        }
+    }
+    
+    // Update settings button position on home menu
+    if (settingsBtn && homeMenu && homeMenu.style.display !== 'none') {
+        if (currentWidth <= 768) {
+            settingsBtn.style.top = '10px';
+            settingsBtn.style.right = '10px';
+        } else {
+            settingsBtn.style.top = '20px';
+            settingsBtn.style.right = '20px';
+        }
+    }
+}
+
+// Throttled resize handler
+function handleResize() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        const currentWidth = window.innerWidth;
+        
+        // Only update if width changed significantly
+        if (Math.abs(currentWidth - lastScreenWidth) > 10) {
+            lastScreenWidth = currentWidth;
+            
+            // Update canvas size
+            canvas.width = currentWidth;
+            canvas.height = window.innerHeight;
+            
+            // Update camera position
+            if (!isPaused && player) {
+                camera.x = player.x - canvas.width / 3;
+                camera.y = player.y - canvas.height / 2.5;
+            }
+            
+            // Apply screen size changes
+            checkScreenSize();
+        }
+    }, 100);
+}
+
+// Listen for resize events
+window.addEventListener('resize', handleResize);
+
+// Listen for orientation change
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        checkScreenSize();
+    }, 50);
+});
+
+// Initial check
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(checkScreenSize, 100);
+});
+
+// Override startGame to include screen check
+const originalStartGame = window.startGame;
+window.startGame = function() {
+    if (originalStartGame) originalStartGame();
+    setTimeout(checkScreenSize, 100);
+};
+
+// Override continueGame to include screen check
+const originalContinueGame = window.continueGame;
+window.continueGame = function() {
+    if (originalContinueGame) originalContinueGame();
+    setTimeout(checkScreenSize, 100);
+};
+
+// Override returnToHome to include screen check
+const originalReturnToHome = window.returnToHome;
+window.returnToHome = function() {
+    if (originalReturnToHome) originalReturnToHome();
+    setTimeout(checkScreenSize, 100);
+};
+
+// Also check when any menu closes
+const originalCloseSettings = window.closeSettings;
+window.closeSettings = function() {
+    if (originalCloseSettings) originalCloseSettings();
+    setTimeout(checkScreenSize, 100);
+};
+
+console.log('Auto screen size detector initialized');
