@@ -158,13 +158,13 @@
                     <div class="control-btn" ontouchstart="keyDown('ArrowUp'); event.preventDefault();" ontouchend="keyUp('ArrowUp'); event.preventDefault();"
                         onmousedown="keyDown('ArrowUp')" onmouseup="keyUp('ArrowUp')" onmouseleave="keyUp('ArrowUp')">⬆️
                     </div>
-                    <div class="control-label">Pitch Up</div>
+                    
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn" ontouchstart="keyDown('ArrowDown'); event.preventDefault();" ontouchend="keyUp('ArrowDown'); event.preventDefault();"
                         onmousedown="keyDown('ArrowDown')" onmouseup="keyUp('ArrowDown')"
                         onmouseleave="keyUp('ArrowDown')">⬇️</div>
-                    <div class="control-label">Pitch Down</div>
+                    
                 </div>
             </div>
 
@@ -174,13 +174,13 @@
                     <div class="control-btn" ontouchstart="keyDown('ArrowLeft'); event.preventDefault();" ontouchend="keyUp('ArrowLeft'); event.preventDefault();"
                         onmousedown="keyDown('ArrowLeft')" onmouseup="keyUp('ArrowLeft')"
                         onmouseleave="keyUp('ArrowLeft')">⬅️</div>
-                    <div class="control-label">Speed -</div>
+                    
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn" ontouchstart="keyDown('ArrowRight'); event.preventDefault();" ontouchend="keyUp('ArrowRight'); event.preventDefault();"
                         onmousedown="keyDown('ArrowRight')" onmouseup="keyUp('ArrowRight')"
                         onmouseleave="keyUp('ArrowRight')">➡️</div>
-                    <div class="control-label">Speed +</div>
+                    
                 </div>
             </div>
 
@@ -189,23 +189,36 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn special" ontouchstart="keyDown('Space'); event.preventDefault();" ontouchend="keyUp('Space'); event.preventDefault();"
                         onmousedown="keyDown('Space')" onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')">🔥</div>
-                    <div class="control-label">Gun</div>
+                   
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <!-- Fixed: Gear button with proper handlers -->
                     <div class="control-btn special" ontouchstart="keyDown('KeyG'); event.preventDefault();"
                         ontouchend="keyUp('KeyG'); event.preventDefault();" onmousedown="keyDown('KeyG')"
                         onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')">⚙️</div>
-                    <div class="control-label">Gear</div>
+                    
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn special" ontouchstart="keyDown('KeyM'); event.preventDefault();" ontouchend="keyUp('KeyM'); event.preventDefault();"
                         onmousedown="keyDown('KeyM')" onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')">🚀</div>
-                    <div class="control-label">Missile</div>
+                    
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Morning Sky Theme Elements (No moving white lines) -->
+    <div class="morning-sky"></div>
+    <div class="sun"></div>
+    <!-- Removed moving cloud divs - they will be drawn by JavaScript now -->
+    <div class="horizon-glow"></div>
+    <div class="haze"></div>
+    <div class="mist"></div>
+    <!-- Removed wind-effect div (caused white moving lines) -->
+    <!-- Removed cloud-shadow div (caused moving shadows) -->
+    <div class="ground-texture"></div>
+    <div class="hud-glint"></div>
+    <div class="instrument-reflection"></div>
 
     <button id="hud-toggle" onclick="toggleHUD()">📊</button>
     <canvas id="gameCanvas"></canvas>

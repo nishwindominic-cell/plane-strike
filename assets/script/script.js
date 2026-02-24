@@ -3044,3 +3044,253 @@ window.closeSettings = function() {
 };
 
 console.log('Auto screen size detector initialized');
+// ===== FIXED ENHANCED REALISM FUNCTIONS - NO MOVING WHITE LINES =====
+
+// Radio messages array
+let radioMessages = [
+    "Tower: Clear for takeoff",
+    "ATC: Maintain heading",
+    "Wingman: Enemy spotted",
+    "Tower: Wind calm",
+    "ATC: Descend to 2000",
+    "Wingman: Engaging targets",
+    "Tower: Runway clear",
+    "ATC: Traffic at 10 o'clock",
+    "Wingman: Missile launch detected",
+    "Tower: Caution wake turbulence"
+];
+
+let lastRadioTime = 0;
+let radioInterval = 30000; // 30 seconds
+
+// Enhanced engine trail with morning light effect
+function createEnhancedTrail(x, y, angle) {
+    const trailLength = 10; // Reduced length
+    for (let i = 0; i < trailLength; i++) {
+        const offset = i * 4;
+        const trailX = x - Math.cos(angle) * offset;
+        const trailY = y - Math.sin(angle) * offset;
+        
+        particles.push({
+            x: trailX,
+            y: trailY,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            life: 0.4 - (i / trailLength) * 0.2,
+            color: `rgba(255, 180, 100, ${0.2 - (i / trailLength) * 0.1})`,
+            size: 2 + (i * 0.1)
+        });
+    }
+}
+
+// Enhanced explosion with morning light
+function createEnhancedBlast(x, y, color, count = 20) {
+    playSound('explode');
+    
+    // Main explosion
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3 + Math.random() * 8;
+        const life = 0.6 + Math.random() * 0.3;
+        
+        particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: life,
+            color: `rgba(255, ${120 + Math.random() * 80}, 0, ${life})`,
+            size: 3 + Math.random() * 3
+        });
+    }
+    
+    // Smoke cloud (reduced)
+    for (let i = 0; i < 8; i++) {
+        particles.push({
+            x: x + (Math.random() - 0.5) * 20,
+            y: y + (Math.random() - 0.5) * 20,
+            vx: (Math.random() - 0.5) * 1,
+            vy: (Math.random() - 0.5) * 1 - 0.5,
+            life: 0.8,
+            color: `rgba(80, 80, 80, 0.6)`,
+            size: 6 + Math.random() * 6
+        });
+    }
+}
+
+// Radio communication effect
+function showRadioMessage(message) {
+    // Only show if game is running and not paused
+    if (!isGameRunning || isPaused) return;
+    
+    const radioDiv = document.createElement('div');
+    radioDiv.className = 'radio-effect';
+    radioDiv.textContent = message;
+    document.body.appendChild(radioDiv);
+    
+    setTimeout(() => {
+        if (radioDiv.parentNode) {
+            radioDiv.remove();
+        }
+    }, 2000);
+}
+
+// Dust trail effect when near ground
+function createDustTrail(x, y) {
+    if (player.y > WORLD_GROUND - 200 && player.thrust > 3) {
+        particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 1,
+            vy: Math.random() * 1,
+            life: 0.6,
+            color: `rgba(180, 140, 100, ${0.2 + Math.random() * 0.2})`,
+            size: 3 + Math.random() * 3
+        });
+    }
+}
+
+// Sun reflection based on plane angle
+function updateSunReflection() {
+    const reflectionDiv = document.querySelector('.instrument-reflection');
+    if (reflectionDiv && player) {
+        const angle = Math.abs(player.angle) * 0.5;
+        reflectionDiv.style.opacity = 0.1 + angle * 0.1;
+    }
+}
+
+// Enhanced gunfire with smoke
+function createGunfireEffect(x, y, angle) {
+    for (let i = 0; i < 3; i++) {
+        particles.push({
+            x: x - Math.cos(angle) * 15,
+            y: y - Math.sin(angle) * 15,
+            vx: -Math.cos(angle) * 1 + (Math.random() - 0.5) * 1,
+            vy: -Math.sin(angle) * 1 + (Math.random() - 0.5) * 1,
+            life: 0.2,
+            color: `rgba(255, 180, 80, 0.4)`,
+            size: 2
+        });
+    }
+}
+
+// ===== FIXED WEATHER SYSTEM - CLOUDS ONLY ABOVE 5000 FT =====
+
+let weatherSystem = {
+    clouds: [],
+    windSpeed: 0.5, // Reduced wind speed
+    timeOfDay: 6 // 6 AM
+};
+
+function initWeather() {
+    weatherSystem.clouds = [];
+    for (let i = 0; i < 8; i++) {
+        weatherSystem.clouds.push({
+            x: Math.random() * 50000,
+            y: 800 + Math.random() * 1500, // Higher altitude for clouds (800-2300 ft)
+            size: 120 + Math.random() * 180,
+            speed: 0.1 + Math.random() * 0.2, // Very slow movement
+            opacity: 0.15 + Math.random() * 0.2
+        });
+    }
+}
+
+function updateWeather() {
+    // Only update weather if game is running
+    if (!isGameRunning || isPaused || player.dead) return;
+    
+    // Move clouds VERY slowly
+    weatherSystem.clouds.forEach(cloud => {
+        cloud.x += weatherSystem.windSpeed * 0.05; // Extremely slow movement
+        if (cloud.x > 55000) cloud.x = -2000;
+    });
+    
+    // Time progression (very slow)
+    weatherSystem.timeOfDay += 0.0002;
+    if (weatherSystem.timeOfDay > 18) weatherSystem.timeOfDay = 6;
+}
+
+// Draw clouds in the game loop - ONLY above 5000 feet
+function drawClouds() {
+    if (!player) return;
+    
+    const playerAltitude = WORLD_GROUND - player.y;
+    
+    // Only draw clouds if player is above 5000 feet
+    if (playerAltitude < 5000) return;
+    
+    weatherSystem.clouds.forEach(cloud => {
+        const sx = cloud.x - camera.x;
+        // Only draw clouds within view
+        if (sx > -600 && sx < canvas.width + 600) {
+            const cloudScreenY = cloud.y - camera.y;
+            
+            // Ensure cloud is drawn at correct altitude
+            if (cloudScreenY > -300 && cloudScreenY < canvas.height + 300) {
+                ctx.save();
+                ctx.globalAlpha = cloud.opacity * 0.4;
+                ctx.fillStyle = `rgba(255, 255, 255, 0.2)`;
+                
+                // Draw cloud as multiple puffs
+                ctx.beginPath();
+                ctx.ellipse(sx, cloudScreenY, cloud.size * 0.8, cloud.size * 0.25, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.ellipse(sx + cloud.size * 0.3, cloudScreenY - cloud.size * 0.1, cloud.size * 0.6, cloud.size * 0.2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.ellipse(sx - cloud.size * 0.3, cloudScreenY - cloud.size * 0.05, cloud.size * 0.5, cloud.size * 0.15, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+    });
+}
+
+// Initialize weather
+initWeather();
+
+// ===== OVERRIDE EXISTING FUNCTIONS TO USE ENHANCEMENTS =====
+
+// Save original createBlast function
+const originalCreateBlast = window.createBlast;
+
+// Replace with enhanced version
+window.createBlast = function(x, y, color, count = 20) {
+    createEnhancedBlast(x, y, color, count);
+};
+
+// Add radio message trigger in update function
+// Find your update function and add this code inside it, near the end:
+
+/*
+// Add this to your update() function:
+if (isGameRunning && !isPaused && frame % 1800 === 0) { // Every 30 seconds at 60fps
+    const randomMessage = radioMessages[Math.floor(Math.random() * radioMessages.length)];
+    showRadioMessage(randomMessage);
+}
+
+// Add sun reflection update
+updateSunReflection();
+
+// Add dust trail when near ground
+if (player.y > WORLD_GROUND - 300 && player.thrust > 2 && !player.dead) {
+    if (frame % 10 === 0) {
+        createDustTrail(player.x, player.y);
+    }
+}
+*/
+
+// ===== FIXED LOOP FUNCTION MODIFICATIONS =====
+// Note: You need to add these calls to your existing loop function
+
+// Add this line after drawing stars in your loop function:
+// drawClouds();
+
+// Add this line after updating game state:
+// updateWeather();
+
+console.log('Enhanced Realism Features Loaded - Fixed: Clouds only above 5000ft, No moving white lines');
