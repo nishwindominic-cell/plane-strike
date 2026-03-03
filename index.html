@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Plane Strike Landing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Plane Strike Landing - Ultimate Edition</title>
     <link rel="stylesheet" href="./assets/css/game.css">
     <link rel="stylesheet" href="./assets/css/media-query.css">
 </head>
-
 <body>
+    <!-- Orientation Warning -->
+    <div id="orientation-warning">
+        <div class="rotate-icon">📱</div>
+        <h2>Please Rotate Your Device</h2>
+        <p>This game is best played in landscape mode</p>
+    </div>
+
+    <!-- Cleared to Land Message -->
+    <div id="cleared-to-land">✅ CLEARED TO LAND ANY RUNWAY ✅</div>
+
     <!-- Loading Page -->
     <div id="loading-page">
         <div class="loading-content">
@@ -21,74 +28,114 @@
     </div>
 
     <div id="home-menu">
-        <!-- Settings button on home page -->
-        <div id="settings-btn" onclick="openSettings()">
-            <span>⚙️</span> SETTINGS
-        </div>
+        <div id="daily-reward-btn" onclick="claimDailyReward()">🎁 DAILY REWARD</div>
+        <div id="settings-btn" onclick="openSettings()">⚙️ SETTINGS</div>
 
         <h1>Plane Strike Landing</h1>
         <p>ARROWS to Fly | SPACE to Shoot | G for Landing Gear | M for Missile<br><b>Objective:</b> Eliminate ALL
             hostiles before landing on the runway.</p>
-        <div style="display: flex; gap: 20px; justify-content: center;">
+
+        <div id="menu-score-display">
+            TOTAL SCORE: <span id="menu-score">0</span>
+        </div>
+
+        <div class="menu-buttons">
             <button class="menu-btn" onclick="startGame()">NEW GAME</button>
             <button id="continue-btn" class="menu-btn" onclick="continueGame()"
                 style="background: #fbbf24;">CONTINUE</button>
+            <button class="menu-btn" onclick="showAchievements()">🏆 ACHIEVEMENTS</button>
+            <button class="menu-btn" onclick="showPlanes()">✈️ MY PLANES</button>
         </div>
+
+        <div id="stats-summary" style="margin-top: 20px; color: #94a3b8;">
+            <p>Coins: <span id="total-coins-display">0</span></p>
+        </div>
+    </div>
+
+    <!-- Game Over Menu -->
+    <div id="gameover-menu">
+        <h2>GAME OVER</h2>
+        <div id="gameover-stats">
+            <p>Final Score: <span id="gameover-score">0</span></p>
+            <p>Kills: <span id="gameover-kills">0</span></p>
+            <p>Max Combo: <span id="gameover-combo">x0</span></p>
+            <p>Coins Earned: <span id="gameover-coins">0</span></p>
+            <p>Level Reached: <span id="gameover-level">1</span></p>
+        </div>
+        <div class="gameover-buttons">
+            <button class="gameover-btn" onclick="restartFromGameOver()">RESTART</button>
+            <button class="gameover-btn secondary" onclick="goToHomeFromGameOver()">HOME</button>
+        </div>
+    </div>
+
+    <!-- Achievements Menu -->
+    <div id="achievements-menu">
+        <h2>🏆 ACHIEVEMENTS</h2>
+        <div id="achievements-list"></div>
+        <button class="close-settings" onclick="closeAchievements()">CLOSE</button>
+    </div>
+
+    <!-- Planes Menu -->
+    <div id="planes-menu">
+        <h2>✈️ MY PLANES</h2>
+        <div id="planes-list"></div>
+        <button class="close-settings" onclick="closePlanes()">CLOSE</button>
     </div>
 
     <!-- Settings Panel -->
     <div id="settings-panel">
         <h2>⚙️ SETTINGS</h2>
-
         <div class="setting-item">
             <span class="setting-label">Sound Effects</span>
             <div class="setting-toggle active" id="sound-toggle" onclick="toggleSound()"></div>
         </div>
-
         <div class="setting-item">
             <span class="setting-label">Music Volume</span>
             <input type="range" min="0" max="100" value="70" class="setting-slider" id="music-volume"
                 oninput="updateVolume(this.value)">
         </div>
-
         <div class="setting-item">
             <span class="setting-label">SFX Volume</span>
             <input type="range" min="0" max="100" value="80" class="setting-slider" id="sfx-volume"
                 oninput="updateSFXVolume(this.value)">
         </div>
-
         <div class="setting-item">
             <span class="setting-label">Control Sensitivity</span>
             <span class="setting-value" id="sensitivity-value" onclick="cycleSensitivity()">Normal</span>
         </div>
-
         <div class="setting-item">
             <span class="setting-label">Difficulty</span>
             <span class="setting-value" id="difficulty-value" onclick="cycleDifficulty()">Normal</span>
         </div>
-
+        <div class="setting-item">
+            <span class="setting-label">Auto Shoot (Mobile)</span>
+            <div class="setting-toggle" id="auto-shoot-setting" onclick="toggleAutoShoot()"></div>
+        </div>
         <button class="close-settings" onclick="closeSettings()">CLOSE SETTINGS</button>
     </div>
 
-    <!-- NEW: Level and Stage Display -->
+    <!-- Level and Stage Display -->
     <div id="level-stage">🌍 LEVEL 1 | STAGE 1/5</div>
 
-    <!-- NEW: Coin Display (Top Left) -->
+    <!-- Coin Display -->
     <div id="coin-display">💰 0</div>
 
-    <!-- NEW: Shop Button (Bottom Left) -->
+    <!-- Shop Button -->
     <div id="shop-btn" onclick="openPowerShop()">🛒 POWER SHOP</div>
 
-    <!-- NEW: Boss Warning -->
+    <!-- Auto Shoot Toggle - HIDDEN (only in settings) -->
+    <div id="auto-shoot-toggle" style="display: none !important;"></div>
+
+    <!-- Boss Warning -->
     <div id="boss-warning">⚠️ BOSS INCOMING ⚠️</div>
 
-    <!-- NEW: Boss Health Bar -->
+    <!-- Boss Health Bar -->
     <div id="boss-health-container">
         <div id="boss-health-fill"></div>
         <div id="boss-health-text">BOSS HEALTH 100%</div>
     </div>
 
-    <!-- NEW: Stage Complete Menu -->
+    <!-- Stage Complete Menu -->
     <div id="stage-complete-menu">
         <h2>STAGE COMPLETE! 🎉</h2>
         <p id="stage-complete-text">Stage 1 Complete</p>
@@ -100,16 +147,15 @@
         <button class="stage-btn secondary" onclick="returnToHome()">RETURN TO MENU</button>
     </div>
 
-    <!-- NEW: Power Shop Menu -->
+    <!-- Power Shop Menu -->
     <div id="power-shop-menu">
         <h2>🛒 POWER SHOP</h2>
         <div id="shop-coins">💰 <span id="shop-coins-amount">0</span></div>
-        <div class="shop-items" id="shop-items-container">
-            <!-- Shop items will be dynamically generated -->
-        </div>
+        <div class="shop-items" id="shop-items-container"></div>
         <button class="shop-close" onclick="closePowerShop()">CLOSE SHOP</button>
     </div>
 
+    <!-- HUD -->
     <div id="hud">
         <div style="text-align:center; color:#fbbf24; margin-bottom:5px; font-size:1.2em;">MISSION LEVEL <span
                 id="lvl">1</span></div>
@@ -127,6 +173,8 @@
         <div class="stat-row"><span class="label">Gear:</span><span id="gearStat" class="value">UP</span></div>
         <div class="stat-row"><span class="label">Power:</span><span id="powerStat" class="value">NONE</span></div>
     </div>
+
+    <!-- ILS Displays -->
     <div id="gs-container" style="display:none;">
         <div style="position:absolute;top:0;">HIGH</div>
         <div id="gs-diamond" class="diamond"></div>
@@ -141,84 +189,87 @@
         <div style="width:2px;height:10px;background:#22c55e;position:absolute;left:50%;"></div>
         <div style="position:absolute;bottom:-15px;">LOCALIZER</div>
     </div>
+
+    <!-- Success Menu -->
     <div id="success-menu">
         <h2 id="success-title">LANDED SUCCESSFULLY</h2>
         <p id="success-stats">All systems repaired and refueled.</p>
         <button id="next-btn" class="menu-btn" onclick="nextLevel()">NEXT MISSION</button>
         <button class="menu-btn retry" onclick="retryLevel()">RESTART LEVEL</button>
     </div>
+
+    <!-- Radar -->
     <div id="radar-container"></div>
 
-    <!-- ===== ENHANCED HORIZONTAL MOBILE CONTROLS ===== -->
+    <!-- Mobile Controls -->
     <div id="mobile-controls">
         <div class="horizontal-controls">
-            <!-- Left side - Flight controls (Pitch Up/Down) -->
             <div class="control-group">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn" ontouchstart="keyDown('ArrowUp'); event.preventDefault();"
                         ontouchend="keyUp('ArrowUp'); event.preventDefault();" onmousedown="keyDown('ArrowUp')"
-                        onmouseup="keyUp('ArrowUp')" onmouseleave="keyUp('ArrowUp')">⬆️
-                    </div>
-
+                        onmouseup="keyUp('ArrowUp')" onmouseleave="keyUp('ArrowUp')"
+                        ontouchcancel="keyUp('ArrowUp'); event.preventDefault();">⬆️</div>
+                    
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn" ontouchstart="keyDown('ArrowDown'); event.preventDefault();"
                         ontouchend="keyUp('ArrowDown'); event.preventDefault();" onmousedown="keyDown('ArrowDown')"
-                        onmouseup="keyUp('ArrowDown')" onmouseleave="keyUp('ArrowDown')">⬇️</div>
-
+                        onmouseup="keyUp('ArrowDown')" onmouseleave="keyUp('ArrowDown')"
+                        ontouchcancel="keyUp('ArrowDown'); event.preventDefault();">⬇️</div>
+                    
                 </div>
             </div>
 
-            <!-- Middle - Throttle controls (Speed +/-) -->
             <div class="control-group">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn" ontouchstart="keyDown('ArrowLeft'); event.preventDefault();"
                         ontouchend="keyUp('ArrowLeft'); event.preventDefault();" onmousedown="keyDown('ArrowLeft')"
-                        onmouseup="keyUp('ArrowLeft')" onmouseleave="keyUp('ArrowLeft')">⬅️</div>
-
+                        onmouseup="keyUp('ArrowLeft')" onmouseleave="keyUp('ArrowLeft')"
+                        ontouchcancel="keyUp('ArrowLeft'); event.preventDefault();">⬅️</div>
+                   
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn" ontouchstart="keyDown('ArrowRight'); event.preventDefault();"
                         ontouchend="keyUp('ArrowRight'); event.preventDefault();" onmousedown="keyDown('ArrowRight')"
-                        onmouseup="keyUp('ArrowRight')" onmouseleave="keyUp('ArrowRight')">➡️</div>
-
+                        onmouseup="keyUp('ArrowRight')" onmouseleave="keyUp('ArrowRight')"
+                        ontouchcancel="keyUp('ArrowRight'); event.preventDefault();">➡️</div>
+                    
                 </div>
             </div>
 
-            <!-- Right side - Action controls (Gun/Gear/Missile) -->
             <div class="control-group">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn special" ontouchstart="keyDown('Space'); event.preventDefault();"
                         ontouchend="keyUp('Space'); event.preventDefault();" onmousedown="keyDown('Space')"
-                        onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')">🔥</div>
-
+                        onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')"
+                        ontouchcancel="keyUp('Space'); event.preventDefault();">🔥</div>
+                    
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                    <!-- Fixed: Gear button with proper handlers -->
                     <div class="control-btn special" ontouchstart="keyDown('KeyG'); event.preventDefault();"
                         ontouchend="keyUp('KeyG'); event.preventDefault();" onmousedown="keyDown('KeyG')"
-                        onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')">⚙️</div>
-
+                        onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')"
+                        ontouchcancel="keyUp('KeyG'); event.preventDefault();">⚙️</div>
+                   
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <div class="control-btn special" ontouchstart="keyDown('KeyM'); event.preventDefault();"
                         ontouchend="keyUp('KeyM'); event.preventDefault();" onmousedown="keyDown('KeyM')"
-                        onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')">🚀</div>
-
+                        onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')"
+                        ontouchcancel="keyUp('KeyM'); event.preventDefault();">🚀</div>
+                   
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Morning Sky Theme Elements (No moving white lines) -->
+    <!-- Sky Effects -->
     <div class="morning-sky"></div>
     <div class="sun"></div>
-    <!-- Removed moving cloud divs - they will be drawn by JavaScript now -->
     <div class="horizon-glow"></div>
     <div class="haze"></div>
     <div class="mist"></div>
-    <!-- Removed wind-effect div (caused white moving lines) -->
-    <!-- Removed cloud-shadow div (caused moving shadows) -->
     <div class="ground-texture"></div>
     <div class="hud-glint"></div>
     <div class="instrument-reflection"></div>
@@ -228,5 +279,4 @@
 
     <script src="./assets/script/script.js"></script>
 </body>
-
 </html>
