@@ -201,64 +201,67 @@
     <!-- Radar -->
     <div id="radar-container"></div>
 
-    <!-- Mobile Controls -->
+    <!-- Mobile Controls - ENHANCED WITH FOUR ARROWS ON LEFT AND ACTION BUTTONS ON RIGHT -->
     <div id="mobile-controls">
         <div class="horizontal-controls">
-            <div class="control-group">
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="control-btn" ontouchstart="keyDown('ArrowUp'); event.preventDefault();"
-                        ontouchend="keyUp('ArrowUp'); event.preventDefault();" onmousedown="keyDown('ArrowUp')"
-                        onmouseup="keyUp('ArrowUp')" onmouseleave="keyUp('ArrowUp')"
-                        ontouchcancel="keyUp('ArrowUp'); event.preventDefault();">⬆️</div>
-                    
+            <!-- LEFT SIDE - FOUR ARROW BUTTONS -->
+            <div class="left-controls">
+                <div class="arrow-row">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="arrow-btn" ontouchstart="keyDown('ArrowUp'); event.preventDefault();"
+                            ontouchend="keyUp('ArrowUp'); event.preventDefault();" onmousedown="keyDown('ArrowUp')"
+                            onmouseup="keyUp('ArrowUp')" onmouseleave="keyUp('ArrowUp')"
+                            ontouchcancel="keyUp('ArrowUp'); event.preventDefault();">⬆️</div>
+                        <div class="arrow-label">Pitch Up</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="arrow-btn" ontouchstart="keyDown('ArrowDown'); event.preventDefault();"
+                            ontouchend="keyUp('ArrowDown'); event.preventDefault();" onmousedown="keyDown('ArrowDown')"
+                            onmouseup="keyUp('ArrowDown')" onmouseleave="keyUp('ArrowDown')"
+                            ontouchcancel="keyUp('ArrowDown'); event.preventDefault();">⬇️</div>
+                        <div class="arrow-label">Pitch Down</div>
+                    </div>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="control-btn" ontouchstart="keyDown('ArrowDown'); event.preventDefault();"
-                        ontouchend="keyUp('ArrowDown'); event.preventDefault();" onmousedown="keyDown('ArrowDown')"
-                        onmouseup="keyUp('ArrowDown')" onmouseleave="keyUp('ArrowDown')"
-                        ontouchcancel="keyUp('ArrowDown'); event.preventDefault();">⬇️</div>
-                    
+                <div class="arrow-row">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="arrow-btn" ontouchstart="keyDown('ArrowLeft'); event.preventDefault();"
+                            ontouchend="keyUp('ArrowLeft'); event.preventDefault();" onmousedown="keyDown('ArrowLeft')"
+                            onmouseup="keyUp('ArrowLeft')" onmouseleave="keyUp('ArrowLeft')"
+                            ontouchcancel="keyUp('ArrowLeft'); event.preventDefault();">⬅️</div>
+                        <div class="arrow-label">Speed -</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="arrow-btn" ontouchstart="keyDown('ArrowRight'); event.preventDefault();"
+                            ontouchend="keyUp('ArrowRight'); event.preventDefault();" onmousedown="keyDown('ArrowRight')"
+                            onmouseup="keyUp('ArrowRight')" onmouseleave="keyUp('ArrowRight')"
+                            ontouchcancel="keyUp('ArrowRight'); event.preventDefault();">➡️</div>
+                        <div class="arrow-label">Speed +</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="control-group">
+            <!-- RIGHT SIDE - ACTION BUTTONS -->
+            <div class="right-controls">
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="control-btn" ontouchstart="keyDown('ArrowLeft'); event.preventDefault();"
-                        ontouchend="keyUp('ArrowLeft'); event.preventDefault();" onmousedown="keyDown('ArrowLeft')"
-                        onmouseup="keyUp('ArrowLeft')" onmouseleave="keyUp('ArrowLeft')"
-                        ontouchcancel="keyUp('ArrowLeft'); event.preventDefault();">⬅️</div>
-                   
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="control-btn" ontouchstart="keyDown('ArrowRight'); event.preventDefault();"
-                        ontouchend="keyUp('ArrowRight'); event.preventDefault();" onmousedown="keyDown('ArrowRight')"
-                        onmouseup="keyUp('ArrowRight')" onmouseleave="keyUp('ArrowRight')"
-                        ontouchcancel="keyUp('ArrowRight'); event.preventDefault();">➡️</div>
-                    
-                </div>
-            </div>
-
-            <div class="control-group">
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="control-btn special" ontouchstart="keyDown('Space'); event.preventDefault();"
+                    <div class="action-btn" ontouchstart="keyDown('Space'); event.preventDefault();"
                         ontouchend="keyUp('Space'); event.preventDefault();" onmousedown="keyDown('Space')"
                         onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')"
                         ontouchcancel="keyUp('Space'); event.preventDefault();">🔥</div>
-                    
+                    <div class="action-label">Gun</div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="control-btn special" ontouchstart="keyDown('KeyG'); event.preventDefault();"
+                    <div class="action-btn" ontouchstart="keyDown('KeyG'); event.preventDefault();"
                         ontouchend="keyUp('KeyG'); event.preventDefault();" onmousedown="keyDown('KeyG')"
                         onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')"
                         ontouchcancel="keyUp('KeyG'); event.preventDefault();">⚙️</div>
-                   
+                    <div class="action-label">Gear</div>
                 </div>
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="control-btn special" ontouchstart="keyDown('KeyM'); event.preventDefault();"
+                    <div class="action-btn" ontouchstart="keyDown('KeyM'); event.preventDefault();"
                         ontouchend="keyUp('KeyM'); event.preventDefault();" onmousedown="keyDown('KeyM')"
                         onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')"
                         ontouchcancel="keyUp('KeyM'); event.preventDefault();">🚀</div>
-                   
+                    <div class="action-label">Missile</div>
                 </div>
             </div>
         </div>

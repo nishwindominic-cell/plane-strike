@@ -1644,23 +1644,52 @@ const keys = {};
 
 updatePlayerStatsFromPlane();
 
-// Check orientation on mobile
+// Check orientation on mobile and auto-refresh when rotated
 function checkOrientation() {
     if (window.innerWidth <= 768) {
         if (window.innerHeight > window.innerWidth) {
-            // Portrait mode
+            // Portrait mode - show warning
             orientationWarning.style.display = 'flex';
+            
+            // Auto-refresh when in portrait to force landscape
+            if (!isPaused && !player.dead) {
+                // If game is active, pause it
+                isPaused = true;
+            }
         } else {
-            // Landscape mode
+            // Landscape mode - hide warning
             orientationWarning.style.display = 'none';
+            
+            // If game was paused due to orientation, resume
+            if (isPaused && homeMenu.style.display === 'none' && gameoverMenu.style.display === 'none') {
+                isPaused = false;
+            }
         }
     } else {
         orientationWarning.style.display = 'none';
     }
 }
 
+// Auto-refresh on orientation change
+window.addEventListener('orientationchange', function() {
+    // Small delay to let orientation change complete
+    setTimeout(() => {
+        checkOrientation();
+        resizeCanvas();
+        
+        // Refresh game state
+        refreshGameState();
+        
+        // If in portrait, show warning and pause
+        if (window.innerHeight > window.innerWidth) {
+            if (!isPaused) {
+                isPaused = true;
+            }
+        }
+    }, 100);
+});
+
 window.addEventListener('resize', checkOrientation);
-window.addEventListener('orientationchange', checkOrientation);
 
 // Auto-shoot toggle function - now only affects settings toggle
 window.toggleAutoShoot = function() {
