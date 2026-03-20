@@ -1,24 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Plane Strike Landing - Ultimate Edition</title>
     <link rel="stylesheet" href="./assets/css/game.css">
-    <link rel="stylesheet" href="./assets/css/media-query.css">
 </head>
+
 <body>
-    <!-- Orientation Warning -->
-    <div id="orientation-warning">
-        <div class="rotate-icon">📱</div>
-        <h2>Please Rotate Your Device</h2>
-        <p>This game is best played in landscape mode</p>
+    <!-- Realistic Galaxy Background (Always Visible) -->
+    <div id="galaxy-background">
+        <div class="galaxy-layer">
+            <!-- Background stars -->
+            <div class="galaxy-star-bg" style="top: 10%; left: 5%; width: 2px; height: 2px; animation-delay: 0s;"></div>
+            <div class="galaxy-star-bg" style="top: 20%; left: 15%; width: 3px; height: 3px; animation-delay: 1s;"></div>
+            <div class="galaxy-star-bg" style="top: 30%; left: 25%; width: 2px; height: 2px; animation-delay: 2s;"></div>
+            <div class="galaxy-star-bg" style="top: 40%; left: 35%; width: 4px; height: 4px; animation-delay: 0.5s;"></div>
+            <div class="galaxy-star-bg" style="top: 50%; left: 45%; width: 2px; height: 2px; animation-delay: 1.5s;"></div>
+            <div class="galaxy-star-bg" style="top: 60%; left: 55%; width: 3px; height: 3px; animation-delay: 2.5s;"></div>
+            <div class="galaxy-star-bg" style="top: 70%; left: 65%; width: 2px; height: 2px; animation-delay: 0.8s;"></div>
+            <div class="galaxy-star-bg" style="top: 80%; left: 75%; width: 4px; height: 4px; animation-delay: 1.8s;"></div>
+            <div class="galaxy-star-bg" style="top: 90%; left: 85%; width: 2px; height: 2px; animation-delay: 2.2s;"></div>
+            <div class="galaxy-star-bg" style="top: 15%; left: 95%; width: 3px; height: 3px; animation-delay: 0.3s;"></div>
+            
+            <!-- Spiral arms -->
+            <div class="galaxy-spiral-arm" style="top: 20%; left: 10%;"></div>
+            <div class="galaxy-spiral-arm" style="top: 60%; right: 10%; width: 600px; height: 600px;"></div>
+            
+            <!-- Nebula clouds -->
+            <div class="galaxy-nebula-cloud" style="top: 30%; left: 40%;"></div>
+            <div class="galaxy-nebula-cloud" style="bottom: 20%; right: 30%; width: 500px; height: 500px;"></div>
+            
+            <!-- Galaxy core -->
+            <div class="galaxy-core"></div>
+        </div>
     </div>
 
+    <!-- High Altitude Galaxy (10,000+ ft) -->
+    <div id="high-altitude-galaxy">
+        <div class="galaxy-field"></div>
+        <div class="galaxy-star-large" style="top: 20%; left: 30%; width: 6px; height: 6px;"></div>
+        <div class="galaxy-star-large" style="top: 70%; left: 60%; width: 8px; height: 8px;"></div>
+        <div class="galaxy-star-large" style="top: 40%; left: 80%; width: 4px; height: 4px;"></div>
+        <div class="galaxy-star-large" style="top: 80%; left: 20%; width: 5px; height: 5px;"></div>
+        <div class="galaxy-star-large" style="top: 30%; left: 90%; width: 7px; height: 7px;"></div>
+        <div class="galaxy-star-large" style="top: 90%; left: 40%; width: 6px; height: 6px;"></div>
+    </div>
+
+    <!-- Login Page - Hidden by Default -->
+    <div id="login-page">
+        <div class="login-content">
+            <h1>✈️ WELCOME PILOT</h1>
+            <p>Enter your information to begin your mission</p>
+            
+            <div class="login-input-group">
+                <label>Pilot Name</label>
+                <input type="text" id="pilot-name-input" class="login-input" placeholder="Your callsign" maxlength="20">
+            </div>
+            
+            <div class="login-input-group">
+                <label>Age</label>
+                <input type="number" id="pilot-age-input" class="login-input" placeholder="Your age" min="1" max="120">
+            </div>
+            
+            <div class="login-input-group">
+                <label>Country</label>
+                <input type="text" id="pilot-country-input" class="login-input" placeholder="Your country" maxlength="30">
+            </div>
+            
+            <div class="login-input-group">
+                <label>Experience Level</label>
+                <select id="pilot-experience-input" class="login-input">
+                    <option value="Cadet">Cadet</option>
+                    <option value="Junior Pilot">Junior Pilot</option>
+                    <option value="Senior Pilot">Senior Pilot</option>
+                    <option value="Captain">Captain</option>
+                    <option value="Ace">Ace</option>
+                </select>
+            </div>
+            
+            <button class="login-btn" onclick="savePilotInfo()">START MISSION</button>
+        </div>
+    </div>
+
+    <!-- Pilot Welcome Banner (Home Screen Only) -->
+    <div id="pilot-welcome"></div>
+
+    <!-- Orientation Warning - REMOVED -->
+    
     <!-- Cleared to Land Message -->
     <div id="cleared-to-land">✅ CLEARED TO LAND ANY RUNWAY ✅</div>
-
-    <!-- Loading Page -->
+    
+    <!-- Boss Indicator -->
+    <div id="boss-indicator">BOSS APPROACHING</div>
+    
+    <!-- High Altitude Warning -->
+    <div id="high-altitude-warning">HIGH ALTITUDE DAMAGE</div>
+    
+    <!-- Loading Page with Animation -->
     <div id="loading-page">
         <div class="loading-content">
             <h1>Plane Strike Landing</h1>
@@ -26,19 +106,71 @@
             <p>Loading game assets...</p>
         </div>
     </div>
+    
+    <!-- Mystery Box Container -->
+    <div id="mystery-box-container">
+        <div class="mystery-box" id="mysteryBox" onclick="openMysteryBox()"></div>
+    </div>
+    
+    <!-- Mystery Box Counter in Home Menu -->
+    <div id="mystery-box-counter" style="display: none;">
+        <span id="mystery-box-count">0</span> Mystery Boxes
+    </div>
+    
+    <!-- Free Spin Wheel Modal - ENHANCED WITH COIN DISPLAY -->
+    <div id="spin-wheel-modal">
+        <div class="spin-wheel-container">
+            <div class="wheel-pointer"></div>
+            <div class="spin-wheel" id="spinWheel" onclick="spinWheel()"></div>
+            <div class="wheel-reward" id="wheelReward"></div>
+            <button class="close-wheel-btn" onclick="closeSpinWheel()">CLOSE</button>
+        </div>
+    </div>
 
+    <!-- Shooting Stars Effect Container -->
+    <div id="shooting-star-container" class="shooting-star-effect" style="display: none;"></div>
+    
+    <!-- Notification Log Page -->
+    <div id="notification-log-page">
+        <div class="notification-header">
+            <h2>📋 NOTIFICATION LOG</h2>
+            <button class="clear-notifications-btn" onclick="clearAllNotifications()">CLEAR ALL</button>
+        </div>
+        <div class="notifications-container" id="notifications-container">
+            <!-- Notifications will be added here dynamically -->
+        </div>
+        <button class="close-notification-btn" onclick="closeNotificationLog()">CLOSE</button>
+    </div>
+    
+    <!-- Home Menu -->
     <div id="home-menu">
-        <div id="daily-reward-btn" onclick="claimDailyReward()">🎁 DAILY REWARD</div>
+        <!-- Left Side Rewards Container -->
+        <div class="rewards-left">
+            <div id="home-coin-display">💰 <span id="home-coins">0</span></div>
+            <div id="daily-reward-btn" onclick="claimDailyReward()">🎁 DAILY REWARD</div>
+            <div id="free-spin-btn" onclick="openSpinWheelModal()">🎰 FREE SPIN <span id="spin-count" class="spin-count">1</span></div>
+            <div class="mystery-claim-btn" id="mystery-claim-btn" onclick="claimMysteryBoxes()">📦 Claim Mystery Boxes (<span id="home-mystery-count">0</span>)</div>
+        </div>
+        
         <div id="settings-btn" onclick="openSettings()">⚙️ SETTINGS</div>
-
+        <!-- Notification Bell -->
+        <div id="notification-bell" onclick="openNotificationLog()">
+            <span id="notification-count">0</span>
+        </div>
+        <!-- NOTE BUTTON - MOVED TO LEFT BOTTOM -->
+        <div id="note-btn" onclick="openNoteMenu()">📚 NOTE</div>
+        <!-- LOGIN BUTTON - HIDDEN BY DEFAULT -->
+        <div id="home-login-btn" onclick="showLoginPage()">🔐 LOGIN</div>
+        
         <h1>Plane Strike Landing</h1>
         <p>ARROWS to Fly | SPACE to Shoot | G for Landing Gear | M for Missile<br><b>Objective:</b> Eliminate ALL
             hostiles before landing on the runway.</p>
-
-        <div id="menu-score-display">
-            TOTAL SCORE: <span id="menu-score">0</span>
+        <!-- Pilot Welcome Banner (will be populated by JS) -->
+        <div id="pilot-welcome"></div>
+        <!-- High Score Display (replaced total score) -->
+        <div id="menu-highscore-display">
+            🏆 HIGH SCORE: <span id="menu-highscore">0</span>
         </div>
-
         <div class="menu-buttons">
             <button class="menu-btn" onclick="startGame()">NEW GAME</button>
             <button id="continue-btn" class="menu-btn" onclick="continueGame()"
@@ -46,12 +178,621 @@
             <button class="menu-btn" onclick="showAchievements()">🏆 ACHIEVEMENTS</button>
             <button class="menu-btn" onclick="showPlanes()">✈️ MY PLANES</button>
         </div>
-
-        <div id="stats-summary" style="margin-top: 20px; color: #94a3b8;">
-            <p>Coins: <span id="total-coins-display">0</span></p>
+        <!-- Privacy Policy Button -->
+        <button id="privacy-btn" onclick="showPrivacyPolicy()">🔒 PRIVACY POLICY</button>
+        <div id="stats-summary" style="margin-top: 20px; color: #fff5e6;">
+            <p>In-Game Dollars: <span id="total-dollars-display">0</span></p>
         </div>
     </div>
-
+    
+    <!-- ENHANCED NOTE ENCYCLOPEDIA MENU WITH ENEMY COLORS - UPDATED PLANES -->
+    <div id="note-menu">
+        <h2>📚 PILOT'S NOTEBOOK <span>✈️</span></h2>
+        
+        <div class="note-tabs">
+            <div class="note-tab active" onclick="switchNoteTab('planes')">✈️ PLANES</div>
+            <div class="note-tab" onclick="switchNoteTab('enemies')">🎯 ENEMIES</div>
+            <div class="note-tab" onclick="switchNoteTab('powers')">⚡ POWER-UPS</div>
+            <div class="note-tab" onclick="switchNoteTab('bosses')">👑 BOSSES</div>
+            <div class="note-tab" onclick="switchNoteTab('mystery')">📦 MYSTERY</div>
+        </div>
+        
+        <!-- PLANES TAB - UPDATED WITH 12 PLANES AND HIGHER PRICES -->
+        <div id="note-planes" class="note-content active">
+            <div class="note-grid">
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">✈️</div>
+                        <div class="note-card-title">TRAINER</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>12 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.035</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>100 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>6</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>0 (Free)</span></div>
+                    </div>
+                    <div class="note-card-desc">Basic training aircraft. Good for beginners. Unlocked by default.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">⚡</div>
+                        <div class="note-card-title">FIGHTER</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>15 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.04</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>120 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>6</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>1,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Balanced fighter aircraft. Unlock: 1000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🚀</div>
+                        <div class="note-card-title">INTERCEPTOR</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>18 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.045</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>110 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>6</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>2,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Fast interceptor. Great for dogfighting. Unlock: 2000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">💪</div>
+                        <div class="note-card-title">GUNSHIP</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>10 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.03</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>200 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>6</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>3,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Heavy gunship. Maximum durability. Unlock: 3000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">👑</div>
+                        <div class="note-card-title">ACE</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>16 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.05</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>150 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>6</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>4,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Elite ace aircraft. Superior handling. Unlock: 4000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🌑</div>
+                        <div class="note-card-title">STEALTH</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>20 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.055</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>130 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>6</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>5,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Stealth fighter. Maximum speed. Unlock: 5000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🔥</div>
+                        <div class="note-card-title">PHOENIX</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>22 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.06</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>180 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>8</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>8,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Legendary phoenix fighter. Balanced speed and durability. Unlock: 8000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">⚡</div>
+                        <div class="note-card-title">THUNDERBOLT</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>25 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.065</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>140 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>10</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>12,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Lightning-fast interceptor. Maximum missile capacity. Unlock: 12,000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🛡️</div>
+                        <div class="note-card-title">TITAN</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>14 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.025</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>300 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>6</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>15,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Heavy armored flying fortress. Extreme durability. Unlock: 15,000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🌀</div>
+                        <div class="note-card-title">VORTEX</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>19 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.07</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>160 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>8</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>10,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Agile experimental aircraft. Superior handling. Unlock: 10,000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">💫</div>
+                        <div class="note-card-title">NOVA</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>21 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.058</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>170 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>9</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>18,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Advanced combat aircraft. All-around performer. Unlock: 18,000 coins.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">⭐</div>
+                        <div class="note-card-title">LEGEND</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Speed:</span> <span>28 KN</span></div>
+                        <div class="note-card-stat"><span>Handling:</span> <span>0.08</span></div>
+                        <div class="note-card-stat"><span>Health:</span> <span>200 HP</span></div>
+                        <div class="note-card-stat"><span>Missiles:</span> <span>12</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>25,000💰</span></div>
+                    </div>
+                    <div class="note-card-desc">Legendary ultimate aircraft. Maximum stats. Unlock: 25,000 coins.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ENEMIES TAB - WITH ENEMY COLORS -->
+        <div id="note-enemies" class="note-content">
+            <div class="note-grid">
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #94a3b8;"></div>
+                            <span>🛩️</span>
+                        </div>
+                        <div class="note-card-title">SCOUT</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>15 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>3.5</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>10</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>50</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$10</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #94a3b8;">Silver</span></div>
+                    </div>
+                    <div class="note-card-desc">Light reconnaissance aircraft. Low threat but appears frequently.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #ef4444;"></div>
+                            <span>🛫</span>
+                        </div>
+                        <div class="note-card-title">FIGHTER</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>15 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>4.5</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>10</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>100</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$20</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #ef4444;">Red</span></div>
+                    </div>
+                    <div class="note-card-desc">Standard fighter. Balanced speed and aggression.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #f97316;"></div>
+                            <span>🛬</span>
+                        </div>
+                        <div class="note-card-title">INTERCEPTOR</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>15 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>5.5</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>10</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>150</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$30</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #f97316;">Orange</span></div>
+                    </div>
+                    <div class="note-card-desc">Fast interceptor. High aggression and accuracy.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #64748b;"></div>
+                            <span>🛰️</span>
+                        </div>
+                        <div class="note-card-title">GUNSHIP</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>15 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>3.0</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>10</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>200</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$40</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #64748b;">Gray</span></div>
+                    </div>
+                    <div class="note-card-desc">Heavy gunship. Slower but higher fire rate.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #fbbf24;"></div>
+                            <span>⭐</span>
+                        </div>
+                        <div class="note-card-title">ACE</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>15 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>5.0</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>10</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>250</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$50</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #fbbf24;">Gold</span></div>
+                    </div>
+                    <div class="note-card-desc">Elite ace enemy. Maximum aggression and accuracy.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- POWER-UPS TAB -->
+        <div id="note-powers" class="note-content">
+            <div class="note-grid">
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🔥</div>
+                        <div class="note-card-title">RAPID FIRE</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Duration:</span> <span>10 seconds</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>$50</span></div>
+                        <div class="note-card-stat"><span>Level Req:</span> <span>1</span></div>
+                    </div>
+                    <div class="note-card-desc">Gun fires 3x faster. Melts through enemy formations.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🛡️</div>
+                        <div class="note-card-title">ENERGY SHIELD</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Duration:</span> <span>8 seconds</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>$75</span></div>
+                        <div class="note-card-stat"><span>Level Req:</span> <span>2</span></div>
+                    </div>
+                    <div class="note-card-desc">Complete invulnerability. Great for emergency situations.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">⚡</div>
+                        <div class="note-card-title">DOUBLE DAMAGE</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Duration:</span> <span>12 seconds</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>$100</span></div>
+                        <div class="note-card-stat"><span>Level Req:</span> <span>3</span></div>
+                    </div>
+                    <div class="note-card-desc">All weapons deal 2x damage. Devastating firepower.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">⏱️</div>
+                        <div class="note-card-title">TIME SLOW</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Duration:</span> <span>8 seconds</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>$120</span></div>
+                        <div class="note-card-stat"><span>Level Req:</span> <span>4</span></div>
+                    </div>
+                    <div class="note-card-desc">Slows down all enemies. Easier to dodge and aim.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🎯</div>
+                        <div class="note-card-title">HOMING MISSILES</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Missiles:</span> <span>10</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>$150</span></div>
+                        <div class="note-card-stat"><span>Level Req:</span> <span>5</span></div>
+                    </div>
+                    <div class="note-card-desc">Next 10 missiles have super homing capability.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">❤️</div>
+                        <div class="note-card-title">REPAIR KIT</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Healing:</span> <span>50%</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>$60</span></div>
+                        <div class="note-card-stat"><span>Level Req:</span> <span>1</span></div>
+                    </div>
+                    <div class="note-card-desc">Instantly restore 50% of your health.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">🚀</div>
+                        <div class="note-card-title">MISSILE REFILL</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Refill:</span> <span>Full</span></div>
+                        <div class="note-card-stat"><span>Price:</span> <span>$40</span></div>
+                        <div class="note-card-stat"><span>Level Req:</span> <span>1</span></div>
+                    </div>
+                    <div class="note-card-desc">Refill all missiles to maximum capacity.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BOSSES TAB - ADDED NEW BOSS TYPES -->
+        <div id="note-bosses" class="note-content">
+            <div class="note-grid">
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #6b7280;"></div>
+                            <span>👾</span>
+                        </div>
+                        <div class="note-card-title">TRAINER BOSS</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>200 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>3.0</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>12</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>500</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$100</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #6b7280;">Gray</span></div>
+                    </div>
+                    <div class="note-card-desc">Basic training boss. Fires in straight patterns. Good for practice.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #ef4444;"></div>
+                            <span>👹</span>
+                        </div>
+                        <div class="note-card-title">WARLORD BOSS</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>350 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>4.0</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>15</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>800</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$150</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #ef4444;">Red</span></div>
+                    </div>
+                    <div class="note-card-desc">Aggressive boss. Fires in 3-way spreads. High maneuverability.</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #f97316;"></div>
+                            <span>👻</span>
+                        </div>
+                        <div class="note-card-title">PHANTOM BOSS</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>500 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>5.0</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>18</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>1200</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$200</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #f97316;">Orange</span></div>
+                    </div>
+                    <div class="note-card-desc">Elite phantom boss. Teleports and fires rapid shots. Very challenging.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MYSTERY TAB - UPDATED WITH DETAILED MYSTERY BOSS INFO -->
+        <div id="note-mystery" class="note-content">
+            <div class="note-grid">
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">👾</div>
+                        <div class="note-card-title">MYSTERY BOSS</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Health:</span> <span>300-600 HP</span></div>
+                        <div class="note-card-stat"><span>Speed:</span> <span>4.5 KN</span></div>
+                        <div class="note-card-stat"><span>Damage:</span> <span>15 per hit</span></div>
+                        <div class="note-card-stat"><span>Points:</span> <span>600-1200</span></div>
+                        <div class="note-card-stat"><span>Dollars:</span> <span>$120-240</span></div>
+                        <div class="note-card-stat"><span>Color:</span> <span style="color: #8b5cf6;">Purple</span></div>
+                        <div class="note-card-stat"><span>Appearance:</span> <span>75% chance</span></div>
+                    </div>
+                    <div class="note-card-desc">The elusive Mystery Boss! Appears in 75% of boss encounters. Defeat it to receive a Mystery Box that contains coins!</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">📦</div>
+                        <div class="note-card-title">MYSTERY BOX</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>25 Coins:</span> <span>65% chance</span></div>
+                        <div class="note-card-stat"><span>50 Coins:</span> <span>35% chance</span></div>
+                        <div class="note-card-stat"><span>Max Storage:</span> <span>Unlimited</span></div>
+                    </div>
+                    <div class="note-card-desc">Collect Mystery Boxes by defeating the Mystery Boss. The Claim Mystery Boxes button appears only when you have boxes to open. Boxes are saved permanently!</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">⚡</div>
+                        <div class="note-card-title">MYSTERY BOSS ABILITIES</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>Pattern:</span> <span>Rapid Fire</span></div>
+                        <div class="note-card-stat"><span>Bullets:</span> <span>3 per burst</span></div>
+                        <div class="note-card-stat"><span>Teleport:</span> <span>Every 3.3 sec</span></div>
+                    </div>
+                    <div class="note-card-desc">The Mystery Boss teleports randomly around the screen and fires rapid bursts. Stay mobile and use missiles!</div>
+                </div>
+                
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">💰</div>
+                        <div class="note-card-title">HOME COINS</div>
+                    </div>
+                    <div class="note-card-stats">
+                        <div class="note-card-stat"><span>From Boxes:</span> <span>25-50 coins</span></div>
+                        <div class="note-card-stat"><span>Daily Reward:</span> <span>50 coins</span></div>
+                        <div class="note-card-stat"><span>Free Spin:</span> <span>10-100 coins</span></div>
+                        <div class="note-card-stat"><span>Level Complete:</span> <span>5 coins</span></div>
+                    </div>
+                    <div class="note-card-desc">Home coins are separate from in-game dollars. Use them to unlock new planes in the MY PLANES section!</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="close-note-btn" onclick="closeNoteMenu()">CLOSE NOTEBOOK</button>
+    </div>
+    
+    <!-- Privacy Policy Menu - ENHANCED WITH COMPREHENSIVE CONTENT -->
+    <div id="privacy-menu">
+        <h2>🔒 PRIVACY POLICY</h2>
+        <div class="privacy-content">
+            <p><strong>Last Updated:</strong> March 2026</p>
+            
+            <h3>📋 1. Information We Collect</h3>
+            <p>We respect your privacy and are committed to protecting it. This game operates entirely locally on your device and does not collect any personal information through servers or third-party services. All data is stored exclusively in your browser's localStorage.</p>
+            
+            <div class="privacy-highlight">
+                <p><strong>Local Storage Data Includes:</strong></p>
+                <ul>
+                    <li>✅ Game progress (level, stage, score, in-game dollars)</li>
+                    <li>✅ Settings preferences (sound, volume, control options)</li>
+                    <li>✅ Achievements and unlocked planes</li>
+                    <li>✅ Player statistics (kills, landings, crashes, win rate)</li>
+                    <li>✅ Pilot information (name, age, country, experience)</li>
+                    <li>✅ Home coins balance and transaction history</li>
+                    <li>✅ Mystery boxes count and collection history</li>
+                    <li>✅ Free spins remaining and cooldown timers</li>
+                    <li>✅ Daily reward timestamps</li>
+                    <li>✅ Notification log with timestamps</li>
+                    <li>✅ High score</li>
+                </ul>
+            </div>
+            
+            <h3>🔐 2. Data Storage & Security</h3>
+            <p>All game data is stored locally on your device using the browser's localStorage system. This means:</p>
+            <ul>
+                <li>🚫 No data is ever transmitted to any server</li>
+                <li>🚫 No cookies are used for tracking</li>
+                <li>🚫 No analytics or advertising networks are integrated</li>
+                <li>✅ Your data stays on your device and is only accessible by you</li>
+                <li>✅ Data persists between gaming sessions until you clear your browser data</li>
+            </ul>
+            
+            <h3>👤 3. Pilot Information</h3>
+            <p>The pilot information you provide (name, age, country, experience) is stored locally and used only for:</p>
+            <ul>
+                <li>Personalizing your gaming experience with welcome messages</li>
+                <li>Tracking your pilot statistics and achievements</li>
+                <li>Creating a unique pilot profile that saves your progress</li>
+            </ul>
+            <p>This information is never shared with any third party and cannot be accessed by anyone else.</p>
+            
+            <h3>🎮 4. Game Features & Data Usage</h3>
+            <p>Various game features use local storage to enhance your experience:</p>
+            <ul>
+                <li><strong>Home Coins:</strong> Your coin balance is saved locally and used to unlock planes</li>
+                <li><strong>Mystery Boxes:</strong> Box counts are saved and persist between sessions</li>
+                <li><strong>Achievements:</strong> Progress and completed achievements are tracked locally</li>
+                <li><strong>Plane Unlocks:</strong> Purchased planes remain unlocked permanently</li>
+                <li><strong>Statistics:</strong> Your kill counts, landings, and other stats are preserved</li>
+                <li><strong>Notification Log:</strong> All game notifications are saved for your review</li>
+                <li><strong>High Score:</strong> Your highest score is saved permanently</li>
+            </ul>
+            
+            <h3>🧒 5. Children's Privacy</h3>
+            <p>Our game is suitable for all ages and does not knowingly collect any personal information from children under 13 years of age. Since all data is stored locally and no online accounts are required, there is no risk of children's data being exposed online.</p>
+            
+            <h3>🔄 6. Data Deletion & Control</h3>
+            <p>You have full control over your data:</p>
+            <ul>
+                <li><strong>Reset Statistics:</strong> Use the "Reset Statistics" button in Pilot Profile to clear your gameplay stats</li>
+                <li><strong>Sign Out:</strong> Use the "SIGN OUT" button in Pilot Data to clear your pilot information</li>
+                <li><strong>Clear Notifications:</strong> Use the "CLEAR ALL" button in the notification log</li>
+                <li><strong>Browser Data:</strong> Clearing your browser's localStorage will remove all game data</li>
+            </ul>
+            
+            <h3>🌐 7. Third-Party Services</h3>
+            <p>This game does not use any third-party analytics, advertising, tracking services, or external APIs. No data is shared with any external parties. The game functions completely offline once loaded.</p>
+            
+            <h3>📱 8. Mobile Devices</h3>
+            <p>On mobile devices, the game requests landscape orientation for optimal gameplay. No device identifiers, location data, or personal information is accessed or stored.</p>
+            
+            <h3>🔄 9. Changes to This Policy</h3>
+            <p>We may update this privacy policy from time to time to reflect changes in the game or for clarification. Any changes will be reflected on this page with an updated "Last Updated" date. Continued use of the game constitutes acceptance of the updated policy.</p>
+            
+            <h3>📧 10. Contact Us</h3>
+            <p>If you have any questions, concerns, or suggestions regarding this privacy policy or your data, please contact us through the game's official support channel. We are committed to addressing your inquiries promptly.</p>
+            
+            <div class="privacy-highlight">
+                <p><strong>Summary:</strong> Your privacy is fully protected. All data stays on your device. No tracking. No servers. No third-party access. You are in complete control of your information.</p>
+            </div>
+        </div>
+        <button class="close-settings" onclick="closePrivacyPolicy()">CLOSE</button>
+    </div>
+    
     <!-- Game Over Menu -->
     <div id="gameover-menu">
         <h2>GAME OVER</h2>
@@ -59,102 +800,234 @@
             <p>Final Score: <span id="gameover-score">0</span></p>
             <p>Kills: <span id="gameover-kills">0</span></p>
             <p>Max Combo: <span id="gameover-combo">x0</span></p>
-            <p>Coins Earned: <span id="gameover-coins">0</span></p>
+            <p>Dollars Earned: <span id="gameover-dollars">0</span></p>
             <p>Level Reached: <span id="gameover-level">1</span></p>
+            <p>Deaths by Enemy: <span id="gameover-enemy-deaths">0</span></p>
+            <p>High Score: <span id="gameover-highscore">0</span></p>
         </div>
         <div class="gameover-buttons">
             <button class="gameover-btn" onclick="restartFromGameOver()">RESTART</button>
             <button class="gameover-btn secondary" onclick="goToHomeFromGameOver()">HOME</button>
         </div>
     </div>
-
+    
     <!-- Achievements Menu -->
     <div id="achievements-menu">
         <h2>🏆 ACHIEVEMENTS</h2>
         <div id="achievements-list"></div>
         <button class="close-settings" onclick="closeAchievements()">CLOSE</button>
     </div>
-
-    <!-- Planes Menu -->
+    
+    <!-- Planes Menu with Equip Option -->
     <div id="planes-menu">
         <h2>✈️ MY PLANES</h2>
         <div id="planes-list"></div>
         <button class="close-settings" onclick="closePlanes()">CLOSE</button>
     </div>
-
-    <!-- Settings Panel -->
+    
+    <!-- Settings Panel - TABBED WITH PILOT DATA TAB -->
     <div id="settings-panel">
         <h2>⚙️ SETTINGS</h2>
-        <div class="setting-item">
-            <span class="setting-label">Sound Effects</span>
-            <div class="setting-toggle active" id="sound-toggle" onclick="toggleSound()"></div>
-        </div>
-        <div class="setting-item">
-            <span class="setting-label">Music Volume</span>
-            <input type="range" min="0" max="100" value="70" class="setting-slider" id="music-volume"
-                oninput="updateVolume(this.value)">
-        </div>
-        <div class="setting-item">
-            <span class="setting-label">SFX Volume</span>
-            <input type="range" min="0" max="100" value="80" class="setting-slider" id="sfx-volume"
-                oninput="updateSFXVolume(this.value)">
-        </div>
-        <div class="setting-item">
-            <span class="setting-label">Control Sensitivity</span>
-            <span class="setting-value" id="sensitivity-value" onclick="cycleSensitivity()">Normal</span>
-        </div>
-        <div class="setting-item">
-            <span class="setting-label">Difficulty</span>
-            <span class="setting-value" id="difficulty-value" onclick="cycleDifficulty()">Normal</span>
-        </div>
-        <div class="setting-item">
-            <span class="setting-label">Auto Shoot (Mobile)</span>
-            <div class="setting-toggle" id="auto-shoot-setting" onclick="toggleAutoShoot()"></div>
-        </div>
-        <button class="close-settings" onclick="closeSettings()">CLOSE SETTINGS</button>
-    </div>
 
+        <!-- TAB NAVIGATION - 4 TABS -->
+        <div class="settings-tabs">
+            <div class="settings-tab active" onclick="switchTab('settings')">⚙️ Settings</div>
+            <div class="settings-tab" onclick="switchTab('aboutgame')">📖 About Game</div>
+            <div class="settings-tab" onclick="switchTab('pilotprofile')">👤 Pilot Profile</div>
+            <div class="settings-tab" onclick="switchTab('pilotdata')">📋 Pilot Data</div>
+        </div>
+        
+        <!-- SETTINGS TAB CONTENT -->
+        <div id="settings-tab" class="tab-content active">
+            <div class="setting-item">
+                <span class="setting-label">Sound Effects</span>
+                <div class="setting-toggle active" id="sound-toggle" onclick="toggleSound()"></div>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">Music Volume</span>
+                <input type="range" min="0" max="100" value="70" class="setting-slider" id="music-volume"
+                    oninput="updateVolume(this.value)">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">SFX Volume</span>
+                <input type="range" min="0" max="100" value="80" class="setting-slider" id="sfx-volume"
+                    oninput="updateSFXVolume(this.value)">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">Control Sensitivity</span>
+                <span class="setting-value" id="sensitivity-value" onclick="cycleSensitivity()">Normal</span>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">Difficulty</span>
+                <span class="setting-value" id="difficulty-value" onclick="cycleDifficulty()">Normal</span>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">Auto Shoot (Mobile)</span>
+                <div class="setting-toggle" id="auto-shoot-setting" onclick="toggleAutoShoot()"></div>
+            </div>
+            <!-- BUTTON CONTROL TOGGLE -->
+            <div class="setting-item">
+                <span class="setting-label">Button Controls (Mobile)</span>
+                <div class="setting-toggle active" id="button-controls-toggle" onclick="toggleButtonControls()"></div>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">Joystick Control (Mobile)</span>
+                <div class="setting-toggle" id="joystick-toggle" onclick="toggleJoystickControl()"></div>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">Tilt Controls (Mobile)</span>
+                <div class="setting-toggle" id="tilt-toggle" onclick="toggleTiltControls()"></div>
+            </div>
+            <button class="close-settings" onclick="closeSettings()">CLOSE SETTINGS</button>
+        </div>
+        
+        <!-- ABOUT GAME TAB CONTENT -->
+        <div id="aboutgame-tab" class="tab-content">
+            <div class="about-game-content">
+                <h3>🎮 About This Game</h3>
+                <p>Welcome to <strong>Plane Strike Landing - Ultimate Edition</strong>!</p>
+                <p>This is an exciting flight combat game where you pilot your aircraft through dangerous skies,
+                    eliminate hostile enemies, and land safely on runways.</p>
+                <p><strong>Features:</strong></p>
+                <p>✅ 12 aircraft to unlock up to 25,000 coins<br>✅ Separate dollar currency for in-game purchases<br>✅ Power-up shop<br>✅ Achievement system<br>✅ Daily rewards<br>✅ Mobile & desktop controls<br>✅ 10,000+ shooting stars<br>✅ Timed weather system<br>✅ Meteoroids with ground explosions<br>✅ Progressive difficulty with up to 27 enemies<br>✅ Realistic galaxy background<br>✅ High altitude galaxy (10,000+ ft)<br>✅ Persistent dollar saving system<br>✅ 3 Unique Boss Types with different patterns<br>✅ Full body enemy hit detection<br>✅ Persistent plane unlocks - your purchased planes are always saved!<br>✅ High score tracking</p>
+                <p><strong>MYSTERY BOSS FEATURE:</strong> A special purple boss that appears 75% of the time! Defeat it to collect Mystery Boxes that contain 25-50 coins. The Mystery Box button appears only when you have boxes to open!</p>
+                <p><strong>PRIVACY:</strong> All data is stored locally on your device. No tracking, no servers, complete privacy!</p>
+                <div class="version">Version 8.0 | Ultimate Edition with Enhanced Privacy</div>
+            </div>
+            <button class="close-settings" onclick="closeSettings()">CLOSE</button>
+        </div>
+        
+        <!-- PILOT PROFILE TAB CONTENT (Statistics with working win rate and landings) -->
+        <div id="pilotprofile-tab" class="tab-content">
+            <div class="pilot-profile-stats">
+                <h3>👤 Pilot Profile</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-label">Total Kills</div>
+                        <div class="stat-value" id="stat-kills">0</div>
+                        <div class="stat-desc">Enemies destroyed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💀</div>
+                        <div class="stat-label">Deaths by Enemy</div>
+                        <div class="stat-value" id="stat-enemy-deaths">0</div>
+                        <div class="stat-desc">Killed by enemy fire</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🛬</div>
+                        <div class="stat-label">Total Landings</div>
+                        <div class="stat-value" id="stat-landings">0</div>
+                        <div class="stat-desc">Successful landings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💥</div>
+                        <div class="stat-label">Total Crashes</div>
+                        <div class="stat-value" id="stat-crashes">0</div>
+                        <div class="stat-desc">Failed attempts</div>
+                    </div>
+                    <div class="stat-card winrate">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-value" id="stat-winrate">0%</div>
+                        <div class="stat-desc">Based on landings vs crashes</div>
+                    </div>
+                </div>
+                <button class="stats-reset" onclick="resetStats()">🔄 Reset Statistics</button>
+            </div>
+            <button class="close-settings" onclick="closeSettings()">CLOSE</button>
+        </div>
+        
+        <!-- PILOT DATA TAB CONTENT (Shows all stored pilot info) -->
+        <div id="pilotdata-tab" class="tab-content">
+            <div class="pilot-data-stats">
+                <h3>📋 Pilot Information</h3>
+                <div class="pilot-data-card">
+                    <div class="pilot-data-row">
+                        <span class="pilot-data-label">✈️ Pilot Name</span>
+                        <span class="pilot-data-value" id="data-pilot-name">Not set</span>
+                    </div>
+                    <div class="pilot-data-row">
+                        <span class="pilot-data-label">🎂 Age</span>
+                        <span class="pilot-data-value" id="data-pilot-age">Not set</span>
+                    </div>
+                    <div class="pilot-data-row">
+                        <span class="pilot-data-label">🌍 Country</span>
+                        <span class="pilot-data-value" id="data-pilot-country">Not set</span>
+                    </div>
+                    <div class="pilot-data-row">
+                        <span class="pilot-data-label">⭐ Experience</span>
+                        <span class="pilot-data-value" id="data-pilot-experience">Not set</span>
+                    </div>
+                    <div class="pilot-data-row">
+                        <span class="pilot-data-label">📅 First Flight</span>
+                        <span class="pilot-data-value" id="data-first-flight">Not set</span>
+                    </div>
+                </div>
+                <!-- SIGN OUT BUTTON IN PILOT DATA -->
+                <button class="signout-btn" onclick="signOut()">🚪 SIGN OUT</button>
+            </div>
+            <button class="close-settings" onclick="closeSettings()">CLOSE</button>
+        </div>
+    </div>
+    
+    <!-- In-Game Pause Menu Button -->
+    <div id="pause-menu-btn" onclick="togglePauseMenu()">⏸️ PAUSE</div>
+    
+    <!-- In-Game HUD Toggle Button (Below Pause Button on Mobile) -->
+    <div id="hud-toggle-btn" onclick="toggleInGameHUD()"></div>
+    
+    <!-- In-Game Pause Menu -->
+    <div id="pause-menu">
+        <h2>⏸️ PAUSED</h2>
+        <div class="pause-buttons">
+            <button class="pause-btn" onclick="resumeGame()">RESUME</button>
+            <button class="pause-btn secondary" onclick="restartLevel()">RESTART LEVEL</button>
+            <button class="pause-btn danger" onclick="quitToHome()">QUIT TO HOME</button>
+        </div>
+    </div>
+    
     <!-- Level and Stage Display -->
     <div id="level-stage">🌍 LEVEL 1 | STAGE 1/5</div>
-
-    <!-- Coin Display -->
-    <div id="coin-display">💰 0</div>
-
+    
+    <!-- In-Game Dollar Display (For Power-Ups) - SEPARATE FROM HOME COINS -->
+    <div id="dollar-display">0</div>
+    
     <!-- Shop Button -->
     <div id="shop-btn" onclick="openPowerShop()">🛒 POWER SHOP</div>
-
-    <!-- Auto Shoot Toggle - HIDDEN (only in settings) -->
+    
+    <!-- Auto Shoot Toggle - HIDDEN -->
     <div id="auto-shoot-toggle" style="display: none !important;"></div>
-
-    <!-- Boss Warning -->
-    <div id="boss-warning">⚠️ BOSS INCOMING ⚠️</div>
-
+    
+    <!-- Boss Warning - REMOVED -->
+    <div id="boss-warning" style="display: none !important;"></div>
+    
     <!-- Boss Health Bar -->
     <div id="boss-health-container">
         <div id="boss-health-fill"></div>
         <div id="boss-health-text">BOSS HEALTH 100%</div>
     </div>
-
+    
     <!-- Stage Complete Menu -->
     <div id="stage-complete-menu">
         <h2>STAGE COMPLETE! 🎉</h2>
         <p id="stage-complete-text">Stage 1 Complete</p>
         <div class="health-restore">❤️ HEALTH FULLY RESTORED</div>
-        <div class="health-restore" style="color: #fbbf24;">💰 +50 COINS</div>
+        <div class="health-restore" style="color: #4ade80;">💰 +50 DOLLARS</div>
         <p>Prepare for next stage</p>
         <button class="stage-btn" onclick="continueToNextStage()">CONTINUE TO STAGE <span
                 id="next-stage-number">2</span></button>
         <button class="stage-btn secondary" onclick="returnToHome()">RETURN TO MENU</button>
     </div>
-
+    
     <!-- Power Shop Menu -->
     <div id="power-shop-menu">
         <h2>🛒 POWER SHOP</h2>
-        <div id="shop-coins">💰 <span id="shop-coins-amount">0</span></div>
+        <div id="shop-dollars">💰 <span id="shop-dollars-amount">0</span></div>
         <div class="shop-items" id="shop-items-container"></div>
         <button class="shop-close" onclick="closePowerShop()">CLOSE SHOP</button>
     </div>
-
+    
     <!-- HUD -->
     <div id="hud">
         <div style="text-align:center; color:#fbbf24; margin-bottom:5px; font-size:1.2em;">MISSION LEVEL <span
@@ -173,23 +1046,41 @@
         <div class="stat-row"><span class="label">Gear:</span><span id="gearStat" class="value">UP</span></div>
         <div class="stat-row"><span class="label">Power:</span><span id="powerStat" class="value">NONE</span></div>
     </div>
-
+    
     <!-- ILS Displays -->
-    <div id="gs-container" style="display:none;">
+    <div id="gs-container">
         <div style="position:absolute;top:0;">HIGH</div>
         <div id="gs-diamond" class="diamond"></div>
         <div style="position:absolute;bottom:0;">LOW</div>
-        <div style="width:10px;height:2px;background:#22c55e;position:absolute;top:50%;"></div>
+        <div style="width:10px;height:2px;background:#fbbf24;position:absolute;top:50%;"></div>
         <div style="position:absolute;right:-35px;transform:rotate(-90deg);white-space:nowrap;">G-SLOPE</div>
     </div>
-    <div id="loc-container" style="display:none;">
+    <div id="loc-container">
         <div style="position:absolute;left:0;">L</div>
         <div id="loc-diamond" class="diamond"></div>
         <div style="position:absolute;right:0;">R</div>
-        <div style="width:2px;height:10px;background:#22c55e;position:absolute;left:50%;"></div>
+        <div style="width:2px;height:10px;background:#fbbf24;position:absolute;left:50%;"></div>
         <div style="position:absolute;bottom:-15px;">LOCALIZER</div>
     </div>
-
+    
+    <!-- BOTTOM CENTER ILS DISPLAY - NEW -->
+    <div id="ils-bottom-center">
+        <div class="ils-bottom-item">
+            <div class="ils-bottom-label">GLIDESLOPE</div>
+            <div class="ils-bottom-bar-container">
+                <div id="ils-bottom-gs-diamond" class="ils-bottom-diamond"></div>
+            </div>
+            <div id="ils-bottom-gs-value" class="ils-bottom-value">50%</div>
+        </div>
+        <div class="ils-bottom-item">
+            <div class="ils-bottom-label">LOCALIZER</div>
+            <div class="ils-bottom-bar-container">
+                <div id="ils-bottom-loc-diamond" class="ils-bottom-diamond"></div>
+            </div>
+            <div id="ils-bottom-loc-value" class="ils-bottom-value">50%</div>
+        </div>
+    </div>
+    
     <!-- Success Menu -->
     <div id="success-menu">
         <h2 id="success-title">LANDED SUCCESSFULLY</h2>
@@ -197,89 +1088,133 @@
         <button id="next-btn" class="menu-btn" onclick="nextLevel()">NEXT MISSION</button>
         <button class="menu-btn retry" onclick="retryLevel()">RESTART LEVEL</button>
     </div>
-
+    
     <!-- Radar -->
     <div id="radar-container"></div>
-
-    <!-- Mobile Controls - ENHANCED WITH FOUR ARROWS ON LEFT AND ACTION BUTTONS ON RIGHT -->
+    
+    <!-- MOBILE CONTROLS - ENHANCED WITH POWER BUTTON AND SMALLER BUTTONS -->
     <div id="mobile-controls">
         <div class="horizontal-controls">
-            <!-- LEFT SIDE - FOUR ARROW BUTTONS -->
+            <!-- LEFT SIDE - SPEED BUTTONS -->
             <div class="left-controls">
-                <div class="arrow-row">
+                <div class="speed-controls">
                     <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="arrow-btn" ontouchstart="keyDown('ArrowUp'); event.preventDefault();"
-                            ontouchend="keyUp('ArrowUp'); event.preventDefault();" onmousedown="keyDown('ArrowUp')"
-                            onmouseup="keyUp('ArrowUp')" onmouseleave="keyUp('ArrowUp')"
-                            ontouchcancel="keyUp('ArrowUp'); event.preventDefault();">⬆️</div>
-                        <div class="arrow-label">Pitch Up</div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="arrow-btn" ontouchstart="keyDown('ArrowDown'); event.preventDefault();"
-                            ontouchend="keyUp('ArrowDown'); event.preventDefault();" onmousedown="keyDown('ArrowDown')"
-                            onmouseup="keyUp('ArrowDown')" onmouseleave="keyUp('ArrowDown')"
-                            ontouchcancel="keyUp('ArrowDown'); event.preventDefault();">⬇️</div>
-                        <div class="arrow-label">Pitch Down</div>
-                    </div>
-                </div>
-                <div class="arrow-row">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="arrow-btn" ontouchstart="keyDown('ArrowLeft'); event.preventDefault();"
+                        <div class="speed-btn" ontouchstart="keyDown('ArrowLeft'); event.preventDefault();"
                             ontouchend="keyUp('ArrowLeft'); event.preventDefault();" onmousedown="keyDown('ArrowLeft')"
                             onmouseup="keyUp('ArrowLeft')" onmouseleave="keyUp('ArrowLeft')"
                             ontouchcancel="keyUp('ArrowLeft'); event.preventDefault();">⬅️</div>
-                        <div class="arrow-label">Speed -</div>
+                        <div class="speed-label">Speed -</div>
                     </div>
                     <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="arrow-btn" ontouchstart="keyDown('ArrowRight'); event.preventDefault();"
-                            ontouchend="keyUp('ArrowRight'); event.preventDefault();" onmousedown="keyDown('ArrowRight')"
-                            onmouseup="keyUp('ArrowRight')" onmouseleave="keyUp('ArrowRight')"
+                        <div class="speed-btn" ontouchstart="keyDown('ArrowRight'); event.preventDefault();"
+                            ontouchend="keyUp('ArrowRight'); event.preventDefault();"
+                            onmousedown="keyDown('ArrowRight')" onmouseup="keyUp('ArrowRight')"
+                            onmouseleave="keyUp('ArrowRight')"
                             ontouchcancel="keyUp('ArrowRight'); event.preventDefault();">➡️</div>
-                        <div class="arrow-label">Speed +</div>
+                        <div class="speed-label">Speed +</div>
+                    </div>
+                </div>
+                <!-- PITCH CONTROL BUTTONS -->
+                <div class="pitch-controls" id="pitch-buttons">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="pitch-btn" ontouchstart="keyDown('ArrowUp'); event.preventDefault();"
+                            ontouchend="keyUp('ArrowUp'); event.preventDefault();" onmousedown="keyDown('ArrowUp')"
+                            onmouseup="keyUp('ArrowUp')" onmouseleave="keyUp('ArrowUp')"
+                            ontouchcancel="keyUp('ArrowUp'); event.preventDefault();">⬆️</div>
+                        <div class="pitch-label">Pitch Up</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="pitch-btn" ontouchstart="keyDown('ArrowDown'); event.preventDefault();"
+                            ontouchend="keyUp('ArrowDown'); event.preventDefault();" onmousedown="keyDown('ArrowDown')"
+                            onmouseup="keyUp('ArrowDown')" onmouseleave="keyUp('ArrowDown')"
+                            ontouchcancel="keyUp('ArrowDown'); event.preventDefault();">⬇️</div>
+                        <div class="pitch-label">Pitch Down</div>
                     </div>
                 </div>
             </div>
-
-            <!-- RIGHT SIDE - ACTION BUTTONS -->
-            <div class="right-controls">
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="action-btn" ontouchstart="keyDown('Space'); event.preventDefault();"
-                        ontouchend="keyUp('Space'); event.preventDefault();" onmousedown="keyDown('Space')"
-                        onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')"
-                        ontouchcancel="keyUp('Space'); event.preventDefault();">🔥</div>
-                    <div class="action-label">Gun</div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="action-btn" ontouchstart="keyDown('KeyG'); event.preventDefault();"
-                        ontouchend="keyUp('KeyG'); event.preventDefault();" onmousedown="keyDown('KeyG')"
-                        onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')"
-                        ontouchcancel="keyUp('KeyG'); event.preventDefault();">⚙️</div>
-                    <div class="action-label">Gear</div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="action-btn" ontouchstart="keyDown('KeyM'); event.preventDefault();"
-                        ontouchend="keyUp('KeyM'); event.preventDefault();" onmousedown="keyDown('KeyM')"
-                        onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')"
-                        ontouchcancel="keyUp('KeyM'); event.preventDefault();">🚀</div>
-                    <div class="action-label">Missile</div>
+            <!-- RIGHT SIDE - ACTION BUTTONS + POWER BUTTON -->
+            <div style="display: flex; align-items: center;">
+                <div class="right-controls">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="action-btn" ontouchstart="keyDown('Space'); event.preventDefault();"
+                            ontouchend="keyUp('Space'); event.preventDefault();" onmousedown="keyDown('Space')"
+                            onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')"
+                            ontouchcancel="keyUp('Space'); event.preventDefault();">🔥</div>
+                        <div class="action-label">Gun</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="action-btn" ontouchstart="keyDown('KeyG'); event.preventDefault();"
+                            ontouchend="keyUp('KeyG'); event.preventDefault();" onmousedown="keyDown('KeyG')"
+                            onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')"
+                            ontouchcancel="keyUp('KeyG'); event.preventDefault();">⚙️</div>
+                        <div class="action-label">Gear</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="action-btn" ontouchstart="keyDown('KeyM'); event.preventDefault();"
+                            ontouchend="keyUp('KeyM'); event.preventDefault();" onmousedown="keyDown('KeyM')"
+                            onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')"
+                            ontouchcancel="keyUp('KeyM'); event.preventDefault();">🚀</div>
+                        <div class="action-label">Missile</div>
+                    </div>
+                    <!-- NEW POWER BUTTON -->
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div class="power-btn" ontouchstart="openPowerShopMobile(); event.preventDefault();"
+                            ontouchend="event.preventDefault();" onmousedown="openPowerShopMobile()">⚡</div>
+                        <div class="power-label">Power</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+    
+    <!-- TOP RIGHT HUD BUTTON - HIDDEN -->
+    <div id="mobile-top-hud" style="display: none !important;">
+        <div class="top-hud-btn" ontouchstart="toggleMobileHUD(); event.preventDefault();"
+            ontouchend="event.preventDefault();" onmousedown="toggleMobileHUD()">📊</div>
+    </div>
+    
+    <!-- TOP LEFT ILS DISPLAY - HIDDEN -->
+    <div id="top-left-ils" style="display: none !important;">
+        <div class="ils-row">
+            <span class="ils-label">GS:</span>
+            <span class="ils-value" id="ils-gs">0%</span>
+        </div>
+        <div class="ils-indicator">
+            <div id="ils-gs-diamond" class="ils-diamond-small gs"></div>
+        </div>
+        <div class="ils-row">
+            <span class="ils-label">LOC:</span>
+            <span class="ils-value" id="ils-loc">0%</span>
+        </div>
+        <div class="ils-indicator">
+            <div id="ils-loc-diamond" class="ils-diamond-small loc"></div>
+        </div>
+    </div>
+    
+    <!-- Joystick Control -->
+    <div id="joystick-container" class="joystick-container">
+        <div class="joystick-base"></div>
+        <div id="joystick-stick" class="joystick-stick"></div>
+    </div>
+    
+    <!-- Tilt Control Indicator -->
+    <div id="tilt-indicator" class="tilt-indicator">
+        <div id="tilt-ball" class="tilt-ball"></div>
+        <div class="tilt-label">Tilt to Steer</div>
+    </div>
+    
     <!-- Sky Effects -->
-    <div class="morning-sky"></div>
-    <div class="sun"></div>
-    <div class="horizon-glow"></div>
-    <div class="haze"></div>
-    <div class="mist"></div>
-    <div class="ground-texture"></div>
-    <div class="hud-glint"></div>
-    <div class="instrument-reflection"></div>
-
-    <button id="hud-toggle" onclick="toggleHUD()">📊</button>
+    <div class="realistic-sky" style="display: none;"></div>
+    <div id="moon"></div>
+    <div class="horizon-glow" style="display: none;"></div>
+    <div class="haze" style="display: none;"></div>
+    <div class="mist" style="display: none;"></div>
+    <div class="ground-texture" style="display: none;"></div>
+    
+    <button id="hud-toggle" onclick="toggleHUD()" style="display: none;">📊</button>
     <canvas id="gameCanvas"></canvas>
-
+    
     <script src="./assets/script/script.js"></script>
 </body>
+
 </html>
