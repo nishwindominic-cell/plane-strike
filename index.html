@@ -1,13 +1,14 @@
+Here is the complete code split into separate HTML, CSS, and JavaScript files, as requested.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Plane Strike Landing - Ultimate Edition</title>
     <link rel="stylesheet" href="./assets/css/game.css">
 </head>
-
 <body>
     <!-- Realistic Galaxy Background (Always Visible) -->
     <div id="galaxy-background">
@@ -87,8 +88,6 @@
     <!-- Pilot Welcome Banner (Home Screen Only) -->
     <div id="pilot-welcome"></div>
 
-    <!-- Orientation Warning - REMOVED -->
-    
     <!-- Cleared to Land Message -->
     <div id="cleared-to-land">✅ CLEARED TO LAND ANY RUNWAY ✅</div>
     
@@ -1092,10 +1091,10 @@
     <!-- Radar -->
     <div id="radar-container"></div>
     
-    <!-- MOBILE CONTROLS - ENHANCED WITH POWER BUTTON AND SMALLER BUTTONS -->
+    <!-- MOBILE CONTROLS - ENHANCED WITH POWER BUTTON AND FIXED PORTRAIT ALIGNMENT (LEFT CONTROLS LEFT SIDE, ACTION BUTTONS RIGHT SIDE) -->
     <div id="mobile-controls">
         <div class="horizontal-controls">
-            <!-- LEFT SIDE - SPEED BUTTONS -->
+            <!-- LEFT SIDE - SPEED BUTTONS AND PITCH BUTTONS (LEFT SIDE) -->
             <div class="left-controls">
                 <div class="speed-controls">
                     <div style="display: flex; flex-direction: column; align-items: center;">
@@ -1132,36 +1131,34 @@
                     </div>
                 </div>
             </div>
-            <!-- RIGHT SIDE - ACTION BUTTONS + POWER BUTTON -->
-            <div style="display: flex; align-items: center;">
-                <div class="right-controls">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="action-btn" ontouchstart="keyDown('Space'); event.preventDefault();"
-                            ontouchend="keyUp('Space'); event.preventDefault();" onmousedown="keyDown('Space')"
-                            onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')"
-                            ontouchcancel="keyUp('Space'); event.preventDefault();">🔥</div>
-                        <div class="action-label">Gun</div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="action-btn" ontouchstart="keyDown('KeyG'); event.preventDefault();"
-                            ontouchend="keyUp('KeyG'); event.preventDefault();" onmousedown="keyDown('KeyG')"
-                            onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')"
-                            ontouchcancel="keyUp('KeyG'); event.preventDefault();">⚙️</div>
-                        <div class="action-label">Gear</div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="action-btn" ontouchstart="keyDown('KeyM'); event.preventDefault();"
-                            ontouchend="keyUp('KeyM'); event.preventDefault();" onmousedown="keyDown('KeyM')"
-                            onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')"
-                            ontouchcancel="keyUp('KeyM'); event.preventDefault();">🚀</div>
-                        <div class="action-label">Missile</div>
-                    </div>
-                    <!-- NEW POWER BUTTON -->
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div class="power-btn" ontouchstart="openPowerShopMobile(); event.preventDefault();"
-                            ontouchend="event.preventDefault();" onmousedown="openPowerShopMobile()">⚡</div>
-                        <div class="power-label">Power</div>
-                    </div>
+            <!-- RIGHT SIDE - ACTION BUTTONS + POWER BUTTON (RIGHT SIDE) -->
+            <div class="right-controls">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="action-btn" ontouchstart="keyDown('Space'); event.preventDefault();"
+                        ontouchend="keyUp('Space'); event.preventDefault();" onmousedown="keyDown('Space')"
+                        onmouseup="keyUp('Space')" onmouseleave="keyUp('Space')"
+                        ontouchcancel="keyUp('Space'); event.preventDefault();">🔥</div>
+                    <div class="action-label">Gun</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="action-btn" ontouchstart="keyDown('KeyG'); event.preventDefault();"
+                        ontouchend="keyUp('KeyG'); event.preventDefault();" onmousedown="keyDown('KeyG')"
+                        onmouseup="keyUp('KeyG')" onmouseleave="keyUp('KeyG')"
+                        ontouchcancel="keyUp('KeyG'); event.preventDefault();">⚙️</div>
+                    <div class="action-label">Gear</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="action-btn" ontouchstart="keyDown('KeyM'); event.preventDefault();"
+                        ontouchend="keyUp('KeyM'); event.preventDefault();" onmousedown="keyDown('KeyM')"
+                        onmouseup="keyUp('KeyM')" onmouseleave="keyUp('KeyM')"
+                        ontouchcancel="keyUp('KeyM'); event.preventDefault();">🚀</div>
+                    <div class="action-label">Missile</div>
+                </div>
+                <!-- POWER BUTTON -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="power-btn" ontouchstart="openPowerShopMobile(); event.preventDefault();"
+                        ontouchend="event.preventDefault();" onmousedown="openPowerShopMobile()">⚡</div>
+                    <div class="power-label">Power</div>
                 </div>
             </div>
         </div>
@@ -1191,13 +1188,13 @@
         </div>
     </div>
     
-    <!-- Joystick Control -->
+    <!-- Joystick Control - FIXED VISIBILITY -->
     <div id="joystick-container" class="joystick-container">
         <div class="joystick-base"></div>
         <div id="joystick-stick" class="joystick-stick"></div>
     </div>
     
-    <!-- Tilt Control Indicator -->
+    <!-- Tilt Control Indicator - FIXED VISIBILITY -->
     <div id="tilt-indicator" class="tilt-indicator">
         <div id="tilt-ball" class="tilt-ball"></div>
         <div class="tilt-label">Tilt to Steer</div>
@@ -1216,5 +1213,5 @@
     
     <script src="./assets/script/script.js"></script>
 </body>
-
 </html>
+```

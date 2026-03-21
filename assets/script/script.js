@@ -1,4 +1,5 @@
-       // ===== NOTIFICATION LOG SYSTEM =====
+  
+        // ===== NOTIFICATION LOG SYSTEM =====
         let notifications = [];
         
         // Load notifications from localStorage
@@ -1435,7 +1436,6 @@
         const spinCount = document.getElementById('spin-count');
         const privacyMenu = document.getElementById('privacy-menu');
         const totalDollarsDisplay = document.getElementById('total-dollars-display');
-        const orientationWarning = document.getElementById('orientation-warning');
         const clearedToLand = document.getElementById('cleared-to-land');
         const gameoverScore = document.getElementById('gameover-score');
         const gameoverKills = document.getElementById('gameover-kills');
@@ -1577,7 +1577,7 @@
             }
         };
 
-        // ===== JOYSTICK CONTROL SYSTEM =====
+        // ===== JOYSTICK CONTROL SYSTEM - ENHANCED =====
         let joystickActive = false;
         let joystickData = { x: 0, y: 0 };
         const joystickContainer = document.getElementById('joystick-container');
@@ -1644,7 +1644,7 @@
             }
         }
 
-        // ===== TILT CONTROL SYSTEM =====
+        // ===== TILT CONTROL SYSTEM - ENHANCED =====
         let tiltData = { beta: 0, gamma: 0 };
         function initTiltControls() {
             if (window.DeviceOrientationEvent && tiltEnabled) {
@@ -1713,7 +1713,6 @@
                 }
                 if (tiltIndicator) {
                     tiltIndicator.classList.remove('tilt-enabled');
-                    tiltIndicator.style.opacity = '0.3';
                 }
             }
             updateControlDisplay();
@@ -1732,12 +1731,10 @@
                 initTiltControls();
                 if (tiltIndicator) {
                     tiltIndicator.classList.add('tilt-enabled');
-                    tiltIndicator.style.opacity = '1';
                 }
             } else {
                 if (tiltIndicator) {
                     tiltIndicator.classList.remove('tilt-enabled');
-                    tiltIndicator.style.opacity = '0.3';
                 }
             }
             saveGame();
@@ -1752,7 +1749,6 @@
                 buttonControlsEnabled = false;
                 if (tiltIndicator) {
                     tiltIndicator.classList.remove('tilt-enabled');
-                    tiltIndicator.style.opacity = '0.3';
                 }
             }
             updateControlDisplay();
@@ -1823,12 +1819,7 @@
                 if (screen.orientation && screen.orientation.lock) {
                     screen.orientation.lock('landscape').catch(e => {
                         console.log('Orientation lock not supported or denied');
-                        // Show orientation warning as fallback
-                        // orientationWarning.style.display = 'flex';
                     });
-                } else {
-                    // Show orientation warning
-                    // orientationWarning.style.display = 'flex';
                 }
             }
         }
@@ -1853,7 +1844,6 @@
 
         window.addEventListener('orientationchange', function () {
             setTimeout(() => {
-                checkOrientation();
                 resizeCanvas();
                 refreshGameState();
                 updateMobileControlsDisplay();
@@ -3773,18 +3763,14 @@
         function checkOrientation() {
             if (window.innerWidth <= 1024) {
                 if (window.innerHeight > window.innerWidth) {
-                    // orientationWarning.style.display = 'flex';
                     if (!isPaused && !player.dead) {
                         isPaused = true;
                     }
                 } else {
-                    // orientationWarning.style.display = 'none';
                     if (isPaused && homeMenu.style.display === 'none' && gameoverMenu.style.display === 'none') {
                         isPaused = false;
                     }
                 }
-            } else {
-                // orientationWarning.style.display = 'none';
             }
         }
 
@@ -6205,7 +6191,6 @@ In-Game Dollars: $${inGameDollars}
                 document.getElementById('mobile-controls').style.display = 'block';
                 document.getElementById('auto-shoot-toggle').style.display = 'none';
                 shopBtn.style.display = 'none'; // Hide shop button on mobile
-                checkOrientation();
                 updateMobileControlsDisplay();
             } else {
                 if (homeMenu.style.display === 'none' && gameoverMenu.style.display === 'none') {
@@ -6214,7 +6199,6 @@ In-Game Dollars: $${inGameDollars}
                 }
                 document.getElementById('mobile-controls').style.display = 'none';
                 document.getElementById('auto-shoot-toggle').style.display = 'none';
-                // orientationWarning.style.display = 'none';
             }
         });
 
@@ -6227,7 +6211,6 @@ In-Game Dollars: $${inGameDollars}
                 loadingPage.classList.add('hidden');
                 homeMenu.classList.add('visible');
                 initAudio();
-                checkOrientation();
                 loadSettings();
                 loadPlayerStats();
                 updatePilotWelcomeDisplay();
@@ -6396,3 +6379,5 @@ In-Game Dollars: $${inGameDollars}
         }
 
         console.log('ULTIMATE EDITION WITH FIXED PLANE SAVING - Planes stay unlocked forever!');
+        console.log('PORTRAIT MODE FIXED - Left controls on left side, Action buttons on right side, ILS and Radar removed in portrait mode!');
+  
