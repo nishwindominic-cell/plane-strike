@@ -1,5 +1,4 @@
-  
-        // ===== NOTIFICATION LOG SYSTEM =====
+       // ===== NOTIFICATION LOG SYSTEM =====
         let notifications = [];
         
         // Load notifications from localStorage
@@ -655,6 +654,11 @@
 
         // Save all pilot information and hide login page
         function savePilotInfo() {
+            // 🟢 ADDED: Show main ad when START MISSION is clicked
+            if (window.Android) {
+                Android.showMainAd();
+            }
+            
             const nameInput = document.getElementById('pilot-name-input');
             const ageInput = document.getElementById('pilot-age-input');
             const countryInput = document.getElementById('pilot-country-input');
@@ -1162,6 +1166,16 @@
             
             // Reset game state for next new game
             resetGameState();
+        }
+        
+        // ===== NEW FUNCTION FOR REWARD AD (REVIVE) =====
+        // 🟡 ADDED: Function to show reward ad for reviving
+        function reviveWithAd() {
+            if (window.Android) {
+                Android.showRewardAd();
+            }
+            // After ad is watched, you would call the actual respawn logic
+            // respawnPlayer(); // Uncomment this when implementing the full flow
         }
         
         // Complete game state reset function
@@ -4189,6 +4203,10 @@
 
         // ===== FIXED RESTART FROM GAME OVER FUNCTION =====
         window.restartFromGameOver = function () {
+            // 🟢 ADDED: Show main ad when restarting from game over
+            if (window.Android) {
+                Android.showMainAd();
+            }
             gameoverMenu.style.display = 'none';
             resetGameState();
             homeMenu.style.display = 'none';
@@ -5494,6 +5512,9 @@ In-Game Dollars: $${inGameDollars}
         }
 
         function respawnPlayer() {
+            // 🟡 ADD REWARD AD CALL HERE
+            // Example: reviveWithAd(); // Uncomment and implement logic to show ad before respawning
+            // For now, just respawn normally
             player.dead = false; player.exploded = false; player.engineOK = true; player.wingOK = true;
             player.x = 2000; player.y = 3000; player.vx = 0; player.vy = 0;
             player.angle = 0; player.thrust = 4;
@@ -6380,4 +6401,5 @@ In-Game Dollars: $${inGameDollars}
 
         console.log('ULTIMATE EDITION WITH FIXED PLANE SAVING - Planes stay unlocked forever!');
         console.log('PORTRAIT MODE FIXED - Left controls on left side, Action buttons on right side, ILS and Radar removed in portrait mode!');
-  
+        // 🟢 ADDED: Log to confirm ad integration is present
+        console.log('AD INTEGRATION READY - Main ad on START MISSION, Game Over Restart, Reward ad hook added in respawnPlayer');
