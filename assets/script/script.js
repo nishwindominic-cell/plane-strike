@@ -1,4 +1,4 @@
-       // ===== NOTIFICATION LOG SYSTEM =====
+     // ===== NOTIFICATION LOG SYSTEM =====
         let notifications = [];
         
         // Load notifications from localStorage
@@ -1168,14 +1168,68 @@
             resetGameState();
         }
         
-        // ===== NEW FUNCTION FOR REWARD AD (REVIVE) =====
-        // 🟡 ADDED: Function to show reward ad for reviving
+        // ===== AD INTEGRATION: REWARD AD FUNCTIONALITY =====
+        // Called by Android when reward ad is completed
+        window.onRewardAdCompleted = function() {
+            console.log('Reward ad completed - respawning player');
+            performRespawn();
+            addNotification('🎬 Revived!', 'You watched an ad and returned to battle!', '🎬');
+        }
+        
+        // Called by Android when reward ad is skipped/cancelled
+        window.onRewardAdCancelled = function() {
+            console.log('Reward ad cancelled - player remains dead');
+            addNotification('❌ Revive Failed', 'Ad was cancelled. You remain dead.', '❌');
+            // Show game over screen
+            showGameOverMenu();
+        }
+        
+        // Called by Android when main ad is closed
+        window.onMainAdClosed = function() {
+            console.log('Main ad closed - continuing action');
+            // Continue with the action that was waiting (already handled by savePilotInfo and restartFromGameOver)
+        }
+        
+        // Function to show reward ad for reviving
         function reviveWithAd() {
             if (window.Android) {
+                console.log('Showing reward ad for revive');
                 Android.showRewardAd();
+                // Don't respawn here - wait for callback
+            } else {
+                // No ad support, just respawn directly
+                console.log('No ad support - respawning directly');
+                performRespawn();
             }
-            // After ad is watched, you would call the actual respawn logic
-            // respawnPlayer(); // Uncomment this when implementing the full flow
+        }
+        
+        // Separate respawn logic for ad completion
+        function performRespawn() {
+            // Actual respawn logic
+            player.dead = false;
+            player.exploded = false;
+            player.engineOK = true;
+            player.wingOK = true;
+            player.x = 2000;
+            player.y = 3000;
+            player.vx = 0;
+            player.vy = 0;
+            player.angle = 0;
+            player.thrust = 4;
+            player.gearDown = false;
+            player.wasGearDown = false;
+            player.health = playerBaseHealth;
+            bullets = [];
+            enemyBullets = [];
+            missiles = [];
+            missileCount = playerBaseMissiles;
+            activePower = null;
+            powerDuration = 0;
+            updatePowerDisplay();
+            bossActive = false;
+            boss = null;
+            bossHealthContainer.style.display = 'none';
+            spawnEnemies();
         }
         
         // Complete game state reset function
@@ -5512,18 +5566,9 @@ In-Game Dollars: $${inGameDollars}
         }
 
         function respawnPlayer() {
-            // 🟡 ADD REWARD AD CALL HERE
-            // Example: reviveWithAd(); // Uncomment and implement logic to show ad before respawning
-            // For now, just respawn normally
-            player.dead = false; player.exploded = false; player.engineOK = true; player.wingOK = true;
-            player.x = 2000; player.y = 3000; player.vx = 0; player.vy = 0;
-            player.angle = 0; player.thrust = 4;
-            player.gearDown = false; player.wasGearDown = false;
-            player.health = playerBaseHealth;
-            bullets = []; enemyBullets = []; missiles = []; missileCount = playerBaseMissiles;
-            activePower = null; powerDuration = 0; updatePowerDisplay();
-            bossActive = false; boss = null; bossHealthContainer.style.display = 'none';
-            spawnEnemies();
+            // 🟡 ADD REWARD AD CALL HERE - Show ad before respawning
+            reviveWithAd();
+            // The actual respawn will happen in onRewardAdCompleted callback
         }
 
         // ===== ENHANCED 2D PLANE DRAWING =====
@@ -6401,5 +6446,5 @@ In-Game Dollars: $${inGameDollars}
 
         console.log('ULTIMATE EDITION WITH FIXED PLANE SAVING - Planes stay unlocked forever!');
         console.log('PORTRAIT MODE FIXED - Left controls on left side, Action buttons on right side, ILS and Radar removed in portrait mode!');
-        // 🟢 ADDED: Log to confirm ad integration is present
-        console.log('AD INTEGRATION READY - Main ad on START MISSION, Game Over Restart, Reward ad hook added in respawnPlayer');
+        console.log('AD INTEGRATION FULLY IMPLEMENTED - Main ad on START MISSION & Game Over Restart, Reward ad with callbacks for revive!');
+   
