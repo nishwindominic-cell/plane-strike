@@ -6574,3 +6574,4 @@ window.addEventListener("focus", function () {
 console.log('ULTIMATE EDITION WITH FIXED PLANE SAVING - Planes stay unlocked forever!');
 console.log('PORTRAIT MODE FIXED - Left controls on left side, Action buttons on right side, ILS and Radar removed in portrait mode!');
 console.log('AD INTEGRATION FULLY IMPLEMENTED - Main ad on START MISSION & Game Over Restart, Reward ad with callbacks for revive!');
+
