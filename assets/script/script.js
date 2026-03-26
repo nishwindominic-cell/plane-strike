@@ -1174,48 +1174,80 @@ function quitToHome() {
     resetGameState();
 }
 
-// ===== AD INTEGRATION: REWARD AD FUNCTIONALITY =====
+// ===== AD + PAUSE + REVIVE SYSTEM (SAFE FINAL VERSION) =====
+
 // Called by Android when reward ad is completed
-window.onRewardAdCompleted = function () {
+window.onRewardAdCompleted = function() {
     console.log('Reward ad completed - respawning player');
     performRespawn();
     addNotification('🎬 Revived!', 'You watched an ad and returned to battle!', '🎬');
-}
+};
 
 // Called by Android when reward ad is skipped/cancelled
-window.onRewardAdCancelled = function () {
+window.onRewardAdCancelled = function() {
     console.log('Reward ad cancelled - player remains dead');
-    addNotification('❌ Revive Failed', 'Ad was cancelled. You remain dead.', '❌');
-    // Show game over screen
-    showGameOverMenu();
-}
-
-// Called by Android when main ad is closed
-window.onMainAdClosed = function () {
-    console.log('Main ad closed - continuing action');
-    // Continue with the action that was waiting (already handled by savePilotInfo and restartFromGameOver)
-}
-
-// ===== IMPORTANT ANDROID / WEBVIEW RESUME FIX =====
-// Called when interstitial ad is closed
-window.onInterstitialClosed = function () {
-    console.log("Interstitial ad closed");
 
     const pauseMenu = document.getElementById('pause-menu');
-
-    // If player is alive and game is active, resume game
-    if (homeMenu.style.display === 'none' && player && !player.dead) {
-        isPaused = false;
-    }
-
-    // Hide stuck pause menu
     if (pauseMenu) {
         pauseMenu.style.display = 'none';
     }
 
-    // If player is dead, keep game over visible
-    if (player && player.dead) {
+    isPaused = true;
+
+    addNotification('❌ Revive Failed', 'Ad was cancelled. You remain dead.', '❌');
+
+    if (typeof showGameOverMenu === "function") {
         showGameOverMenu();
+    } else {
+        const gameoverMenu = document.getElementById('gameover-menu');
+        if (gameoverMenu) {
+            gameoverMenu.style.display = 'flex';
+        }
+    }
+};
+
+// Called by Android when main/interstitial ad is closed
+window.onMainAdClosed = function() {
+    console.log('Main ad closed - continuing action');
+};
+
+// Called when interstitial ad is closed
+window.onInterstitialClosed = function() {
+    console.log("Interstitial ad closed");
+
+    const pauseMenu = document.getElementById('pause-menu');
+
+    // Always remove accidental pause caused by ad focus loss
+    if (pauseMenu) {
+        pauseMenu.style.display = 'none';
+    }
+
+    // If player exists and is dead, stay in game over state
+    if (typeof player !== "undefined" && player && player.dead) {
+        isPaused = true;
+
+        if (typeof showGameOverMenu === "function") {
+            showGameOverMenu();
+        } else {
+            const gameoverMenu = document.getElementById('gameover-menu');
+            if (gameoverMenu) {
+                gameoverMenu.style.display = 'flex';
+            }
+        }
+
+        return;
+    }
+
+    // If game is active and player alive, resume properly
+    if (
+        typeof homeMenu !== "undefined" &&
+        homeMenu &&
+        homeMenu.style.display === 'none' &&
+        typeof player !== "undefined" &&
+        player &&
+        !player.dead
+    ) {
+        isPaused = false;
     }
 };
 
@@ -1223,17 +1255,18 @@ window.onInterstitialClosed = function () {
 function onRewardEarned(rewardType, rewardAmount) {
     console.log("Reward earned:", rewardType, rewardAmount);
 
-    // Resume before revive
-    isPaused = false;
-
     const pauseMenu = document.getElementById('pause-menu');
     if (pauseMenu) {
         pauseMenu.style.display = 'none';
     }
 
-    // Use your existing reward complete function
-    if (typeof window.onRewardAdCompleted === "function") {
-        window.onRewardAdCompleted();
+    isPaused = false;
+
+    // Only revive if reward type is revive
+    if (rewardType === "revive") {
+        if (typeof window.onRewardAdCompleted === "function") {
+            window.onRewardAdCompleted();
+        }
     }
 }
 
@@ -1241,7 +1274,14 @@ function onRewardEarned(rewardType, rewardAmount) {
 window.addEventListener("focus", function () {
     const pauseMenu = document.getElementById('pause-menu');
 
-    if (homeMenu && homeMenu.style.display === 'none' && player && !player.dead) {
+    if (
+        typeof homeMenu !== "undefined" &&
+        homeMenu &&
+        homeMenu.style.display === 'none' &&
+        typeof player !== "undefined" &&
+        player &&
+        !player.dead
+    ) {
         isPaused = false;
 
         if (pauseMenu) {
@@ -1250,11 +1290,19 @@ window.addEventListener("focus", function () {
     }
 });
 
-// Backup fix when tab/app becomes visible again
+// Backup fix when app becomes visible again
 document.addEventListener("visibilitychange", function () {
     const pauseMenu = document.getElementById('pause-menu');
 
-    if (!document.hidden && homeMenu && homeMenu.style.display === 'none' && player && !player.dead) {
+    if (
+        !document.hidden &&
+        typeof homeMenu !== "undefined" &&
+        homeMenu &&
+        homeMenu.style.display === 'none' &&
+        typeof player !== "undefined" &&
+        player &&
+        !player.dead
+    ) {
         isPaused = false;
 
         if (pauseMenu) {
@@ -1263,14 +1311,12 @@ document.addEventListener("visibilitychange", function () {
     }
 });
 
-// Function to show reward ad for reviving
+// Show reward ad for revive
 function reviveWithAd() {
-    if (window.Android) {
+    if (window.Android && typeof Android.showRewardAd === "function") {
         console.log('Showing reward ad for revive');
         Android.showRewardAd();
-        // Don't respawn here - wait for callback
     } else {
-        // No ad support, just respawn directly
         console.log('No ad support - respawning directly');
         performRespawn();
     }
@@ -1278,7 +1324,8 @@ function reviveWithAd() {
 
 // Separate respawn logic for ad completion
 function performRespawn() {
-    // Actual respawn logic
+    if (typeof player === "undefined" || !player) return;
+
     player.dead = false;
     player.exploded = false;
     player.engineOK = true;
@@ -1292,17 +1339,36 @@ function performRespawn() {
     player.gearDown = false;
     player.wasGearDown = false;
     player.health = playerBaseHealth;
+
     bullets = [];
     enemyBullets = [];
     missiles = [];
+    enemies = []; // important cleanup
     missileCount = playerBaseMissiles;
     activePower = null;
     powerDuration = 0;
-    updatePowerDisplay();
+
+    if (typeof updatePowerDisplay === "function") {
+        updatePowerDisplay();
+    }
+
     bossActive = false;
     boss = null;
-    bossHealthContainer.style.display = 'none';
-    spawnEnemies();
+
+    if (typeof bossHealthContainer !== "undefined" && bossHealthContainer) {
+        bossHealthContainer.style.display = 'none';
+    }
+
+    isPaused = false;
+
+    const pauseMenu = document.getElementById('pause-menu');
+    if (pauseMenu) {
+        pauseMenu.style.display = 'none';
+    }
+
+    if (typeof spawnEnemies === "function") {
+        spawnEnemies();
+    }
 }
 
 // Complete game state reset function
