@@ -959,7 +959,7 @@
             box-shadow: 0 2px 0 #b45309;
         }
 
-        /* ===== LOADING PAGE WITH BEAUTIFUL BACKGROUND IMAGE ===== */
+        /* ===== LOADING PAGE WITH ANIMATION ===== */
         #loading-page {
             position: absolute;
             inset: 0;
@@ -979,24 +979,7 @@
             pointer-events: none;
         }
 
-        /* Beautiful picture overlay on loading page */
-        #loading-bg-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('./assets/images/ChatGPT\ Image\ May\ 12\,\ 2026\,\ 05_49_09\ PM.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.35;
-            z-index: 1;
-        }
-
         .loading-content {
-            position: relative;
-            z-index: 2;
             animation: loadingPulse 2s ease-in-out infinite;
         }
 
@@ -1077,41 +1060,6 @@
             100% {
                 color: #e9d8fd;
             }
-        }
-
-        /* ===== MOBILE 4X CAMERA REDUCTION (GAME SCREEN ONLY) ===== */
-        body.game-active canvas {
-            transform: scale(0.25);
-            transform-origin: top center;
-            width: 400%;
-            height: 400%;
-            left: -150%;
-            top: 0;
-        }
-        
-        body.game-active #hud,
-        body.game-active #radar-container,
-        body.game-active #level-stage,
-        body.game-active #dollar-display,
-        body.game-active #shop-btn,
-        body.game-active #pause-menu-btn,
-        body.game-active #hud-toggle-btn,
-        body.game-active #gs-container,
-        body.game-active #loc-container,
-        body.game-active #ils-bottom-center,
-        body.game-active #mobile-controls,
-        body.game-active #boss-health-container,
-        body.game-active #boss-indicator,
-        body.game-active #high-altitude-warning,
-        body.game-active #cleared-to-land {
-            transform: scale(0.25);
-            transform-origin: top left;
-        }
-        
-        body.game-active #hud {
-            left: 0;
-            top: 0;
-            width: 800px;
         }
 
         /* ===== HOME MENU - ENHANCED WITH BACKGROUND IMAGE (UNCHANGED) ===== */
@@ -5264,9 +5212,8 @@
     <!-- High Altitude Warning -->
     <div id="high-altitude-warning">HIGH ALTITUDE DAMAGE</div>
 
-    <!-- Loading Page with Beautiful Background Image -->
+    <!-- Loading Page with Animation -->
     <div id="loading-page">
-        <div id="loading-bg-image"></div>
         <div class="loading-content">
             <h1>Plane Strike Landing</h1>
             <div class="loading-spinner"></div>
@@ -12066,10 +12013,6 @@
             refreshGameState();
             // Show the gameplay background picture when game starts
             showGameplayBackground();
-            // Apply mobile 4x camera reduction for game screen only (for screens <= 1024px)
-            if (window.innerWidth <= 1024) {
-                document.body.classList.add('game-active');
-            }
         };
 
         // ===== ENHANCED MAIN UPDATE FUNCTION =====
@@ -13575,8 +13518,6 @@ In-Game Dollars: $${inGameDollars}
                 forceLandscapeOrientation();
                 updateBackgroundForModeAndLevel();
                 updateGalaxyBackground();
-                // Remove game-active class initially (home menu)
-                document.body.classList.remove('game-active');
             }, 2000);
         });
 
@@ -13899,12 +13840,8 @@ In-Game Dollars: $${inGameDollars}
         console.log('BG STORE FIXED - Background images now properly apply in-game and BG store no longer uses color overlays!');
         console.log('AMMO SYSTEM ADDED - Machine gun now has 40 bullets per magazine! Auto-reload when empty! Reload takes 1 second!');
         console.log('PILOT LEVEL SYSTEM - Track your pilot progress and earn rewards every level! Special rewards at Levels 5, 10, and 20!');
-        console.log('MOBILE 4X CAMERA REDUCTION ADDED - On mobile devices, camera view is reduced to 4x scale for better visibility while keeping player and enemy planes normal size! This only applies during gameplay, not on home screen!');
-        console.log('LOADING PAGE BEAUTIFUL BACKGROUND - Added stunning aerial background image to loading screen!');
     </script>
 
 </body>
-
-
 
 </html>
