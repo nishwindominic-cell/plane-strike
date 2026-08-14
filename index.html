@@ -26,29 +26,65 @@
             position: fixed;
         }
 
-        body {
+       body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: #000000;
+            background-color: #000000;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+                radial-gradient(2px 2px at 90px 80px, #ffffff, transparent),
+                radial-gradient(1px 1px at 150px 40px, #ffffff, transparent),
+                radial-gradient(1px 1px at 220px 120px, #ffffff, transparent),
+                radial-gradient(2px 2px at 300px 60px, #ffffff, transparent);
+            background-repeat: repeat;
+            background-size: 350px 200px;
             font-family: 'Segoe UI', sans-serif;
         }
 
         /* ===== GAMEPLAY BACKGROUND PICTURE (SEPARATE FROM HOME MENU BG) ===== */
-        .gameplay-bg {
+       .gameplay-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: -150%;
+            left: -150%;
+            width: 400%;
+            height: 400%;
             z-index: 0;
             pointer-events: none;
-            background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: radial-gradient(ellipse at 30% 20%, #1a1245 0%, #0a0620 45%, #020108 100%);
             transition: opacity 0.5s ease;
             opacity: 0;
+            will-change: transform;
+        }
+
+        /* ===== AMBIENT SPACE OBJECTS (stars/asteroids drifting) ===== */
+        .space-asteroid {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 6px rgba(150, 120, 90, 0.5));
+            animation: driftAsteroid linear infinite;
+        }
+
+        @keyframes driftAsteroid {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-120vw, 40px) rotate(360deg); }
+        }
+
+        .space-meteor-streak {
+            position: absolute;
+            width: 2px;
+            height: 90px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9), transparent);
+            pointer-events: none;
+            transform: rotate(35deg);
+            animation: meteorStreakFall 2.5s linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes meteorStreakFall {
+            0% { transform: translate(0,0) rotate(35deg); opacity: 1; }
+            100% { transform: translate(-300px, 500px) rotate(35deg); opacity: 0; }
         }
 
         .gameplay-bg.visible {
@@ -1288,7 +1324,8 @@
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-                /* Mode button individual animations */
+
+        /* Mode button individual animations */
         .mode-btn-endless {
             background: linear-gradient(135deg, #10b981, #059669) !important;
             animation: endlessGlow 1.5s infinite;
@@ -2574,35 +2611,6 @@
             color: white;
         }
 
-        #background-store-btn {
-            background: linear-gradient(135deg, #8b5cf6, #6b21a5);
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            margin: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 50px;
-            font-size: 18px;
-            transition: all 0.25s ease;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #background-store-btn:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg, #a78bfa, #7c3aed);
-        }
-
-        /* Dynamic background style container for images */
-        #dynamic-bg-styles {
-            transition: all 0.3s ease;
-        }
 
         /* ===== SETTINGS BUTTON (HOME SCREEN) ===== */
         #settings-btn {
@@ -3330,7 +3338,8 @@
             display: none;
             overflow: hidden;
         }
-                /* ===== MEDIA QUERIES FOR BELOW LAPTOP SCREENS ===== */
+
+        /* ===== MEDIA QUERIES FOR BELOW LAPTOP SCREENS ===== */
         @media (max-width: 1024px) {
             #radar-container {
                 width: 100px !important;
@@ -5278,8 +5287,8 @@
         <!-- LOGIN BUTTON - HIDDEN BY DEFAULT -->
         <div id="home-login-btn" onclick="showLoginPage()">🔐 LOGIN</div>
 
-   
-       
+
+
         <!-- Pilot Welcome Banner (will be populated by JS) -->
         <div id="pilot-welcome"></div>
         <!-- High Score Display (replaced total score) -->
@@ -5291,7 +5300,7 @@
             <button id="continue-btn" class="menu-btn" onclick="continueGame()">▶️ CONTINUE</button>
             <button class="menu-btn" onclick="showAchievements()">🏆 ACHIEVEMENTS</button>
             <button class="menu-btn" onclick="showPlanes()">✈️ store</button>
-            <button id="background-store-btn" class="menu-btn" onclick="showBackgroundStore()">🎨 BG STORE</button>
+           
         </div>
 
         <!-- MODE DROPDOWN BUTTON -->
@@ -5307,10 +5316,11 @@
                 <button class="mode-btn-meteor" onclick="startMeteorShowerMode(); closeModeDropdown();">
                     <span>☄️</span> METEOR SHOWER
                 </button>
-                <button class="mode-btn-boss" onclick="startNewBossMode(); closeModeDropdown();">
-                    <span>👑</span> BOSS MODE (SOON)
+               <button class="mode-btn-boss" onclick="startNewBossMode(); closeModeDropdown();">
+                    <span>👑</span> BOSS MODE
                 </button>
-                <button class="mode-btn-challenge" onclick="startChallengeMode(); closeModeDropdown();" style="background: linear-gradient(135deg, #ff6b6b, #c0392b) !important; animation: challengeGlow 1.5s infinite;">
+                <button class="mode-btn-challenge" onclick="startChallengeMode(); closeModeDropdown();"
+                    style="background: linear-gradient(135deg, #ff6b6b, #c0392b) !important; animation: challengeGlow 1.5s infinite;">
                     <span>🏆</span> CHALLENGE MODE
                 </button>
             </div>
@@ -5319,20 +5329,21 @@
         <!-- Privacy Policy Button -->
         <button id="privacy-btn" onclick="showPrivacyPolicy()">🔒 PRIVACY POLICY</button>
         <div id="stats-summary" style="margin-top: 20px; color: #fff5e6;">
-            
+
         </div>
     </div>
-        <!-- ENHANCED NOTE ENCYCLOPEDIA MENU WITH ENEMY COLORS - UPDATED PLANES -->
+    <!-- ENHANCED NOTE ENCYCLOPEDIA MENU WITH ENEMY COLORS - UPDATED PLANES -->
     <div id="note-menu">
         <h2>📚 PILOT'S NOTEBOOK <span>✈️</span></h2>
 
-        <div class="note-tabs">
+      <div class="note-tabs">
             <div class="note-tab active" onclick="switchNoteTab('planes')">✈️ PLANES</div>
             <div class="note-tab" onclick="switchNoteTab('enemies')">🎯 ENEMIES</div>
             <div class="note-tab" onclick="switchNoteTab('powers')">⚡ POWER-UPS</div>
             <div class="note-tab" onclick="switchNoteTab('bosses')">👑 BOSSES</div>
             <div class="note-tab" onclick="switchNoteTab('mystery')">📦 MYSTERY</div>
             <div class="note-tab" onclick="switchNoteTab('challenge')">🏆 CHALLENGE</div>
+            <div class="note-tab" onclick="switchNoteTab('bossmode')">👑 BOSS MODE</div>
         </div>
 
         <!-- PLANES TAB - UPDATED WITH 12 PLANES AND HIGHER PRICES -->
@@ -5870,7 +5881,8 @@
                         <div class="note-card-stat"><span>Rewards:</span> <span>2x dollars & coins</span></div>
                         <div class="note-card-stat"><span>Level Req:</span> <span>5+ to unlock</span></div>
                     </div>
-                    <div class="note-card-desc">Challenge Mode tests your skills! Enemy spawns are doubled, bosses have 3x health, but rewards are doubled too! Unlocks at Pilot Level 5!</div>
+                    <div class="note-card-desc">Challenge Mode tests your skills! Enemy spawns are doubled, bosses have
+                        3x health, but rewards are doubled too! Unlocks at Pilot Level 5!</div>
                 </div>
 
                 <div class="note-card">
@@ -5884,7 +5896,8 @@
                         <div class="note-card-stat"><span>Health Penalty:</span> <span>No shield power-ups</span></div>
                         <div class="note-card-stat"><span>Bonus:</span> <span>+500 coins for completion</span></div>
                     </div>
-                    <div class="note-card-desc">Complete Challenge Mode to earn massive rewards! Time-based stages require quick thinking and precise flying!</div>
+                    <div class="note-card-desc">Complete Challenge Mode to earn massive rewards! Time-based stages
+                        require quick thinking and precise flying!</div>
                 </div>
 
                 <div class="note-card">
@@ -5897,7 +5910,54 @@
                         <div class="note-card-stat"><span>Planes:</span> <span>Any unlocked plane</span></div>
                         <div class="note-card-stat"><span>Rewards:</span> <span>+500 coins + Mystery Box</span></div>
                     </div>
-                    <div class="note-card-desc">Reach Pilot Level 5 to unlock Challenge Mode! Check your Pilot Profile to see your current level and XP progress!</div>
+                    <div class="note-card-desc">Reach Pilot Level 5 to unlock Challenge Mode! Check your Pilot Profile
+                        to see your current level and XP progress!</div>
+                </div>
+            </div>
+       </div>
+
+        <!-- BOSS MODE TAB - NEW -->
+        <div id="note-bossmode" class="note-content">
+            <div class="note-grid">
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon">👑</div>
+                        <div class="note-card-title">BOSS MODE</div>
+                    </div>
+                    <div class="note-card-desc">Face a gauntlet of realistic bosses back-to-back! Each boss has its own
+                        name, dialogue, and pattern. Defeat one and the next steps up immediately — no downtime!</div>
+                </div>
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #6b7280;"></div>
+                            <span>👾</span>
+                        </div>
+                        <div class="note-card-title">TRAINER BOSS</div>
+                    </div>
+                    <div class="note-card-desc">"Cadet, is that all you've got?" Basic straight-fire patterns. Good
+                        warmup boss.</div>
+                </div>
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #ef4444;"></div>
+                            <span>👹</span>
+                        </div>
+                        <div class="note-card-title">WARLORD BOSS</div>
+                    </div>
+                    <div class="note-card-desc">"You dare challenge the Warlord?!" Aggressive 3-way spread shots.</div>
+                </div>
+                <div class="note-card">
+                    <div class="note-card-header">
+                        <div class="note-card-icon" style="display: flex; align-items: center;">
+                            <div class="enemy-color-preview" style="background-color: #f97316;"></div>
+                            <span>👻</span>
+                        </div>
+                        <div class="note-card-title">PHANTOM BOSS</div>
+                    </div>
+                    <div class="note-card-desc">"You cannot hit what you cannot see." Teleports around the battlefield
+                        firing rapid bursts.</div>
                 </div>
             </div>
         </div>
@@ -5905,13 +5965,7 @@
         <button class="close-note-btn" onclick="closeNoteMenu()">CLOSE NOTEBOOK</button>
     </div>
 
-    <!-- BACKGROUND STORE MENU (ADDED) -->
-    <div id="background-store-menu">
-        <h2>🎨 BACKGROUND STORE</h2>
-        <div id="background-store-subtitle">Change your sky theme | Home Coins</div>
-        <div id="bg-store-grid" class="bg-store-grid"></div>
-        <button class="close-settings" onclick="closeBackgroundStore()">CLOSE STORE</button>
-    </div>
+  
 
     <!-- Privacy Policy Menu - ENHANCED WITH COMPREHENSIVE CONTENT -->
     <div id="privacy-menu">
@@ -6122,8 +6176,10 @@
                     boxes to open!</p>
                 <p><strong>PRIVACY:</strong> All data is stored locally on your device. No tracking, no servers,
                     complete privacy!</p>
-                <p><strong>NEW - CHALLENGE MODE:</strong> A new hardcore mode with double enemies, triple boss health, and double rewards! Unlocks at Pilot Level 5!</p>
-                <p><strong>NEW - LEVEL UP SYSTEM:</strong> Gain XP from kills and landings to level up your pilot! Each level gives you rewards!</p>
+                <p><strong>NEW - CHALLENGE MODE:</strong> A new hardcore mode with double enemies, triple boss health,
+                    and double rewards! Unlocks at Pilot Level 5!</p>
+                <p><strong>NEW - LEVEL UP SYSTEM:</strong> Gain XP from kills and landings to level up your pilot! Each
+                    level gives you rewards!</p>
                 <div class="version">Version 9.0 | Ultimate Edition with Challenge Mode & Level Up System</div>
             </div>
             <button class="close-settings" onclick="closeSettings()">CLOSE</button>
@@ -6170,7 +6226,8 @@
                     <div class="stat-icon">⭐</div>
                     <div class="stat-label" style="color: #1e293b;">PILOT LEVEL</div>
                     <div class="stat-value" id="pilot-level-value" style="color: #1e293b;">1</div>
-                    <div class="stat-desc" style="color: #1e293b;">XP to next level: <span id="xp-to-next">0</span></div>
+                    <div class="stat-desc" style="color: #1e293b;">XP to next level: <span id="xp-to-next">0</span>
+                    </div>
                     <div class="achievement-progress" style="margin-top: 10px;">
                         <div class="progress-bar" id="xp-progress-bar" style="width: 0%; background: #1e293b;"></div>
                     </div>
@@ -6277,7 +6334,7 @@
         <div id="lives-container">LIVES: <span id="lives-val">❤️❤️❤️</span></div>
         <hr style="border:0; border-top:1px solid #14532d; margin:10px 0;">
         <div class="stat-row"><span class="label">Hostiles Left:</span><span class="value" id="enmCount">0</span></div>
-            <div class="stat-row"><span class="label">Speed:</span><span class="value"><span id="spd">0</span> KN</span>
+        <div class="stat-row"><span class="label">Speed:</span><span class="value"><span id="spd">0</span> KN</span>
         </div>
         <div class="stat-row"><span class="label">Sink Rate:</span><span class="value" id="sink-container"><span
                     id="sink">0</span> FPM</span></div>
@@ -6461,19 +6518,19 @@
         // ===== GAMEPLAY BACKGROUND PICTURE FUNCTIONS =====
         let gameplayBg = null;
 
-        function showGameplayBackground() {
-            const bg = document.getElementById('gameplay-bg');
-            if (bg) {
-                bg.classList.add('visible');
-            }
-        }
+       function showGameplayBackground() {
+    const bg = document.getElementById('gameplay-bg');
+    const galaxyBg = document.getElementById('galaxy-background');
+    if (bg) bg.classList.add('visible');
+    if (galaxyBg) galaxyBg.style.display = 'none';
+}
 
-        function hideGameplayBackground() {
-            const bg = document.getElementById('gameplay-bg');
-            if (bg) {
-                bg.classList.remove('visible');
-            }
-        }
+function hideGameplayBackground() {
+    const bg = document.getElementById('gameplay-bg');
+    const galaxyBg = document.getElementById('galaxy-background');
+    if (bg) bg.classList.remove('visible');
+    if (galaxyBg) galaxyBg.style.display = 'block';
+}
 
         // ===== MODE DROPDOWN FUNCTIONS =====
         function toggleModeDropdown() {
@@ -6623,30 +6680,75 @@
             addNotification('🔁 Endless Survival', 'No landing required. Survive as many waves as you can! Max 100 enemies at once. Some enemies can launch missiles! Landing will cause a crash!', '⚡');
         }
 
-        // ===== NEW BOSS MODE (Coming Soon) =====
+       // ===== REAL BOSS MODE - GAUNTLET OF SEQUENTIAL REALISTIC BOSSES =====
         let bossModeActive = false;
-        function startNewBossMode() {
-            if (gameMode === 'normal' || gameMode === 'endless' || gameMode === 'timeattack' || gameMode === 'meteorshower') {
-                addNotification('👑 New Boss Mode Coming Soon!', 'Different types of bosses will appear in future updates! Stay tuned!', '👑');
-                const msgDiv = document.createElement('div');
-                msgDiv.style.position = 'absolute';
-                msgDiv.style.top = '50%';
-                msgDiv.style.left = '50%';
-                msgDiv.style.transform = 'translate(-50%, -50%)';
-                msgDiv.style.background = 'rgba(0,0,0,0.9)';
-                msgDiv.style.color = '#fbbf24';
-                msgDiv.style.padding = '30px 60px';
-                msgDiv.style.borderRadius = '30px';
-                msgDiv.style.fontSize = '28px';
-                msgDiv.style.fontWeight = 'bold';
-                msgDiv.style.border = '3px solid #fbbf24';
-                msgDiv.style.zIndex = '5000';
-                msgDiv.style.textAlign = 'center';
-                msgDiv.style.fontFamily = 'monospace';
-                msgDiv.innerHTML = '👑 NEW BOSS MODE<br><span style="font-size: 18px;">These modes will be coming soon with new bosses!</span>';
-                document.body.appendChild(msgDiv);
-                setTimeout(() => { msgDiv.remove(); }, 3000);
+        let bossModeIndex = 0;
+        const bossModeSequence = ['trainer', 'warlord', 'phantom', 'warlord', 'phantom'];
+
+        const bossDialogues = {
+            trainer: {
+                appear: "Cadet, is that all you've got? Let's see what you're made of.",
+                defeat: "Impossible... my systems... failing..."
+            },
+            warlord: {
+                appear: "You dare challenge the Warlord?! Prepare to be obliterated!",
+                defeat: "This isn't over... I'll return stronger..."
+            },
+            phantom: {
+                appear: "You cannot hit what you cannot see. I am the Phantom.",
+                defeat: "How... did you see through my shadows..."
             }
+        };
+
+        function startNewBossMode() {
+            gameMode = 'bossmode';
+            bossModeActive = true;
+            bossModeIndex = 0;
+            if (originalSpawnEnemiesFunction === null) {
+                originalSpawnEnemiesFunction = window.spawnEnemies;
+            }
+            resetGameState();
+            window.spawnEnemies = function () {
+                enemies = [];
+                spawnSequencedBoss();
+            };
+            startGame(false);
+            updateBackgroundForModeAndLevel();
+            addNotification('👑 BOSS MODE', 'A gauntlet of realistic bosses awaits, one after another!', '👑');
+        }
+
+        function spawnSequencedBoss() {
+            if (bossActive) return;
+            const key = bossModeSequence[bossModeIndex % bossModeSequence.length];
+            const bossType = bossTypes[key];
+            let bHealth = calculateBossHealth() + (bossModeIndex * 60);
+            boss = {
+                id: `bossmode_${Date.now()}_${bossModeIndex}`,
+                x: player.x + 3000, y: 2000, angle: Math.PI,
+                thrust: bossType.thrust * enemySpeedMultiplier,
+                vy: 0, vx: 0, engineOK: true, wingOK: true,
+                alive: true, crashing: false, exploded: false,
+                shootTimer: 0, health: bHealth, maxHealth: bHealth,
+               name: `${bossType.name} #${bossModeIndex + 1}`,
+                color: bossType.color, size: bossType.size,
+                drawFunc: bossType.drawShape,
+                shootSpeed: bossType.shootSpeed / enemyAccuracyMultiplier,
+                bulletSpeed: bossType.bulletSpeed * (difficultyLevel === 'Hard' ? 1.3 : difficultyLevel === 'Easy' ? 0.7 : 1.0),
+                points: bossType.points + (bossModeIndex * 150),
+                coins: bossType.coins + (bossModeIndex * 30),
+                shootState: 'cooldown', shootStateTimer: 0, wingAngle: 0,
+                pattern: bossType.pattern, bulletCount: bossType.bulletCount,
+                spreadAngle: bossType.spreadAngle, teleportTimer: 0,
+                bossKey: key
+            };
+            bossActive = true;
+            bossSpawned = true;
+            bossHealthContainer.style.display = 'block';
+            updateBossHealthBar();
+            playSound('bossSpawn');
+            showBossIndicator();
+            const dlg = bossDialogues[key];
+            addNotification(`👑 ${bossType.name} #${bossModeIndex + 1} Appears`, dlg ? dlg.appear : `${bossType.name} has entered the battle!`, '👑');
         }
 
         // ===== TIME ATTACK MODE =====
@@ -6731,7 +6833,7 @@
             meteorShowerWave = 1;
             meteorShowerIntensity = 1.0;
             meteorEndlessNotified = false;
-            
+
             // Store original values before modifying
             if (typeof window.METEOROID_SPAWN_RATE !== 'undefined') {
                 window.METEOROID_SPAWN_RATE = 0.6;
@@ -6739,22 +6841,22 @@
             if (originalSpawnEnemiesFunction === null) {
                 originalSpawnEnemiesFunction = window.spawnEnemies;
             }
-            
+
             resetGameState();
             enemies = [];
             window.spawnEnemies = function () {
                 enemies = [];
                 console.log("Meteor Shower Mode: No enemies spawned");
             };
-            
+
             const clearedMsg = document.getElementById('cleared-to-land');
             if (clearedMsg) clearedMsg.style.display = 'none';
-            
+
             startGame(false);
-            
+
             // ENHANCED: Clear any existing meteor timer and set up continuous meteor generation
             if (meteorShowerTimer) clearInterval(meteorShowerTimer);
-            
+
             // Meteor intensity increases over time, but no wave limit - continues until player death
             meteorShowerTimer = setInterval(() => {
                 if (!isPaused && homeMenu.style.display === 'none' && !player.dead) {
@@ -6769,13 +6871,13 @@
                     }
                 }
             }, 20000); // Increase intensity every 20 seconds
-            
+
             // Send notification that meteors are endless
             if (!meteorEndlessNotified) {
                 meteorEndlessNotified = true;
                 addNotification('☄️ ENDLESS METEOR SHOWER', 'Meteors will fall CONTINUOUSLY until you die! Stay below 2000 ft!', '☄️');
             }
-            
+
             updateBackgroundForModeAndLevel();
             addNotification('☄️ METEOR SHOWER MODE', '☄️☄️☄️ METEORS FALL CONTINUOUSLY UNTIL DEATH! ☄️☄️☄️', '☄️');
         }
@@ -6794,7 +6896,12 @@
                 if (Math.random() < 0.7 && meteoroids.length < 150) {
                     if (typeof generateMeteoroid === 'function') generateMeteoroid();
                 }
-                const altitude = Math.max(0, Math.floor(WORLD_GROUND - player.y));
+               const altitude = Math.max(0, Math.floor(WORLD_GROUND - player.y));
+                // NEW: hard ceiling - cannot go above 2000 ft in Meteor Shower Mode
+                if (altitude > 2000 && !player.dead) {
+                    player.y = WORLD_GROUND - 2000;
+                    if (player.vy < 0) player.vy = 0;
+                }
                 if (altitude > 2000 && !player.dead && activePower !== 'shield') {
                     if (frame % 20 === 0) {
                         player.health -= 8;
@@ -6824,41 +6931,23 @@
         };
 
         const originalGenerateMeteoroidMeteor = window.generateMeteoroid;
-        window.generateMeteoroid = function () {
+       window.generateMeteoroid = function () {
             if (gameMode === 'meteorshower') {
-                // ENHANCED: Higher spawn rate for continuous meteor fall
-                if (meteoroids.length < 150 && Math.random() < METEOROID_SPAWN_RATE) {
-                    const meteorSize = 4 + Math.random() * 25 + (meteorShowerIntensity * 8);
+                const MAX_SHOWER_METEORS = 50;
+                if (meteoroids.length < MAX_SHOWER_METEORS && Math.random() < METEOROID_SPAWN_RATE) {
+                    const meteorSize = 4 + Math.random() * 20 + (meteorShowerIntensity * 4);
                     meteoroids.push({
-                        x: player.x + canvas.width + 400 + Math.random() * 3500,
-                        y: 200 + Math.random() * 30000,
-                        vx: -10 - Math.random() * 25 - (meteorShowerIntensity * 5),
-                        vy: (Math.random() - 0.5) * 20,
-                        size: meteorSize,
-                        rotation: Math.random() * Math.PI * 2,
-                        rotationSpeed: (Math.random() - 0.5) * 0.12,
-                        life: 1.0,
-                        trail: [],
-                        color: `hsl(${20 + Math.random() * 30}, 85%, ${45 + Math.random() * 45}%)`,
-                        damage: 30 + Math.floor(Math.random() * 70) + (meteorShowerIntensity * 15),
-                        isBackground: false
-                    });
-                }
-                // ENHANCED: Additional chance to spawn extra meteors for density
-                if (meteoroids.length < 150 && Math.random() < METEOROID_SPAWN_RATE * 0.7) {
-                    const meteorSize = 3 + Math.random() * 20 + (meteorShowerIntensity * 6);
-                    meteoroids.push({
-                        x: player.x + canvas.width + 200 + Math.random() * 4000,
-                        y: 100 + Math.random() * 25000,
-                        vx: -8 - Math.random() * 22 - (meteorShowerIntensity * 4),
-                        vy: (Math.random() - 0.5) * 18,
+                        x: player.x + canvas.width + 300 + Math.random() * 1500,
+                        y: player.y + (Math.random() * 1600 - 800),
+                        vx: -6 - Math.random() * 10 - (meteorShowerIntensity * 2),
+                        vy: 0,
                         size: meteorSize,
                         rotation: Math.random() * Math.PI * 2,
                         rotationSpeed: (Math.random() - 0.5) * 0.1,
                         life: 1.0,
                         trail: [],
-                        color: `hsl(${20 + Math.random() * 30}, 85%, ${40 + Math.random() * 40}%)`,
-                        damage: 25 + Math.floor(Math.random() * 60) + (meteorShowerIntensity * 12),
+                        color: `hsl(${20 + Math.random() * 30}, 85%, ${45 + Math.random() * 45}%)`,
+                        damage: 25 + Math.floor(Math.random() * 50) + (meteorShowerIntensity * 8),
                         isBackground: false
                     });
                 }
@@ -6936,15 +7025,15 @@
             }
         };
 
-const originalShowGameOverMenuMeteor = window.showGameOverMenu;
-window.showGameOverMenu = function () {
-    if (gameMode === 'meteorshower' && meteorShowerTimer) clearInterval(meteorShowerTimer);
-    if (window.METEOROID_SPAWN_RATE) window.METEOROID_SPAWN_RATE = 0.05;
-    // gameMode is NOT reset here anymore — RESTART needs to know which mode you died in.
-    // (It still resets to 'normal' in quitToHome() / goToHomeFromGameOver()).
-    hideGameplayBackground();
-    if (typeof originalShowGameOverMenuMeteor === 'function') originalShowGameOverMenuMeteor();
-};
+        const originalShowGameOverMenuMeteor = window.showGameOverMenu;
+        window.showGameOverMenu = function () {
+            if (gameMode === 'meteorshower' && meteorShowerTimer) clearInterval(meteorShowerTimer);
+            if (window.METEOROID_SPAWN_RATE) window.METEOROID_SPAWN_RATE = 0.05;
+            // gameMode is NOT reset here anymore — RESTART needs to know which mode you died in.
+            // (It still resets to 'normal' in quitToHome() / goToHomeFromGameOver()).
+            hideGameplayBackground();
+            if (typeof originalShowGameOverMenuMeteor === 'function') originalShowGameOverMenuMeteor();
+        };
 
         const originalQuitToHomeMeteor = window.quitToHome;
         window.quitToHome = function () {
@@ -7039,39 +7128,39 @@ window.showGameOverMenu = function () {
         let originalEnemySpawnMultiplier = 1.0;
         let originalBossHealthMultiplier = 1.0;
         let originalRewardMultiplier = 1.0;
-        
+
         // Challenge Mode unlock requirement (Pilot Level)
         function isChallengeModeUnlocked() {
             return pilotLevel >= 5;
         }
-        
+
         function startChallengeMode() {
             if (!isChallengeModeUnlocked()) {
                 addNotification('🔒 Challenge Mode Locked!', `Reach Pilot Level 5 to unlock Challenge Mode! Current Level: ${pilotLevel}`, '🏆');
                 return;
             }
-            
+
             gameMode = 'challenge';
             challengeModeActive = true;
             challengeStageTimer = 90;
-            
+
             // Store original multipliers
             originalEnemySpawnMultiplier = enemyCountMultiplier;
             originalBossHealthMultiplier = enemyHealthMultiplier;
             originalRewardMultiplier = 1.0;
-            
+
             // Apply challenge multipliers: double enemies, triple boss health
             enemyCountMultiplier = 2.0;
             enemyHealthMultiplier = 3.0;
             enemySpeedMultiplier = 1.2;
             enemyAccuracyMultiplier = 1.3;
-            
+
             resetGameState();
             currentStage = 1;
             currentLevel = 1;
-            
+
             startGame(false);
-            
+
             // Set up stage timer
             if (challengeStageTimerInterval) clearInterval(challengeStageTimerInterval);
             challengeStageTimerInterval = setInterval(() => {
@@ -7086,11 +7175,11 @@ window.showGameOverMenu = function () {
                     }
                 }
             }, 1000);
-            
+
             updateBackgroundForModeAndLevel();
             addNotification('🏆 CHALLENGE MODE', 'Double enemies! Triple boss health! Double rewards! Complete within time limit!', '🏆');
         }
-        
+
         // Override reward functions for Challenge Mode
         const originalAddDollars = addDollars;
         function addChallengeDollars(amount) {
@@ -7106,7 +7195,7 @@ window.showGameOverMenu = function () {
                 updateDollarDisplay();
             }
         }
-        
+
         // Override enemy kill reward for Challenge Mode
         const originalEnemyKilled = enemyKilled;
         function enemyKilledChallenge(enemy) {
@@ -7149,7 +7238,7 @@ window.showGameOverMenu = function () {
             trackKill();
             createBlast(enemy.x, enemy.y, enemy.color, 30);
         }
-        
+
         // Override stage complete reward for Challenge Mode
         const originalShowStageComplete = showStageComplete;
         function showStageCompleteChallenge() {
@@ -7202,7 +7291,7 @@ window.showGameOverMenu = function () {
         let pilotLevel = 1;
         let pilotXP = 0;
         let xpToNextLevel = 100;
-        
+
         function initLevelUpSystem() {
             const savedLevel = localStorage.getItem('pilotLevel');
             const savedXP = localStorage.getItem('pilotXP');
@@ -7211,12 +7300,12 @@ window.showGameOverMenu = function () {
             calculateXPToNextLevel();
             updateLevelDisplay();
         }
-        
+
         function calculateXPToNextLevel() {
             // XP required increases by 50 each level
             xpToNextLevel = 100 + ((pilotLevel - 1) * 50);
         }
-        
+
         function addPilotXP(amount) {
             if (gameMode === 'challenge') {
                 amount = amount * 1.5;
@@ -7228,14 +7317,14 @@ window.showGameOverMenu = function () {
                 pilotLevel++;
                 leveledUp = true;
                 calculateXPToNextLevel();
-                
+
                 // Level up rewards
                 const levelReward = 100 + (pilotLevel * 10);
                 homeCoins += levelReward;
                 updateHomeCoinDisplay();
                 addNotification(`⭐ LEVEL UP!`, `Congratulations! You reached Level ${pilotLevel}! +${levelReward} coins!`, '⭐');
                 playSound('repair');
-                
+
                 // Special rewards at milestone levels
                 if (pilotLevel === 5) {
                     addNotification(`🏆 MILESTONE UNLOCKED!`, `Challenge Mode is now available at Level 5!`, '🏆');
@@ -7262,7 +7351,7 @@ window.showGameOverMenu = function () {
             saveLevelUpData();
             updateLevelDisplay();
         }
-        
+
         function updateLevelDisplay() {
             const levelValue = document.getElementById('pilot-level-value');
             const xpToNextSpan = document.getElementById('xp-to-next');
@@ -7274,12 +7363,12 @@ window.showGameOverMenu = function () {
                 xpProgressBar.style.width = percent + '%';
             }
         }
-        
+
         function saveLevelUpData() {
             localStorage.setItem('pilotLevel', pilotLevel.toString());
             localStorage.setItem('pilotXP', pilotXP.toString());
         }
-        
+
         // Override kill XP tracking
         function trackKillWithXP() {
             if (typeof originalTrackKill === 'function') {
@@ -7290,7 +7379,7 @@ window.showGameOverMenu = function () {
             }
             addPilotXP(5);
         }
-        
+
         function trackLandingWithXP() {
             if (typeof originalTrackLanding === 'function') {
                 originalTrackLanding();
@@ -7300,28 +7389,26 @@ window.showGameOverMenu = function () {
             }
             addPilotXP(25);
         }
-        
+
         // Store original functions
         let originalTrackKill = trackKill;
         let originalTrackLanding = trackLanding;
-        
+
         // Override functions with XP tracking
-        trackKill = function() {
+        trackKill = function () {
             if (originalTrackKill) originalTrackKill();
             addPilotXP(5);
         };
-        
-        trackLanding = function() {
+
+        trackLanding = function () {
             if (originalTrackLanding) originalTrackLanding();
             addPilotXP(25);
         };
 
         // ===== DYNAMIC BACKGROUND SYSTEM (MODIFIED FOR IMAGES) =====
-        function updateBackgroundForModeAndLevel() {
+      function updateBackgroundForModeAndLevel() {
             const bgElement = document.getElementById('dynamicBgLayer');
             if (!bgElement) return;
-            // Apply selected background image from BG store
-            applyBackgroundStyle(selectedBackground);
             const highAltGalaxy = document.getElementById('high-altitude-galaxy');
             if (highAltGalaxy) {
                 highAltGalaxy.style.display = 'none';
@@ -7350,11 +7437,17 @@ window.showGameOverMenu = function () {
                 ctx.fillStyle = "#ff6600";
                 ctx.fillText(`☄️ ENDLESS METEORS ☄️`, canvas.width - 240, 80);
                 ctx.restore();
-            } else if (gameMode === 'challenge' && !player.dead && homeMenu.style.display === 'none') {
+           } else if (gameMode === 'challenge' && !player.dead && homeMenu.style.display === 'none') {
                 ctx.save();
                 ctx.font = "bold 22px 'Courier New'";
                 ctx.fillStyle = "#ff6b6b";
                 ctx.fillText(`🏆 CHALLENGE ${challengeStageTimer}s`, canvas.width - 220, 80);
+                ctx.restore();
+            } else if (gameMode === 'bossmode' && !player.dead && homeMenu.style.display === 'none') {
+                ctx.save();
+                ctx.font = "bold 22px 'Courier New'";
+                ctx.fillStyle = "#8b5cf6";
+                ctx.fillText(`👑 BOSS ${bossModeIndex + 1}`, canvas.width - 220, 80);
                 ctx.restore();
             }
         }
@@ -7831,9 +7924,7 @@ window.showGameOverMenu = function () {
                 document.getElementById('login-page').style.display = 'none';
                 loginBtn.style.display = 'none';
                 pilotInfo = JSON.parse(savedPilotInfo);
-                updatePilotWelcomeDisplay();
                 updatePilotDataDisplay();
-                addNotification('✈️ Welcome Back!', `Good to see you again, ${pilotInfo.name}!`, '👋');
             } else {
                 document.getElementById('login-page').style.display = 'flex';
                 loginBtn.style.display = 'flex';
@@ -7951,12 +8042,9 @@ window.showGameOverMenu = function () {
             playSound('gear');
         }
 
-        function updatePilotWelcomeDisplay() {
+       function updatePilotWelcomeDisplay() {
             const welcomeElement = document.getElementById('pilot-welcome');
-            if (pilotInfo.name) {
-                welcomeElement.style.display = 'flex';
-                welcomeElement.innerHTML = `✈️ Welcome, ${pilotInfo.name} <span>(${pilotInfo.experience})</span>`;
-            }
+            if (welcomeElement) welcomeElement.style.display = 'none';
         }
 
         function updatePilotDataDisplay() {
@@ -8029,9 +8117,12 @@ window.showGameOverMenu = function () {
             } else if (tabName === 'mystery') {
                 document.querySelector('.note-tab:nth-child(5)').classList.add('active');
                 document.getElementById('note-mystery').classList.add('active');
-            } else if (tabName === 'challenge') {
+           } else if (tabName === 'challenge') {
                 document.querySelector('.note-tab:nth-child(6)').classList.add('active');
                 document.getElementById('note-challenge').classList.add('active');
+            } else if (tabName === 'bossmode') {
+                document.querySelector('.note-tab:nth-child(7)').classList.add('active');
+                document.getElementById('note-bossmode').classList.add('active');
             }
         }
 
@@ -8813,55 +8904,76 @@ window.showGameOverMenu = function () {
         const ENEMY_TARGET_ALTITUDE = 5000;
 
         // ===== NEW BOSS TYPES =====
-        const bossTypes = {
+       const bossTypes = {
             trainer: {
-                name: "TRAINER BOSS",
-                health: 200,
-                thrust: 3.0,
-                shootSpeed: 40,
-                bulletSpeed: 12,
-                color: "#6b7280",
-                size: 2.0,
-                pattern: "basic",
-                points: 500,
-                coins: 100,
-                shootDuration: 300,
-                shootCooldown: 900,
-                bulletCount: 2,
-                spreadAngle: 0.15
+                name: "TRAINER BOSS", health: 200, thrust: 3.0, shootSpeed: 40, bulletSpeed: 12,
+                color: "#6b7280", size: 1.6, pattern: "basic", points: 500, coins: 100,
+                shootDuration: 300, shootCooldown: 900, bulletCount: 2, spreadAngle: 0.15,
+                drawShape: function (ctx, x, y, angle, scale, wingAngle) {
+                    ctx.save(); ctx.translate(x, y); ctx.rotate(angle); ctx.scale(scale * 1.6, scale * 1.6);
+                    ctx.fillStyle = "#6b7280";
+                    ctx.beginPath();
+                    ctx.moveTo(40, 0); ctx.lineTo(20, -22); ctx.lineTo(-20, -22);
+                    ctx.lineTo(-40, 0); ctx.lineTo(-20, 22); ctx.lineTo(20, 22);
+                    ctx.closePath(); ctx.fill();
+                    ctx.strokeStyle = "#9ca3af"; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.save(); ctx.translate(0, -22); ctx.rotate(wingAngle * 0.3);
+                    ctx.fillStyle = "#4b5563"; ctx.fillRect(-8, -14, 16, 14); ctx.restore();
+                    ctx.save(); ctx.translate(0, 22); ctx.rotate(-wingAngle * 0.3);
+                    ctx.fillStyle = "#4b5563"; ctx.fillRect(-8, 0, 16, 14); ctx.restore();
+                    ctx.fillStyle = "#93c5fd"; ctx.shadowColor = "#93c5fd"; ctx.shadowBlur = 10;
+                    ctx.beginPath(); ctx.arc(5, 0, 7, 0, Math.PI * 2); ctx.fill();
+                    ctx.restore();
+                }
             },
             warlord: {
-                name: "WARLORD BOSS",
-                health: 350,
-                thrust: 4.0,
-                shootSpeed: 30,
-                bulletSpeed: 15,
-                color: "#ef4444",
-                size: 2.2,
-                pattern: "spread",
-                points: 800,
-                coins: 150,
-                shootDuration: 200,
-                shootCooldown: 600,
-                bulletCount: 3,
-                spreadAngle: 0.2
+                name: "WARLORD BOSS", health: 350, thrust: 4.0, shootSpeed: 30, bulletSpeed: 15,
+                color: "#ef4444", size: 2.0, pattern: "spread", points: 800, coins: 150,
+                shootDuration: 200, shootCooldown: 600, bulletCount: 3, spreadAngle: 0.2,
+                drawShape: function (ctx, x, y, angle, scale, wingAngle) {
+                    ctx.save(); ctx.translate(x, y); ctx.rotate(angle); ctx.scale(scale * 2.1, scale * 2.1);
+                    ctx.fillStyle = "#7f1d1d";
+                    ctx.beginPath();
+                    ctx.moveTo(50, 0); ctx.lineTo(10, -12); ctx.lineTo(-45, -10);
+                    ctx.lineTo(-45, 10); ctx.lineTo(10, 12); ctx.closePath(); ctx.fill();
+                    ctx.fillStyle = "#ef4444";
+                    ctx.save(); ctx.translate(-10, -10); ctx.rotate(wingAngle * 0.4);
+                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(15, -30); ctx.lineTo(30, -28); ctx.lineTo(10, 0);
+                    ctx.closePath(); ctx.fill(); ctx.restore();
+                    ctx.save(); ctx.translate(-10, 10); ctx.rotate(-wingAngle * 0.4);
+                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(15, 30); ctx.lineTo(30, 28); ctx.lineTo(10, 0);
+                    ctx.closePath(); ctx.fill(); ctx.restore();
+                    ctx.strokeStyle = "#fca5a5"; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.fillStyle = "#fef08a"; ctx.shadowColor = "#fef08a"; ctx.shadowBlur = 12;
+                    ctx.beginPath(); ctx.arc(20, 0, 6, 0, Math.PI * 2); ctx.fill();
+                    ctx.restore();
+                }
             },
             phantom: {
-                name: "PHANTOM BOSS",
-                health: 500,
-                thrust: 5.0,
-                shootSpeed: 20,
-                bulletSpeed: 18,
-                color: "#f97316",
-                size: 2.5,
-                pattern: "rapid",
-                points: 1200,
-                coins: 200,
-                shootDuration: 150,
-                shootCooldown: 400,
-                bulletCount: 5,
-                spreadAngle: 0.25,
-                teleportTimer: 0
+                name: "PHANTOM BOSS", health: 500, thrust: 5.0, shootSpeed: 20, bulletSpeed: 18,
+                color: "#f97316", size: 2.4, pattern: "rapid", points: 1200, coins: 200,
+                shootDuration: 150, shootCooldown: 400, bulletCount: 5, spreadAngle: 0.25, teleportTimer: 0,
+                drawShape: function (ctx, x, y, angle, scale, wingAngle) {
+                    ctx.save(); ctx.translate(x, y); ctx.rotate(angle); ctx.scale(scale * 2.3, scale * 2.3);
+                    ctx.globalAlpha = 0.9;
+                    ctx.fillStyle = "#c2410c";
+                    ctx.beginPath();
+                    ctx.moveTo(55, 0); ctx.lineTo(0, -18); ctx.lineTo(-40, -6);
+                    ctx.lineTo(-55, 0); ctx.lineTo(-40, 6); ctx.lineTo(0, 18);
+                    ctx.closePath(); ctx.fill();
+                    ctx.strokeStyle = "#fb923c"; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.save(); ctx.translate(-5, -10); ctx.rotate(wingAngle * 0.6);
+                    ctx.fillStyle = "rgba(251,146,60,0.6)";
+                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(20, -25); ctx.lineTo(30, -20); ctx.lineTo(10, 0);
+                    ctx.closePath(); ctx.fill(); ctx.restore();
+                    ctx.save(); ctx.translate(-5, 10); ctx.rotate(-wingAngle * 0.6);
+                    ctx.fillStyle = "rgba(251,146,60,0.6)";
+                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(20, 25); ctx.lineTo(30, 20); ctx.lineTo(10, 0);
+                    ctx.closePath(); ctx.fill(); ctx.restore();
+                    ctx.fillStyle = "#fff7ed"; ctx.shadowColor = "#fdba74"; ctx.shadowBlur = 14;
+                    ctx.beginPath(); ctx.arc(20, 0, 5, 0, Math.PI * 2); ctx.fill();
+                    ctx.restore();
+                }
             }
         };
 
@@ -8933,39 +9045,39 @@ window.showGameOverMenu = function () {
 
         // ===== TILT CONTROL SYSTEM =====
         let tiltData = { beta: 0, gamma: 0 };
-       function initTiltControls() {
-    // Only auto-attach on devices that DON'T need explicit permission (most Android).
-    if (window.DeviceOrientationEvent && tiltEnabled && typeof DeviceOrientationEvent.requestPermission !== 'function') {
-        window.removeEventListener('deviceorientation', handleTilt, true);
-        window.addEventListener('deviceorientation', handleTilt, true);
-    }
-}
+        function initTiltControls() {
+            // Only auto-attach on devices that DON'T need explicit permission (most Android).
+            if (window.DeviceOrientationEvent && tiltEnabled && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+                window.removeEventListener('deviceorientation', handleTilt, true);
+                window.addEventListener('deviceorientation', handleTilt, true);
+            }
+        }
 
-function requestTiltPermission() {
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-            .then(permissionState => {
-                if (permissionState === 'granted') {
-                    window.removeEventListener('deviceorientation', handleTilt, true);
-                    window.addEventListener('deviceorientation', handleTilt, true);
-                    addNotification('✅ Tilt Enabled', 'Tilt your device to steer!', '📱');
-                } else {
-                    addNotification('❌ Tilt Permission Denied', 'Allow motion access in device settings.', '📱');
-                    tiltEnabled = false;
-                    if (tiltIndicator) tiltIndicator.classList.remove('tilt-enabled');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                addNotification('❌ Tilt Error', 'Could not request motion permission.', '📱');
-            });
-    } else if (window.DeviceOrientationEvent) {
-        window.removeEventListener('deviceorientation', handleTilt, true);
-        window.addEventListener('deviceorientation', handleTilt, true);
-    } else {
-        addNotification('❌ Not Supported', 'This device does not support tilt controls.', '📱');
-    }
-}
+        function requestTiltPermission() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.removeEventListener('deviceorientation', handleTilt, true);
+                            window.addEventListener('deviceorientation', handleTilt, true);
+                            addNotification('✅ Tilt Enabled', 'Tilt your device to steer!', '📱');
+                        } else {
+                            addNotification('❌ Tilt Permission Denied', 'Allow motion access in device settings.', '📱');
+                            tiltEnabled = false;
+                            if (tiltIndicator) tiltIndicator.classList.remove('tilt-enabled');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        addNotification('❌ Tilt Error', 'Could not request motion permission.', '📱');
+                    });
+            } else if (window.DeviceOrientationEvent) {
+                window.removeEventListener('deviceorientation', handleTilt, true);
+                window.addEventListener('deviceorientation', handleTilt, true);
+            } else {
+                addNotification('❌ Not Supported', 'This device does not support tilt controls.', '📱');
+            }
+        }
 
         function handleTilt(event) {
             if (!tiltEnabled || !player || player.dead || isPaused) return;
@@ -9021,22 +9133,22 @@ function requestTiltPermission() {
             updateMobileControlsDisplay();
         }
 
-      function toggleTiltControls() {
-    tiltEnabled = !tiltEnabled;
-    if (tiltEnabled) {
-        joystickEnabled = false;
-        buttonControlsEnabled = false;
-        if (tiltIndicator) tiltIndicator.classList.add('tilt-enabled');
-        // Call permission request DIRECTLY inside this tap — this is the fix.
-        requestTiltPermission();
-    } else {
-        window.removeEventListener('deviceorientation', handleTilt, true);
-        if (tiltIndicator) tiltIndicator.classList.remove('tilt-enabled');
-    }
-    saveGame();
-    refreshGameState();
-    updateMobileControlsDisplay();
-}
+        function toggleTiltControls() {
+            tiltEnabled = !tiltEnabled;
+            if (tiltEnabled) {
+                joystickEnabled = false;
+                buttonControlsEnabled = false;
+                if (tiltIndicator) tiltIndicator.classList.add('tilt-enabled');
+                // Call permission request DIRECTLY inside this tap — this is the fix.
+                requestTiltPermission();
+            } else {
+                window.removeEventListener('deviceorientation', handleTilt, true);
+                if (tiltIndicator) tiltIndicator.classList.remove('tilt-enabled');
+            }
+            saveGame();
+            refreshGameState();
+            updateMobileControlsDisplay();
+        }
 
         function toggleJoystickControl() {
             joystickEnabled = !joystickEnabled;
@@ -9184,10 +9296,10 @@ function requestTiltPermission() {
                         for (let p = 0; p < cloud.puffCount; p++) {
                             const puffX = sx + (p - cloud.puffCount / 2) * cloud.width * 0.4;
                             const puffY = sy + Math.sin(cloud.drift + p) * 10;
-                            const gradient = ctx.createRadialGradient(puffX, puffY, 0, puffX, puffY, cloud.height);
-                            gradient.addColorStop(0, 'rgba(200, 200, 220, 0.9)');
-                            gradient.addColorStop(0.5, 'rgba(180, 180, 200, 0.7)');
-                            gradient.addColorStop(1, 'rgba(160, 160, 180, 0.3)');
+                           const gradient = ctx.createRadialGradient(puffX, puffY, 0, puffX, puffY, cloud.height);
+                            gradient.addColorStop(0, 'rgba(168, 130, 255, 0.55)');
+                            gradient.addColorStop(0.5, 'rgba(96, 165, 250, 0.4)');
+                            gradient.addColorStop(1, 'rgba(232, 121, 249, 0.15)');
                             ctx.fillStyle = gradient;
                             ctx.beginPath();
                             ctx.ellipse(puffX, puffY, cloud.width * 0.3, cloud.height * 0.5, 0, 0, Math.PI * 2);
@@ -9395,26 +9507,46 @@ function requestTiltPermission() {
             }
         }
 
-        function createMeteorExplosion(x, y, size) {
-            meteorExplosions.push({
+       let screenShakeAmount = 0;
+
+function createMeteorExplosion(x, y, size) {
+    meteorExplosions.push({
+        x: x,
+        y: y,
+        size: size * 2,
+        life: 1.0,
+        color: '#ff6600'
+    });
+    let particleCount = size;
+    if (gameMode === 'meteorshower') {
+        particleCount = size * 2;
+        screenShakeAmount = Math.min(25, screenShakeAmount + size * 0.8);
+    }
+    for (let i = 0; i < particleCount; i++) {
+        particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 15,
+            vy: (Math.random() - 0.5) * 15 - 5,
+            life: 0.8 + Math.random() * 0.4,
+            color: '#ffaa00',
+            size: 3 + Math.random() * 5
+        });
+    }
+    if (gameMode === 'meteorshower') {
+        for (let i = 0; i < 12; i++) {
+            particles.push({
                 x: x,
                 y: y,
-                size: size * 2,
-                life: 1.0,
-                color: '#ff6600'
+                vx: (Math.random() - 0.5) * 6,
+                vy: -Math.random() * 6 - 2,
+                life: 1.2 + Math.random() * 0.6,
+                color: '#222222',
+                size: 5 + Math.random() * 8
             });
-            for (let i = 0; i < size; i++) {
-                particles.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 15,
-                    vy: (Math.random() - 0.5) * 15 - 5,
-                    life: 0.8 + Math.random() * 0.4,
-                    color: '#ffaa00',
-                    size: 3 + Math.random() * 5
-                });
-            }
         }
+    }
+}
 
         function updateMeteoroids() {
             generateMeteoroid();
@@ -9567,7 +9699,7 @@ function requestTiltPermission() {
         // ===== 10,000+ SHOOTING STARS SYSTEM =====
         let shootingStars = [];
         const MAX_SHOOTING_STARS = 10000;
-        const SHOOTING_STAR_SPAWN_RATE = 0.3;
+       const SHOOTING_STAR_SPAWN_RATE = 0.45;
 
         function generateShootingStar() {
             if (gameMode === 'meteorshower') {
@@ -9679,27 +9811,8 @@ function requestTiltPermission() {
 
         // ===== BIRDS FLYING =====
         let birds = [];
-        function updateBirds(altitude) {
-            if (altitude >= 400 && altitude <= 500) {
-                if (Math.random() < 0.05 && birds.length < 10) {
-                    birds.push({
-                        x: player.x + canvas.width,
-                        y: player.y + (Math.random() * 200 - 100),
-                        speed: 2 + Math.random() * 3,
-                        size: 5 + Math.random() * 5,
-                        wingPhase: Math.random() * Math.PI
-                    });
-                }
-                for (let i = birds.length - 1; i >= 0; i--) {
-                    birds[i].x -= birds[i].speed;
-                    birds[i].wingPhase += 0.2;
-                    if (birds[i].x < player.x - canvas.width) {
-                        birds.splice(i, 1);
-                    }
-                }
-            } else {
-                birds = [];
-            }
+       function updateBirds(altitude) {
+            birds = [];
         }
 
         function drawBirds() {
@@ -10562,10 +10675,10 @@ function requestTiltPermission() {
         let mountains = [];
         function generateRealisticMountains() {
             mountains.length = 0;
-            const mountainColors = [
-                { base: '#6b4f3c', highlight: '#8b5a2b', shadow: '#4a2e1e' },
-                { base: '#2d6a4f', highlight: '#40916c', shadow: '#1e4d3a' },
-                { base: '#b85e3a', highlight: '#d97852', shadow: '#9d4b2e' }
+          const mountainColors = [
+                { base: '#4b5563', highlight: '#94a3b8', shadow: '#1f2937' },
+                { base: '#3b3654', highlight: '#6d5b9e', shadow: '#221d33' },
+                { base: '#334155', highlight: '#60a5fa', shadow: '#0f172a' }
             ];
             for (let x = -2000; x < 60000; x += 600) {
                 if (Math.random() < 0.5) {
@@ -10693,42 +10806,10 @@ function requestTiltPermission() {
         // Ponds and boats
         let ponds = [];
         let boats = [];
-        function generatePondsAndBoats() {
+       function generatePondsAndBoats() {
             ponds.length = 0;
             boats.length = 0;
-            const numPonds = 5 + Math.floor(Math.random() * 4);
-            for (let i = 0; i < numPonds; i++) {
-                let pondX, validPosition = false;
-                let attempts = 0;
-                while (!validPosition && attempts < 50) {
-                    pondX = 2000 + Math.random() * 45000;
-                    validPosition = true;
-                    for (let j = 0; j < runwayStarts.length; j++) {
-                        if (Math.abs(pondX - runwayStarts[j]) < 3000) {
-                            validPosition = false;
-                            break;
-                        }
-                    }
-                    attempts++;
-                }
-                if (validPosition) {
-                    const pondWidth = 200 + Math.random() * 300;
-                    const pondDepth = 20 + Math.random() * 30;
-                    ponds.push({ x: pondX, width: pondWidth, depth: pondDepth, color: '#1e4b6e' });
-                    const numBoats = 1 + Math.floor(Math.random() * 3);
-                    for (let b = 0; b < numBoats; b++) {
-                        boats.push({
-                            x: pondX - pondWidth / 2 + 50 + Math.random() * (pondWidth - 100),
-                            y: WORLD_GROUND - 5,
-                            direction: Math.random() > 0.5 ? 1 : -1,
-                            speed: 0.2 + Math.random() * 0.3,
-                            color: '#8b5a2b',
-                            sailColor: '#ef4444',
-                            size: 8 + Math.random() * 6
-                        });
-                    }
-                }
-            }
+            // Space setting — no water bodies.
         }
 
         function drawPondsAndBoats() {
@@ -10759,10 +10840,208 @@ function requestTiltPermission() {
             });
         }
 
-        // ===== ENHANCED SCENERY WITH HOUSES AND 2D NPCS =====
+      // ===== ENHANCED SCENERY WITH HOUSES AND 2D NPCS =====
         let scenery = [];
         let npcs = [];
         let controlTowers = [];
+
+        // ===== ALIEN CREATURES WALKING ON GROUND =====
+        let aliens = [];
+        function generateAliens() {
+            aliens.length = 0;
+            for (let i = 0; i < 70; i++) {
+                let ax = 1000 + Math.random() * 45000;
+                let skip = false;
+                for (let r of runwayRanges) { if (ax > r[0] - 200 && ax < r[1] + 200) { skip = true; break; } }
+                if (skip) continue;
+                aliens.push({
+                    x: ax, size: 6 + Math.random() * 4,
+                    color: ['#22c55e', '#a78bfa', '#38bdf8'][Math.floor(Math.random() * 3)],
+                    direction: Math.random() > 0.5 ? 1 : -1,
+                    speed: 0.15 + Math.random() * 0.25,
+                    animation: Math.random() * Math.PI * 2,
+                    type: ['grey', 'tentacle', 'insectoid'][Math.floor(Math.random() * 3)]
+                });
+            }
+        }
+
+        function drawAliens() {
+            const groundY = WORLD_GROUND - camera.y;
+            aliens.forEach(a => {
+                a.animation += 0.08;
+                a.x += a.direction * a.speed;
+                if (Math.random() < 0.002) a.direction *= -1;
+                const sx = a.x - camera.x;
+                if (sx > -50 && sx < canvas.width + 50) {
+                    ctx.save();
+                    ctx.translate(sx, groundY - a.size * 2);
+                    ctx.shadowColor = a.color; ctx.shadowBlur = 8;
+                    ctx.fillStyle = a.color;
+                    if (a.type === 'grey') {
+                        ctx.beginPath(); ctx.ellipse(0, -a.size * 1.5, a.size * 0.9, a.size * 1.1, 0, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillRect(-a.size * 0.3, -a.size * 0.4, a.size * 0.6, a.size * 1.2);
+                        ctx.fillStyle = '#000';
+                        ctx.beginPath(); ctx.ellipse(-a.size * 0.35, -a.size * 1.6, a.size * 0.25, a.size * 0.15, -0.3, 0, Math.PI * 2); ctx.fill();
+                        ctx.beginPath(); ctx.ellipse(a.size * 0.35, -a.size * 1.6, a.size * 0.25, a.size * 0.15, 0.3, 0, Math.PI * 2); ctx.fill();
+                    } else if (a.type === 'tentacle') {
+                        ctx.beginPath(); ctx.arc(0, -a.size * 1.2, a.size * 0.8, 0, Math.PI * 2); ctx.fill();
+                        for (let t = 0; t < 4; t++) {
+                            const wig = Math.sin(a.animation + t) * a.size * 0.4;
+                            ctx.beginPath();
+                            ctx.moveTo(-a.size * 0.6 + t * a.size * 0.4, -a.size * 0.4);
+                            ctx.lineTo(-a.size * 0.6 + t * a.size * 0.4 + wig, a.size * 0.3);
+                            ctx.lineWidth = 2; ctx.strokeStyle = a.color; ctx.stroke();
+                        }
+                    } else {
+                        ctx.beginPath(); ctx.ellipse(0, -a.size, a.size * 0.6, a.size * 1.3, 0, 0, Math.PI * 2); ctx.fill();
+                        ctx.strokeStyle = a.color; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.moveTo(-a.size * 0.3, -a.size * 1.9); ctx.lineTo(-a.size * 0.6, -a.size * 2.4); ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(a.size * 0.3, -a.size * 1.9); ctx.lineTo(a.size * 0.6, -a.size * 2.4); ctx.stroke();
+                    }
+                    ctx.shadowBlur = 0;
+                    ctx.restore();
+                }
+            });
+        }
+
+        // ===== ALIEN HOVER CARS =====
+        let alienCars = [];
+        function generateAlienCars() {
+            alienCars.length = 0;
+            for (let i = 0; i < 25; i++) {
+                let cx = 1000 + Math.random() * 45000;
+                let skip = false;
+                for (let r of runwayRanges) { if (cx > r[0] - 200 && cx < r[1] + 200) { skip = true; break; } }
+                if (skip) continue;
+                alienCars.push({
+                    x: cx, size: 14 + Math.random() * 8,
+                    color: ['#f472b6', '#38bdf8', '#facc15', '#a3e635'][Math.floor(Math.random() * 4)],
+                    direction: Math.random() > 0.5 ? 1 : -1,
+                    speed: 0.6 + Math.random() * 1.2,
+                    hoverPhase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        function drawAlienCars() {
+            const groundY = WORLD_GROUND - camera.y;
+            alienCars.forEach(c => {
+                c.hoverPhase += 0.1;
+                c.x += c.direction * c.speed;
+                if (Math.random() < 0.001) c.direction *= -1;
+                const sx = c.x - camera.x;
+                const hover = 3 + Math.sin(c.hoverPhase) * 2;
+                if (sx > -60 && sx < canvas.width + 60) {
+                    ctx.save();
+                    const g = ctx.createRadialGradient(sx, groundY - 2, 0, sx, groundY - 2, c.size * 1.2);
+                    g.addColorStop(0, c.color + 'aa');
+                    g.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = g;
+                    ctx.beginPath(); ctx.ellipse(sx, groundY - 2, c.size * 1.1, 4, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = c.color;
+                    ctx.beginPath(); ctx.ellipse(sx, groundY - 8 - hover, c.size, c.size * 0.4, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                    ctx.beginPath(); ctx.ellipse(sx, groundY - 12 - hover, c.size * 0.5, c.size * 0.22, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.restore();
+                }
+            });
+        }
+
+        // ===== ROAMING UFOs THAT FLY, LAND, AND TAKE OFF =====
+        let ufos = [];
+        const UFO_COUNT = 3;
+        function generateUFOs() {
+            ufos = [];
+            for (let i = 0; i < UFO_COUNT; i++) {
+                const baseY = 500 + Math.random() * 3000;
+                ufos.push({
+                    x: Math.random() * 50000,
+                    y: baseY,
+                    baseY: baseY,
+                    vx: (Math.random() < 0.5 ? -1 : 1) * (1 + Math.random() * 2),
+                    state: 'flying',
+                    stateTimer: 300 + Math.random() * 600,
+                    wobble: Math.random() * Math.PI * 2,
+                    size: 30 + Math.random() * 20
+                });
+            }
+        }
+
+        function updateUFOs() {
+            ufos.forEach(u => {
+                u.wobble += 0.03;
+                u.stateTimer--;
+                if (u.state === 'flying') {
+                    u.x += u.vx;
+                    u.y = u.baseY + Math.sin(u.wobble) * 40;
+                    if (u.stateTimer <= 0) {
+                        if (Math.random() < 0.4) {
+                            u.state = 'descending';
+                            u.stateTimer = 9999;
+                        } else {
+                            u.stateTimer = 300 + Math.random() * 600;
+                            u.vx = (Math.random() < 0.5 ? -1 : 1) * (1 + Math.random() * 2);
+                        }
+                    }
+                    if (u.x > player.x + 40000) u.x = player.x - 40000;
+                    if (u.x < player.x - 40000) u.x = player.x + 40000;
+                } else if (u.state === 'descending') {
+                    u.y += 3;
+                    if (u.y >= WORLD_GROUND - 40) {
+                        u.y = WORLD_GROUND - 40;
+                        u.state = 'landed';
+                        u.stateTimer = 200 + Math.random() * 300;
+                    }
+                } else if (u.state === 'landed') {
+                    if (u.stateTimer <= 0) u.state = 'ascending';
+                } else if (u.state === 'ascending') {
+                    u.y -= 3;
+                    if (u.y <= u.baseY) {
+                        u.state = 'flying';
+                        u.stateTimer = 300 + Math.random() * 600;
+                    }
+                }
+            });
+        }
+
+        function drawUFOs() {
+            ufos.forEach(u => {
+                const sx = u.x - camera.x;
+                const sy = u.y - camera.y;
+                if (sx > -150 && sx < canvas.width + 150 && sy > -150 && sy < canvas.height + 150) {
+                    ctx.save();
+                    ctx.translate(sx, sy);
+                    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, u.size * 2);
+                    g.addColorStop(0, 'rgba(120,255,150,0.35)');
+                    g.addColorStop(1, 'rgba(120,255,150,0)');
+                    ctx.fillStyle = g;
+                    ctx.beginPath(); ctx.arc(0, 0, u.size * 2, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.beginPath(); ctx.ellipse(0, 0, u.size, u.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2; ctx.stroke();
+                    ctx.fillStyle = 'rgba(134,239,172,0.7)';
+                    ctx.beginPath(); ctx.ellipse(0, -u.size * 0.25, u.size * 0.45, u.size * 0.3, 0, Math.PI, Math.PI * 2); ctx.fill();
+                    for (let i = 0; i < 6; i++) {
+                        const ang = (i / 6) * Math.PI * 2 + u.wobble;
+                        const lx = Math.cos(ang) * u.size * 0.8;
+                        const ly = Math.sin(ang) * u.size * 0.25;
+                        const pulse = 0.5 + 0.5 * Math.sin(u.wobble * 3 + i);
+                        ctx.fillStyle = `rgba(251,191,36,${pulse})`;
+                        ctx.beginPath(); ctx.arc(lx, ly, 3, 0, Math.PI * 2); ctx.fill();
+                    }
+                    if (u.state === 'landed' || u.state === 'descending' || u.state === 'ascending') {
+                        ctx.strokeStyle = '#475569'; ctx.lineWidth = 2;
+                        [-u.size * 0.5, u.size * 0.5].forEach(lx => {
+                            ctx.beginPath();
+                            ctx.moveTo(lx, u.size * 0.3);
+                            ctx.lineTo(lx, u.size * 0.3 + 12);
+                            ctx.stroke();
+                        });
+                    }
+                    ctx.restore();
+                }
+            });
+        }
 
         // ===== NIGHT SKY - 40,000 STARS =====
         let stars = [];
@@ -10931,7 +11210,7 @@ function requestTiltPermission() {
         const runwayStarts = [500, 11280, 22060, 32840, 43620];
         const runwayRanges = [[400, 6100], [11180, 16880], [21960, 27660], [32740, 38440], [43520, 49220]];
 
-        function generateScenery() {
+       function generateScenery() {
             scenery.length = 0;
             controlTowers.length = 0;
             npcs.length = 0;
@@ -10942,83 +11221,34 @@ function requestTiltPermission() {
                 for (let i = 0; i < runwayRanges.length; i++) {
                     const range = runwayRanges[i];
                     if (x > range[0] - 300 && x < range[1] + 300) {
-                        skip = true;
-                        isRunwayArea = true;
-                        runwayIndex = i;
-                        break;
+                        skip = true; isRunwayArea = true; runwayIndex = i; break;
                     }
                 }
                 if (isRunwayArea && runwayIndex >= 0) {
                     if (Math.abs(x - runwayStarts[runwayIndex]) < 100) {
-                        controlTowers.push({ x: runwayStarts[runwayIndex] - 200, y: WORLD_GROUND, runwayNumber: runwayNumbers[runwayIndex], baseColor: '#4a5568', glassColor: '#60a5fa', roofColor: '#b45309' });
+                        controlTowers.push({ x: runwayStarts[runwayIndex] - 200, y: WORLD_GROUND, runwayNumber: runwayNumbers[runwayIndex], baseColor: '#334155', glassColor: '#60a5fa', roofColor: '#94a3b8' });
                     }
                     continue;
                 }
                 if (skip) continue;
-                if (Math.random() < 0.8) {
+                if (Math.random() < 0.45) {
                     const rand = Math.random();
-                    if (rand < 0.15) {
-                        scenery.push({ x: x + Math.random() * 40, type: 'tree_oak', height: 50 + Math.random() * 20, trunkColor: '#4a2e1e', leafColor: '#2d6a4f' });
-                    } else if (rand < 0.30) {
-                        scenery.push({ x: x + Math.random() * 40, type: 'tree_pine', height: 55 + Math.random() * 25, trunkColor: '#3a1e0e', leafColor: '#1e4d3a' });
-                    } else if (rand < 0.45) {
-                        scenery.push({ x: x + Math.random() * 40, type: 'tree_palm', height: 60 + Math.random() * 20, trunkColor: '#5a3e2e', leafColor: '#3d8a4f' });
+                    if (rand < 0.35) {
+                        scenery.push({ x: x + Math.random() * 40, type: 'asteroid_rock', height: 20 + Math.random() * 40, spikes: 6 + Math.floor(Math.random() * 4), color: ['#4b5563', '#57534e', '#3f3f46'][Math.floor(Math.random() * 3)] });
                     } else if (rand < 0.55) {
-                        scenery.push({
-                            x: x + Math.random() * 60,
-                            type: 'house',
-                            height: 20 + Math.random() * 20,
-                            width: 25 + Math.random() * 20,
-                            color: '#8b5a2b',
-                            roofColor: '#a52a2a',
-                            doorColor: '#4a2e1e',
-                            windowColor: '#60a5fa'
-                        });
-                    } else if (rand < 0.65) {
-                        scenery.push({ x: x + Math.random() * 80, type: 'hill', height: 10 + Math.random() * 30, width: 40 + Math.random() * 40, color: '#5d6d3b' });
+                        scenery.push({ x: x + Math.random() * 40, type: 'space_crystal', height: 25 + Math.random() * 35, color: ['#22d3ee', '#a78bfa', '#f472b6'][Math.floor(Math.random() * 3)] });
                     } else if (rand < 0.75) {
-                        scenery.push({ x: x + Math.random() * 30, type: 'bush', height: 5 + Math.random() * 8, color: '#2d6a4f' });
-                    } else if (rand < 0.85) {
-                        scenery.push({
-                            x: x + Math.random() * 50,
-                            type: 'building',
-                            height: 30 + Math.random() * 30,
-                            width: 20 + Math.random() * 20,
-                            color: '#64748b',
-                            roofColor: '#334155',
-                            windows: Math.floor(Math.random() * 3) + 1
-                        });
+                        scenery.push({ x: x + Math.random() * 60, type: 'satellite', height: 30 + Math.random() * 15, color: '#94a3b8' });
+                    } else if (rand < 0.9) {
+                        scenery.push({ x: x + Math.random() * 50, type: 'debris_chunk', height: 10 + Math.random() * 15, color: ['#6b7280', '#78716c'][Math.floor(Math.random() * 2)] });
                     } else {
-                        scenery.push({
-                            x: x + Math.random() * 70,
-                            type: 'barn',
-                            height: 25 + Math.random() * 20,
-                            width: 35 + Math.random() * 25,
-                            color: '#b91c1c',
-                            roofColor: '#7f1d1d',
-                            doorColor: '#451a1a'
-                        });
+                        scenery.push({ x: x + Math.random() * 70, type: 'space_beacon', height: 40 + Math.random() * 25, color: '#f59e0b' });
                     }
                 }
-                if (Math.random() < 0.3) {
-                    scenery.push({ x: x + Math.random() * 50, type: 'grass', height: 3 + Math.random() * 5, color: '#4a7c3a' });
-                }
-            }
-            for (let i = 0; i < 200; i++) {
-                npcs.push({
-                    x: 1000 + Math.random() * 45000,
-                    y: WORLD_GROUND,
-                    size: 5 + Math.random() * 3,
-                    color: ['#fbbf24', '#60a5fa', '#ef4444', '#a78bfa'][Math.floor(Math.random() * 4)],
-                    direction: Math.random() > 0.5 ? 1 : -1,
-                    speed: 0.1 + Math.random() * 0.2,
-                    animation: 0,
-                    type: ['person', 'dog', 'cat', 'bird', 'farmer', 'child'][Math.floor(Math.random() * 6)]
-                });
             }
         }
 
-        // Initialize world
+       // Initialize world
         generateStars();
         generateRealisticMountains();
         generateScenery();
@@ -11026,6 +11256,9 @@ function requestTiltPermission() {
         generateRunwayLocalizers();
         generatePondsAndBoats();
         generateClouds();
+        generateAliens();
+        generateAlienCars();
+        generateUFOs();
 
         // Player object
         const player = {
@@ -11405,22 +11638,24 @@ function requestTiltPermission() {
             hideGameplayBackground();
         }
 
-window.restartFromGameOver = function () {
-    if (window.Android) {
-        Android.showMainAd();
-    }
-    gameoverMenu.style.display = 'none';
-    homeMenu.style.display = 'none';
-    switch (gameMode) {
-        case 'endless':      startEndlessMode(); break;
-        case 'timeattack':   startTimeAttackMode(); break;
-        case 'meteorshower': startMeteorShowerMode(); break;
-        case 'challenge':    startChallengeMode(); break;
-        default:
-            resetGameState();
-            startGame(false);
-    }
-}
+      window.restartFromGameOver = function () {
+            if (window.Android) {
+                Android.showMainAd();
+            }
+            gameoverMenu.style.display = 'none';
+            homeMenu.style.display = 'none';
+           switch (gameMode) {
+                case 'endless': startEndlessMode(); break;
+                case 'timeattack': startTimeAttackMode(); break;
+                case 'meteorshower': startMeteorShowerMode(); break;
+                case 'challenge': startChallengeMode(); break;
+                case 'bossmode': startNewBossMode(); break;
+                default:
+                    resetGameState();
+                    startGame(false);
+            }
+        }
+
         window.goToHomeFromGameOver = function () {
             if (gameMode === 'timeattack' && timeAttackTimer) clearInterval(timeAttackTimer);
             if (gameMode === 'meteorshower' && meteorShowerTimer) clearInterval(meteorShowerTimer);
@@ -11557,9 +11792,10 @@ window.restartFromGameOver = function () {
                     shootTimer: 0,
                     health: bossHealth,
                     maxHealth: bossHealth,
-                    name: bossType.name,
+                   name: bossType.name,
                     color: bossType.color,
                     size: bossType.size,
+                    drawFunc: bossType.drawShape,
                     shootSpeed: bossType.shootSpeed / enemyAccuracyMultiplier,
                     bulletSpeed: bossType.bulletSpeed * (difficultyLevel === 'Hard' ? 1.3 : difficultyLevel === 'Easy' ? 0.7 : 1.0),
                     points: bossType.points + (currentLevel * 100),
@@ -11582,10 +11818,53 @@ window.restartFromGameOver = function () {
             showBossIndicator();
         }
 
-        function spawnEnemies() {
+       function spawnEnemies() {
             if (currentStage === 5) spawnBoss();
             else spawnStageEnemies();
             checkAndStartWeather();
+        }
+
+        function onBossDefeated(defeatedBoss) {
+            createBlast(defeatedBoss.x, defeatedBoss.y, "#ffaa00", 80);
+            playSound('bossDie');
+            totalScore += defeatedBoss.points;
+            inGameDollars += defeatedBoss.coins;
+            updateDollarDisplay();
+            updateMenuScore();
+            playSound('coin');
+            checkAchievement('bossSlayer', 1);
+            if (defeatedBoss.isMysteryBoss && defeatedBoss.id) {
+                addMysteryBox(defeatedBoss.id);
+            }
+            defeatedBoss.alive = false;
+            defeatedBoss.exploded = true;
+            bossActive = false;
+            bossHealthContainer.style.display = 'none';
+            checkAllEnemiesDead();
+
+            if (gameMode === 'bossmode') {
+                const key = defeatedBoss.bossKey;
+                const dlg = key ? bossDialogues[key] : null;
+                addNotification(`💥 ${defeatedBoss.name} Defeated!`, dlg ? dlg.defeat : 'Boss destroyed!', '💥');
+                bossModeIndex++;
+                homeCoins += 100 + (bossModeIndex * 25);
+                updateHomeCoinDisplay();
+                addPilotXP(40);
+                setTimeout(() => {
+                    if (gameMode === 'bossmode' && !player.dead) {
+                        spawnSequencedBoss();
+                    }
+                }, 2000);
+                return;
+            }
+
+            if (gameMode !== 'endless') {
+                currentStage = 1;
+                currentLevel++;
+                updateStageDisplay();
+                spawnEnemies();
+                saveGame();
+            }
         }
 
         function updateStageDisplay() {
@@ -12023,10 +12302,11 @@ window.restartFromGameOver = function () {
                 return;
             }
 
-            updateWeather();
+           updateWeather();
             updateGroundSparkles();
             updateShootingStars();
             updateMeteoroids();
+            updateUFOs();
             updateReload(); // Update reload timer
 
             updateHighAltitudeGalaxy();
@@ -12328,38 +12608,14 @@ window.restartFromGameOver = function () {
 
                 let missileHit = false;
 
-                if (bossActive && boss && boss.alive && !boss.exploded && Math.hypot(m.x - boss.x, m.y - boss.y) < 60) {
+              if (bossActive && boss && boss.alive && !boss.exploded && Math.hypot(m.x - boss.x, m.y - boss.y) < 60) {
                     createBlast(m.x, m.y, boss.color, 30);
                     let damage = (activePower === 'doubleDamage' ? 50 : 35);
                     boss.health -= damage;
                     playSound('bossHit');
                     updateBossHealthBar();
                     if (boss.health <= 0) {
-                        createBlast(boss.x, boss.y, "#ffaa00", 80);
-                        playSound('bossDie');
-                        totalScore += boss.points;
-                        inGameDollars += boss.coins;
-                        updateDollarDisplay();
-                        updateMenuScore();
-                        playSound('coin');
-                        checkAchievement('bossSlayer', 1);
-                        if (boss.isMysteryBoss && boss.id) {
-                            addMysteryBox(boss.id);
-                        }
-                        boss.alive = false;
-                        boss.exploded = true;
-                        bossActive = false;
-                        bossHealthContainer.style.display = 'none';
-                        checkAllEnemiesDead();
-                        if (gameMode !== 'endless') {
-                            currentStage = 1;
-                            currentLevel++;
-                            updateStageDisplay();
-                            spawnEnemies();
-                            saveGame();
-                        } else {
-                            checkAllEnemiesDead();
-                        }
+                        onBossDefeated(boss);
                     }
                     missiles.splice(mi, 1);
                     missileHit = true;
@@ -12608,7 +12864,7 @@ window.restartFromGameOver = function () {
             }
 
             // Bullet-boss collisions
-            if (bossActive && boss && boss.alive && !boss.exploded) {
+           if (bossActive && boss && boss.alive && !boss.exploded) {
                 for (let i = bullets.length - 1; i >= 0; i--) {
                     const b = bullets[i];
                     if (Math.hypot(b.x - boss.x, b.y - boss.y) < 60) {
@@ -12618,29 +12874,7 @@ window.restartFromGameOver = function () {
                         playSound('bossHit');
                         updateBossHealthBar();
                         if (boss.health <= 0) {
-                            createBlast(boss.x, boss.y, "#ffaa00", 80);
-                            playSound('bossDie');
-                            totalScore += boss.points;
-                            inGameDollars += boss.coins;
-                            updateDollarDisplay();
-                            updateMenuScore();
-                            playSound('coin');
-                            checkAchievement('bossSlayer', 1);
-                            if (boss.isMysteryBoss && boss.id) {
-                                addMysteryBox(boss.id);
-                            }
-                            boss.alive = false;
-                            boss.exploded = true;
-                            bossActive = false;
-                            bossHealthContainer.style.display = 'none';
-                            checkAllEnemiesDead();
-                            if (gameMode !== 'endless') {
-                                currentStage = 1;
-                                currentLevel++;
-                                updateStageDisplay();
-                                spawnEnemies();
-                                saveGame();
-                            }
+                            onBossDefeated(boss);
                         }
                         bullets.splice(i, 1);
                     }
@@ -12767,346 +13001,313 @@ In-Game Dollars: $${inGameDollars}
             reviveWithAd();
         }
 
-       // ===== REALISTIC 2D PLANE DRAWING =====
-function drawPlane(p, isPlayer) {
-    if (p.exploded) return;
-    if (!isPlayer && p.drawFunc) {
-        const wingAngle = p.wingAngle || 0;
-        p.drawFunc(ctx, p.x - camera.x, p.y - camera.y, p.angle, 0.8, wingAngle);
-        return;
-    }
+        // ===== REALISTIC 2D PLANE DRAWING =====
+        function drawPlane(p, isPlayer) {
+            if (p.exploded) return;
+            if (!isPlayer && p.drawFunc) {
+                const wingAngle = p.wingAngle || 0;
+                p.drawFunc(ctx, p.x - camera.x, p.y - camera.y, p.angle, 0.8, wingAngle);
+                return;
+            }
 
-    ctx.save();
-    ctx.translate(p.x - camera.x, p.y - camera.y);
-    ctx.rotate(p.angle);
+            ctx.save();
+            ctx.translate(p.x - camera.x, p.y - camera.y);
+            ctx.rotate(p.angle);
 
-    const s = 0.62; // overall scale
-    const baseColor = playerColor;
+            const s = 0.62; // overall scale
+            const baseColor = playerColor;
 
-    // ---- shadow on ground ----
-    const alt = WORLD_GROUND - p.y;
-    if (alt < 800 && alt > 0) {
-        ctx.save();
-        ctx.rotate(-p.angle);
-        ctx.fillStyle = `rgba(0,0,0,${0.25 * (1 - alt / 800)})`;
-        ctx.beginPath();
-        ctx.ellipse(0, alt, 42 * s, 11 * s, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
+            // ---- shadow on ground ----
+            const alt = WORLD_GROUND - p.y;
+            if (alt < 800 && alt > 0) {
+                ctx.save();
+                ctx.rotate(-p.angle);
+                ctx.fillStyle = `rgba(0,0,0,${0.25 * (1 - alt / 800)})`;
+                ctx.beginPath();
+                ctx.ellipse(0, alt, 42 * s, 11 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
 
-    // ---- engine glow ----
-    if (p.engineOK && !p.crashing) {
-        const flicker = 8 + Math.random() * 6;
-        const g = ctx.createRadialGradient(-62 * s, 0, 0, -62 * s, 0, flicker * s);
-        g.addColorStop(0, "rgba(180,220,255,0.95)");
-        g.addColorStop(0.4, "rgba(56,189,248,0.55)");
-        g.addColorStop(1, "transparent");
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(-62 * s, 0, flicker * s, 0, Math.PI * 2);
-        ctx.fill();
-    }
+            // ---- engine glow ----
+            if (p.engineOK && !p.crashing) {
+                const flicker = 8 + Math.random() * 6;
+                const g = ctx.createRadialGradient(-62 * s, 0, 0, -62 * s, 0, flicker * s);
+                g.addColorStop(0, "rgba(180,220,255,0.95)");
+                g.addColorStop(0.4, "rgba(56,189,248,0.55)");
+                g.addColorStop(1, "transparent");
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(-62 * s, 0, flicker * s, 0, Math.PI * 2);
+                ctx.fill();
+            }
 
-    const bankTilt = Math.max(-1, Math.min(1, (player.vy || 0) * 0.05));
+            const bankTilt = Math.max(-1, Math.min(1, (player.vy || 0) * 0.05));
 
-    // ================= REAR WING (behind fuselage) =================
-    ctx.save();
-    ctx.translate(-2 * s, 0);
-    drawWingPair(ctx, s, baseColor, -0.15 + bankTilt * 0.1, true);
-    ctx.restore();
+            // ================= REAR WING (behind fuselage) =================
+            ctx.save();
+            ctx.translate(-2 * s, 0);
+            drawWingPair(ctx, s, baseColor, -0.15 + bankTilt * 0.1, true);
+            ctx.restore();
 
-    // ================= TAIL FIN =================
-    ctx.save();
-    const tailGrad = ctx.createLinearGradient(-70 * s, -32 * s, -70 * s, 4 * s);
-    tailGrad.addColorStop(0, shadeColor(baseColor, 25));
-    tailGrad.addColorStop(1, shadeColor(baseColor, -20));
-    ctx.fillStyle = tailGrad;
-    ctx.beginPath();
-    ctx.moveTo(-45 * s, -3 * s);
-    ctx.quadraticCurveTo(-62 * s, -28 * s, -74 * s, -30 * s);
-    ctx.lineTo(-62 * s, -2 * s);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = shadeColor(baseColor, -40);
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    // small horizontal stabilizers
-    ctx.fillStyle = shadeColor(baseColor, 10);
-    ctx.beginPath();
-    ctx.moveTo(-48 * s, -1 * s);
-    ctx.lineTo(-64 * s, -9 * s);
-    ctx.lineTo(-64 * s, -3 * s);
-    ctx.lineTo(-50 * s, 1 * s);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(-48 * s, 1 * s);
-    ctx.lineTo(-64 * s, 9 * s);
-    ctx.lineTo(-64 * s, 3 * s);
-    ctx.lineTo(-50 * s, -1 * s);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
+            // ================= TAIL FIN =================
+            ctx.save();
+            const tailGrad = ctx.createLinearGradient(-70 * s, -32 * s, -70 * s, 4 * s);
+            tailGrad.addColorStop(0, shadeColor(baseColor, 25));
+            tailGrad.addColorStop(1, shadeColor(baseColor, -20));
+            ctx.fillStyle = tailGrad;
+            ctx.beginPath();
+            ctx.moveTo(-45 * s, -3 * s);
+            ctx.quadraticCurveTo(-62 * s, -28 * s, -74 * s, -30 * s);
+            ctx.lineTo(-62 * s, -2 * s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = shadeColor(baseColor, -40);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            // small horizontal stabilizers
+            ctx.fillStyle = shadeColor(baseColor, 10);
+            ctx.beginPath();
+            ctx.moveTo(-48 * s, -1 * s);
+            ctx.lineTo(-64 * s, -9 * s);
+            ctx.lineTo(-64 * s, -3 * s);
+            ctx.lineTo(-50 * s, 1 * s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(-48 * s, 1 * s);
+            ctx.lineTo(-64 * s, 9 * s);
+            ctx.lineTo(-64 * s, 3 * s);
+            ctx.lineTo(-50 * s, -1 * s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
 
-    // ================= FUSELAGE (solid, shaded, tapered) =================
-    ctx.save();
-    const bodyGrad = ctx.createLinearGradient(0, -11 * s, 0, 11 * s);
-    bodyGrad.addColorStop(0, shadeColor(baseColor, 45));
-    bodyGrad.addColorStop(0.45, shadeColor(baseColor, 5));
-    bodyGrad.addColorStop(1, shadeColor(baseColor, -35));
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.moveTo(64 * s, 0);                                   // nose tip
-    ctx.quadraticCurveTo(48 * s, -9 * s, 18 * s, -9 * s);     // nose->mid top
-    ctx.quadraticCurveTo(-40 * s, -9 * s, -58 * s, -4 * s);   // mid->tail top
-    ctx.lineTo(-58 * s, 4 * s);                               // tail back
-    ctx.quadraticCurveTo(-40 * s, 9 * s, 18 * s, 9 * s);      // tail->mid bottom
-    ctx.quadraticCurveTo(48 * s, 9 * s, 64 * s, 0);           // mid->nose bottom
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = shadeColor(baseColor, -45);
-    ctx.lineWidth = 1.2;
-    ctx.stroke();
+            // ================= FUSELAGE (solid, shaded, tapered) =================
+            ctx.save();
+            const bodyGrad = ctx.createLinearGradient(0, -11 * s, 0, 11 * s);
+            bodyGrad.addColorStop(0, shadeColor(baseColor, 45));
+            bodyGrad.addColorStop(0.45, shadeColor(baseColor, 5));
+            bodyGrad.addColorStop(1, shadeColor(baseColor, -35));
+            ctx.fillStyle = bodyGrad;
+            ctx.beginPath();
+            ctx.moveTo(64 * s, 0);                                   // nose tip
+            ctx.quadraticCurveTo(48 * s, -9 * s, 18 * s, -9 * s);     // nose->mid top
+            ctx.quadraticCurveTo(-40 * s, -9 * s, -58 * s, -4 * s);   // mid->tail top
+            ctx.lineTo(-58 * s, 4 * s);                               // tail back
+            ctx.quadraticCurveTo(-40 * s, 9 * s, 18 * s, 9 * s);      // tail->mid bottom
+            ctx.quadraticCurveTo(48 * s, 9 * s, 64 * s, 0);           // mid->nose bottom
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = shadeColor(baseColor, -45);
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
 
-    // panel lines for detail
-    ctx.strokeStyle = `rgba(0,0,0,0.18)`;
-    ctx.lineWidth = 0.8;
-    for (let lx = -40; lx <= 30; lx += 14) {
-        ctx.beginPath();
-        ctx.moveTo(lx * s, -8 * s);
-        ctx.lineTo(lx * s, 8 * s);
-        ctx.stroke();
-    }
-    ctx.restore();
+            // panel lines for detail
+            ctx.strokeStyle = `rgba(0,0,0,0.18)`;
+            ctx.lineWidth = 0.8;
+            for (let lx = -40; lx <= 30; lx += 14) {
+                ctx.beginPath();
+                ctx.moveTo(lx * s, -8 * s);
+                ctx.lineTo(lx * s, 8 * s);
+                ctx.stroke();
+            }
+            ctx.restore();
 
-    // ================= COCKPIT CANOPY =================
-    ctx.save();
-    const canopyGrad = ctx.createLinearGradient(10 * s, -8 * s, 34 * s, 3 * s);
-    canopyGrad.addColorStop(0, '#bfe9ff');
-    canopyGrad.addColorStop(0.5, '#3fa9dc');
-    canopyGrad.addColorStop(1, '#0b4a72');
-    ctx.fillStyle = canopyGrad;
-    ctx.beginPath();
-    ctx.moveTo(10 * s, -3 * s);
-    ctx.quadraticCurveTo(20 * s, -10 * s, 34 * s, -5 * s);
-    ctx.quadraticCurveTo(24 * s, 0, 10 * s, 3 * s);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = shadeColor(baseColor, -50);
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    // canopy highlight
-    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth = 1.4;
-    ctx.beginPath();
-    ctx.moveTo(14 * s, -5 * s);
-    ctx.lineTo(26 * s, -6 * s);
-    ctx.stroke();
-    ctx.restore();
+            // ================= COCKPIT CANOPY =================
+            ctx.save();
+            const canopyGrad = ctx.createLinearGradient(10 * s, -8 * s, 34 * s, 3 * s);
+            canopyGrad.addColorStop(0, '#bfe9ff');
+            canopyGrad.addColorStop(0.5, '#3fa9dc');
+            canopyGrad.addColorStop(1, '#0b4a72');
+            ctx.fillStyle = canopyGrad;
+            ctx.beginPath();
+            ctx.moveTo(10 * s, -3 * s);
+            ctx.quadraticCurveTo(20 * s, -10 * s, 34 * s, -5 * s);
+            ctx.quadraticCurveTo(24 * s, 0, 10 * s, 3 * s);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = shadeColor(baseColor, -50);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            // canopy highlight
+            ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(14 * s, -5 * s);
+            ctx.lineTo(26 * s, -6 * s);
+            ctx.stroke();
+            ctx.restore();
 
-    // nose cone shading highlight
-    ctx.save();
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    ctx.beginPath();
-    ctx.ellipse(50 * s, -3 * s, 8 * s, 2.5 * s, -0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+            // nose cone shading highlight
+            ctx.save();
+            ctx.fillStyle = 'rgba(255,255,255,0.35)';
+            ctx.beginPath();
+            ctx.ellipse(50 * s, -3 * s, 8 * s, 2.5 * s, -0.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
 
-    // ================= FRONT WING (in front of fuselage) =================
-    ctx.save();
-    ctx.translate(0, 0);
-    drawWingPair(ctx, s, baseColor, 0.05 - bankTilt * 0.1, false);
-    ctx.restore();
+            // ================= FRONT WING (in front of fuselage) =================
+            ctx.save();
+            ctx.translate(0, 0);
+            drawWingPair(ctx, s, baseColor, 0.05 - bankTilt * 0.1, false);
+            ctx.restore();
 
-    // ================= WINGTIP LIGHTS =================
-    ctx.save();
-    const blink = 0.5 + 0.5 * Math.sin(frame * 0.15);
-    ctx.fillStyle = `rgba(239,68,68,${0.5 + blink * 0.5})`;
-    ctx.beginPath(); ctx.arc(20 * s, -33 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = `rgba(74,222,128,${0.5 + blink * 0.5})`;
-    ctx.beginPath(); ctx.arc(20 * s, 33 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
+            // ================= WINGTIP LIGHTS =================
+            ctx.save();
+            const blink = 0.5 + 0.5 * Math.sin(frame * 0.15);
+            ctx.fillStyle = `rgba(239,68,68,${0.5 + blink * 0.5})`;
+            ctx.beginPath(); ctx.arc(20 * s, -33 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = `rgba(74,222,128,${0.5 + blink * 0.5})`;
+            ctx.beginPath(); ctx.arc(20 * s, 33 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
 
-    // ================= LANDING GEAR (player only) =================
-    if (isPlayer) {
-        const gearExtend = player.gearAnim;
-        if (gearExtend > 0) {
-            drawGearLeg(ctx, 26 * s, 6 * s, s, gearExtend);
-            drawGearLeg(ctx, -34 * s, 6 * s, s, gearExtend);
-            drawGearLeg(ctx, 46 * s, 3 * s, s, gearExtend * 0.7);
+            // ================= LANDING GEAR (player only) =================
+            if (isPlayer) {
+                const gearExtend = player.gearAnim;
+                if (gearExtend > 0) {
+                    drawGearLeg(ctx, 26 * s, 6 * s, s, gearExtend);
+                    drawGearLeg(ctx, -34 * s, 6 * s, s, gearExtend);
+                    drawGearLeg(ctx, 46 * s, 3 * s, s, gearExtend * 0.7);
+                }
+            }
+
+            ctx.restore();
         }
-    }
 
-    ctx.restore();
-}
+        // Draws a tapered swept wing pair (top+bottom mirrored)
+        function drawWingPair(ctx, s, baseColor, sweep, isRear) {
+            const grad = ctx.createLinearGradient(0, -35 * s, 0, 35 * s);
+            grad.addColorStop(0, shadeColor(baseColor, isRear ? -10 : 20));
+            grad.addColorStop(0.5, shadeColor(baseColor, isRear ? -30 : -5));
+            grad.addColorStop(1, shadeColor(baseColor, isRear ? -10 : 20));
 
-// Draws a tapered swept wing pair (top+bottom mirrored)
-function drawWingPair(ctx, s, baseColor, sweep, isRear) {
-    const grad = ctx.createLinearGradient(0, -35 * s, 0, 35 * s);
-    grad.addColorStop(0, shadeColor(baseColor, isRear ? -10 : 20));
-    grad.addColorStop(0.5, shadeColor(baseColor, isRear ? -30 : -5));
-    grad.addColorStop(1, shadeColor(baseColor, isRear ? -10 : 20));
+            [1, -1].forEach(dir => {
+                ctx.save();
+                ctx.scale(1, dir);
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.moveTo(18 * s, -3 * s);
+                ctx.lineTo(0 * s + sweep * 30 * s, -34 * s);
+                ctx.lineTo(-14 * s + sweep * 30 * s, -31 * s);
+                ctx.lineTo(-6 * s, -2 * s);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = shadeColor(baseColor, -45);
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                // wing shading stripe
+                ctx.fillStyle = 'rgba(0,0,0,0.12)';
+                ctx.beginPath();
+                ctx.moveTo(10 * s, -6 * s);
+                ctx.lineTo(-2 * s + sweep * 30 * s, -28 * s);
+                ctx.lineTo(-6 * s + sweep * 30 * s, -27 * s);
+                ctx.lineTo(6 * s, -6 * s);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            });
+        }
 
-    [1, -1].forEach(dir => {
-        ctx.save();
-        ctx.scale(1, dir);
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.moveTo(18 * s, -3 * s);
-        ctx.lineTo(0 * s + sweep * 30 * s, -34 * s);
-        ctx.lineTo(-14 * s + sweep * 30 * s, -31 * s);
-        ctx.lineTo(-6 * s, -2 * s);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = shadeColor(baseColor, -45);
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        // wing shading stripe
-        ctx.fillStyle = 'rgba(0,0,0,0.12)';
-        ctx.beginPath();
-        ctx.moveTo(10 * s, -6 * s);
-        ctx.lineTo(-2 * s + sweep * 30 * s, -28 * s);
-        ctx.lineTo(-6 * s + sweep * 30 * s, -27 * s);
-        ctx.lineTo(6 * s, -6 * s);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-    });
-}
+        function drawGearLeg(ctx, x, y, s, extend) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.strokeStyle = "#1e293b";
+            ctx.lineWidth = 3.5 * s;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, 14 * s * extend);
+            ctx.stroke();
+            ctx.fillStyle = "#334155";
+            ctx.beginPath();
+            ctx.ellipse(0, 14 * s * extend, 6.5 * s, 3.5 * s, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#94a3b8";
+            ctx.beginPath();
+            ctx.arc(0, 14 * s * extend, 3 * s, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
 
-function drawGearLeg(ctx, x, y, s, extend) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.strokeStyle = "#1e293b";
-    ctx.lineWidth = 3.5 * s;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, 14 * s * extend);
-    ctx.stroke();
-    ctx.fillStyle = "#334155";
-    ctx.beginPath();
-    ctx.ellipse(0, 14 * s * extend, 6.5 * s, 3.5 * s, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#94a3b8";
-    ctx.beginPath();
-    ctx.arc(0, 14 * s * extend, 3 * s, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-}
+        // lighten/darken a hex color by percent (-100 to 100)
+        function shadeColor(hex, percent) {
+            let color = hex.replace('#', '');
+            if (color.length === 3) color = color.split('').map(c => c + c).join('');
+            let r = parseInt(color.substring(0, 2), 16);
+            let g = parseInt(color.substring(2, 4), 16);
+            let b = parseInt(color.substring(4, 6), 16);
+            r = Math.min(255, Math.max(0, Math.round(r + (percent / 100) * 255)));
+            g = Math.min(255, Math.max(0, Math.round(g + (percent / 100) * 255)));
+            b = Math.min(255, Math.max(0, Math.round(b + (percent / 100) * 255)));
+            return `rgb(${r},${g},${b})`;
+        }
 
-// lighten/darken a hex color by percent (-100 to 100)
-function shadeColor(hex, percent) {
-    let color = hex.replace('#', '');
-    if (color.length === 3) color = color.split('').map(c => c + c).join('');
-    let r = parseInt(color.substring(0, 2), 16);
-    let g = parseInt(color.substring(2, 4), 16);
-    let b = parseInt(color.substring(4, 6), 16);
-    r = Math.min(255, Math.max(0, Math.round(r + (percent / 100) * 255)));
-    g = Math.min(255, Math.max(0, Math.round(g + (percent / 100) * 255)));
-    b = Math.min(255, Math.max(0, Math.round(b + (percent / 100) * 255)));
-    return `rgb(${r},${g},${b})`;
-}
-
-        function drawScenery() {
+       function drawScenery() {
             const groundY = WORLD_GROUND - camera.y;
             scenery.forEach(s => {
                 const sx = s.x - camera.x;
                 if (sx > -200 && sx < canvas.width + 200) {
                     const baseY = groundY - s.height;
-                    if (s.type === 'tree_oak') {
-                        ctx.fillStyle = s.trunkColor;
-                        ctx.fillRect(sx - 8, baseY + s.height * 0.4, 16, s.height * 0.6);
-                        ctx.fillStyle = s.leafColor;
+                    if (s.type === 'asteroid_rock') {
+                        ctx.save();
+                        ctx.fillStyle = s.color;
                         ctx.beginPath();
-                        ctx.arc(sx, baseY, s.height * 0.5, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else if (s.type === 'tree_pine') {
-                        ctx.fillStyle = s.trunkColor;
-                        ctx.fillRect(sx - 6, baseY + s.height * 0.3, 12, s.height * 0.7);
-                        ctx.fillStyle = s.leafColor;
-                        ctx.beginPath();
-                        ctx.moveTo(sx, baseY - s.height * 0.8);
-                        ctx.lineTo(sx - s.height * 0.3, baseY + s.height * 0.2);
-                        ctx.lineTo(sx + s.height * 0.3, baseY + s.height * 0.2);
-                        ctx.closePath();
-                        ctx.fill();
-                    } else if (s.type === 'tree_palm') {
-                        ctx.fillStyle = s.trunkColor;
-                        ctx.fillRect(sx - 5, baseY + s.height * 0.2, 10, s.height * 0.8);
-                        ctx.fillStyle = s.leafColor;
-                        for (let i = 0; i < 8; i++) {
-                            const angle = (i / 8) * Math.PI + Math.PI;
-                            const leafLength = s.height * 0.4;
-                            ctx.beginPath();
-                            ctx.moveTo(sx, baseY + s.height * 0.2);
-                            ctx.lineTo(sx + Math.cos(angle) * leafLength, baseY + s.height * 0.2 + Math.sin(angle) * leafLength);
-                            ctx.lineWidth = 4;
-                            ctx.strokeStyle = s.leafColor;
-                            ctx.stroke();
+                        const spikes = s.spikes || 7;
+                        for (let a = 0; a < spikes; a++) {
+                            const ang = (a / spikes) * Math.PI * 2;
+                            const r = s.height * (0.6 + Math.sin(a * 3 + s.x) * 0.25);
+                            const px = sx + Math.cos(ang) * r;
+                            const py = groundY - s.height / 2 + Math.sin(ang) * r * 0.6;
+                            if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
                         }
-                    } else if (s.type === 'house') {
-                        ctx.fillStyle = s.color;
-                        ctx.fillRect(sx - s.width / 2, baseY + s.height * 0.3, s.width, s.height * 0.7);
-                        ctx.fillStyle = s.roofColor;
+                        ctx.closePath(); ctx.fill();
+                        ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1; ctx.stroke();
+                        ctx.restore();
+                    } else if (s.type === 'space_crystal') {
+                        ctx.save();
+                        ctx.shadowColor = s.color; ctx.shadowBlur = 15;
+                        ctx.fillStyle = s.color; ctx.globalAlpha = 0.85;
                         ctx.beginPath();
-                        ctx.moveTo(sx - s.width / 2 - 5, baseY + s.height * 0.3);
-                        ctx.lineTo(sx, baseY);
-                        ctx.lineTo(sx + s.width / 2 + 5, baseY + s.height * 0.3);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.fillStyle = s.doorColor || '#4a2e1e';
-                        ctx.fillRect(sx - 5, baseY + s.height * 0.6, 10, s.height * 0.4);
-                        ctx.fillStyle = s.windowColor || '#60a5fa';
-                        ctx.fillRect(sx - 12, baseY + s.height * 0.4, 8, 8);
-                        ctx.fillRect(sx + 4, baseY + s.height * 0.4, 8, 8);
-                    } else if (s.type === 'building') {
+                        ctx.moveTo(sx, baseY - s.height * 0.6);
+                        ctx.lineTo(sx + s.height * 0.25, baseY);
+                        ctx.lineTo(sx, baseY + s.height * 0.2);
+                        ctx.lineTo(sx - s.height * 0.25, baseY);
+                        ctx.closePath(); ctx.fill();
+                        ctx.globalAlpha = 1;
+                        ctx.restore();
+                    } else if (s.type === 'satellite') {
+                        ctx.save();
                         ctx.fillStyle = s.color;
-                        ctx.fillRect(sx - s.width / 2, baseY + s.height * 0.2, s.width, s.height * 0.8);
-                        ctx.fillStyle = s.roofColor;
-                        ctx.beginPath();
-                        ctx.moveTo(sx - s.width / 2 - 3, baseY + s.height * 0.2);
-                        ctx.lineTo(sx, baseY);
-                        ctx.lineTo(sx + s.width / 2 + 3, baseY + s.height * 0.2);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.fillStyle = '#60a5fa';
-                        for (let w = 0; w < s.windows; w++) {
-                            ctx.fillRect(sx - 15 + w * 20, baseY + s.height * 0.4, 8, 8);
-                        }
-                    } else if (s.type === 'barn') {
-                        ctx.fillStyle = s.color;
-                        ctx.fillRect(sx - s.width / 2, baseY + s.height * 0.3, s.width, s.height * 0.7);
-                        ctx.fillStyle = s.roofColor;
-                        ctx.beginPath();
-                        ctx.moveTo(sx - s.width / 2 - 8, baseY + s.height * 0.3);
-                        ctx.lineTo(sx, baseY - 10);
-                        ctx.lineTo(sx + s.width / 2 + 8, baseY + s.height * 0.3);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.fillStyle = s.doorColor || '#451a1a';
-                        ctx.fillRect(sx - 8, baseY + s.height * 0.6, 16, s.height * 0.4);
-                    } else if (s.type === 'bush') {
+                        ctx.fillRect(sx - 6, baseY, 12, 12);
+                        ctx.fillStyle = '#3b82f6'; ctx.globalAlpha = 0.7;
+                        ctx.fillRect(sx - 22, baseY + 2, 14, 8);
+                        ctx.fillRect(sx + 8, baseY + 2, 14, 8);
+                        ctx.globalAlpha = 1;
+                        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+                        ctx.strokeRect(sx - 22, baseY + 2, 14, 8);
+                        ctx.strokeRect(sx + 8, baseY + 2, 14, 8);
+                        ctx.fillStyle = '#fbbf24';
+                        ctx.beginPath(); ctx.arc(sx, baseY - 6, 2, 0, Math.PI * 2); ctx.fill();
+                        ctx.restore();
+                    } else if (s.type === 'debris_chunk') {
+                        ctx.save();
                         ctx.fillStyle = s.color;
                         ctx.beginPath();
-                        ctx.arc(sx, baseY + s.height / 2, s.height / 2, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else if (s.type === 'hill') {
-                        ctx.fillStyle = s.color;
-                        ctx.beginPath();
-                        ctx.ellipse(sx, baseY + s.height / 2, s.width / 2, s.height / 2, 0, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else if (s.type === 'grass') {
-                        ctx.fillStyle = s.color;
-                        for (let g = 0; g < 5; g++) {
-                            const gx = sx + (g - 2) * 8;
-                            ctx.beginPath();
-                            ctx.moveTo(gx, baseY);
-                            ctx.lineTo(gx - 3, baseY - s.height);
-                            ctx.lineTo(gx + 3, baseY - s.height);
-                            ctx.closePath();
-                            ctx.fill();
-                        }
+                        ctx.moveTo(sx - s.height * 0.5, baseY);
+                        ctx.lineTo(sx, baseY - s.height * 0.6);
+                        ctx.lineTo(sx + s.height * 0.5, baseY);
+                        ctx.lineTo(sx + s.height * 0.2, baseY + s.height * 0.3);
+                        ctx.lineTo(sx - s.height * 0.3, baseY + s.height * 0.25);
+                        ctx.closePath(); ctx.fill();
+                        ctx.restore();
+                    } else if (s.type === 'space_beacon') {
+                        ctx.save();
+                        ctx.fillStyle = '#475569';
+                        ctx.fillRect(sx - 3, baseY, 6, s.height);
+                        const pulse = 0.5 + 0.5 * Math.sin(frame * 0.08 + s.x);
+                        ctx.fillStyle = s.color; ctx.shadowColor = s.color; ctx.shadowBlur = 12 * pulse;
+                        ctx.beginPath(); ctx.arc(sx, baseY - 4, 5 * (0.7 + pulse * 0.3), 0, Math.PI * 2); ctx.fill();
+                        ctx.restore();
                     }
                 }
             });
@@ -13366,31 +13567,31 @@ function shadeColor(hex, percent) {
         }
 
         function draw() {
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            drawStars();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+           drawStars();
             drawShootingStars();
-            drawClouds();
+            if (gameMode !== 'meteorshower') drawClouds();
             drawRealisticMountains();
 
             const groundY = WORLD_GROUND - camera.y;
-            const groundGradient = ctx.createLinearGradient(0, groundY - 50, 0, groundY + 50);
-            groundGradient.addColorStop(0, '#1a2f1a');
-            groundGradient.addColorStop(0.7, '#2d4a2d');
-            groundGradient.addColorStop(1, '#3d5a3d');
+           const groundGradient = ctx.createLinearGradient(0, groundY - 50, 0, groundY + 50);
+            groundGradient.addColorStop(0, '#1e2233');
+            groundGradient.addColorStop(0.7, '#2a2f45');
+            groundGradient.addColorStop(1, '#3a3f5c');
             ctx.fillStyle = groundGradient;
             ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY + 10);
 
-            ctx.fillStyle = '#2d4a2d';
+            ctx.fillStyle = '#4b5170';
             for (let i = 0; i < 20; i++) {
                 const x = (Math.sin(frame * 0.02 + i) * 50 + i * 100) % (canvas.width + 200) - 100;
                 ctx.fillRect(x, groundY - 2, 30, 4);
             }
 
-            drawPondsAndBoats();
-            drawScenery();
+drawScenery();
+            drawAlienCars();
+            drawAliens();
+            drawUFOs();
             controlTowers.forEach(tower => drawDetailedControlTower(tower));
-            drawNPCs();
             drawRunwayLocalizers();
 
             runwayStarts.forEach((start, index) => {
@@ -13480,12 +13681,14 @@ function shadeColor(hex, percent) {
                 }
             });
 
-            ctx.globalAlpha = 1;
+        ctx.globalAlpha = 1;
             drawWeather();
             drawThreatArrows();
             drawRadar();
-            drawBirds();
-            drawGroundSparkles();
+            if (gameMode !== 'meteorshower') {
+                drawBirds();
+                drawGroundSparkles();
+            }
             updateModeDisplay();
 
             // Draw ammo status on HUD (separate from the HUD row)
@@ -13495,10 +13698,18 @@ function shadeColor(hex, percent) {
             }
         }
 
-        function gameLoop() {
+       function gameLoop() {
             if (!isPaused && !player.dead) {
                 update();
                 frame++;
+            }
+            updateBackgroundParallax();
+            if (screenShakeAmount > 0.1) {
+                camera.x += (Math.random() - 0.5) * screenShakeAmount;
+                camera.y += (Math.random() - 0.5) * screenShakeAmount;
+                screenShakeAmount *= 0.9;
+            } else {
+                screenShakeAmount = 0;
             }
             draw();
             requestAnimationFrame(gameLoop);
@@ -13529,9 +13740,9 @@ function shadeColor(hex, percent) {
             }
         });
 
-        window.addEventListener('load', function () {
+       window.addEventListener('load', function () {
             checkFirstTimeUser();
-            loadBackgroundData();
+            initAmbientSpaceBackground();
             setTimeout(() => {
                 loadingPage.classList.add('hidden');
                 homeMenu.classList.add('visible');
@@ -13578,9 +13789,8 @@ function shadeColor(hex, percent) {
                 loadNotifications();
                 loadHighScore();
                 loadUnlockedPlanes();
-                forceLandscapeOrientation();
+              forceLandscapeOrientation();
                 updateBackgroundForModeAndLevel();
-                updateGalaxyBackground();
             }, 2000);
         });
 
@@ -13730,18 +13940,7 @@ function shadeColor(hex, percent) {
             }
         });
 
-        // ===== BACKGROUND STORE FUNCTIONS (ADDED & FIXED) =====
-        let ownedBackgrounds = ['space'];
-        let selectedBackground = 'space';
-        // Updated backgrounds with image URLs instead of colors
-        const backgrounds = [
-            { id: 'space', name: '🌌 SPACE', icon: '🌌', price: 0, default: true, imageUrl: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2111&auto=format&fit=crop' },
-            { id: 'water', name: '💧 WATER', icon: '💧', price: 200, imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop' },
-            { id: 'solarsystem', name: '☀️ SOLAR SYSTEM', icon: '🌞', price: 350, imageUrl: 'https://images.unsplash.com/photo-1614728894747-834f3fcfd308?q=80&w=1974&auto=format&fit=crop' },
-            { id: 'alienplanet', name: '👽 ALIEN PLANET', icon: '🪐', price: 500, imageUrl: 'https://images.unsplash.com/photo-1614313913007-2d4e9b9b5f8b?q=80&w=1974&auto=format&fit=crop' },
-            { id: 'aurora', name: '✨ AURORA', icon: '✨', price: 650, imageUrl: 'https://images.unsplash.com/photo-1579033461380-adb47c3eb938?q=80&w=1974&auto=format&fit=crop' },
-            { id: 'volcano', name: '🌋 VOLCANO', icon: '🌋', price: 800, imageUrl: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1974&auto=format&fit=crop' }
-        ];
+      
 
         function loadBackgroundData() {
             const savedOwned = localStorage.getItem('ownedBackgrounds');
@@ -13749,7 +13948,7 @@ function shadeColor(hex, percent) {
             if (savedOwned) {
                 try {
                     ownedBackgrounds = JSON.parse(savedOwned);
-                } catch(e) {}
+                } catch (e) { }
             }
             if (!ownedBackgrounds.includes('space')) ownedBackgrounds.push('space');
             if (savedSelected && backgrounds.some(b => b.id === savedSelected)) {
@@ -13768,34 +13967,44 @@ function shadeColor(hex, percent) {
         }
 
         function applyBackgroundStyle(bgId) {
-            const bgElement = document.getElementById('dynamicBgLayer');
-            if (!bgElement) return;
-            const bg = backgrounds.find(b => b.id === bgId);
-            if (bg && bg.imageUrl) {
-                bgElement.style.backgroundImage = `url('${bg.imageUrl}')`;
-                bgElement.style.backgroundSize = 'cover';
-                bgElement.style.backgroundPosition = 'center';
-                bgElement.style.backgroundRepeat = 'no-repeat';
-            } else {
-                bgElement.style.backgroundImage = "url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2111&auto=format&fit=crop')";
+            const bg = backgrounds.find(b => b.id === bgId) || backgrounds[0];
+            const imageUrl = bg.imageUrl;
+
+            const dynamicLayer = document.getElementById('dynamicBgLayer');
+            if (dynamicLayer) {
+                dynamicLayer.style.backgroundImage = `url('${imageUrl}')`;
             }
-            // Ensure the layer is visible and has proper styling
-            bgElement.style.position = 'absolute';
-            bgElement.style.top = '0';
-            bgElement.style.left = '0';
-            bgElement.style.width = '100%';
-            bgElement.style.height = '100%';
+
+            const gameplayBgEl = document.getElementById('gameplay-bg');
+            if (gameplayBgEl) {
+                gameplayBgEl.style.backgroundImage = `url('${imageUrl}')`;
+            }
         }
 
         function updateGalaxyBackground() {
             applyBackgroundStyle(selectedBackground);
         }
 
+     function updateBackgroundParallax() {
+    const parallaxX = 0.03;
+    const parallaxY = 0.015;
+    const camX = (typeof camera !== 'undefined' && camera.x) ? camera.x : 0;
+    const camY = (typeof camera !== 'undefined' && camera.y) ? camera.y : 0;
+    // Moving forward -> background slides LEFT
+    // Moving backward -> background slides RIGHT
+    const offsetX = -(camX * parallaxX);
+    const offsetY = -(camY * parallaxY);
+    const transformValue = `translate(${offsetX}px, ${offsetY}px)`;
+
+    const gameplayBgEl = document.getElementById('gameplay-bg');
+    if (gameplayBgEl) gameplayBgEl.style.transform = transformValue;
+}
+
         function showBackgroundStore() {
             const storeMenu = document.getElementById('background-store-menu');
             const grid = document.getElementById('bg-store-grid');
             if (!grid) return;
-            
+
             let html = '';
             backgrounds.forEach(bg => {
                 const isOwned = ownedBackgrounds.includes(bg.id);
@@ -13804,7 +14013,7 @@ function shadeColor(hex, percent) {
                 let statusText = bg.price > 0 ? `${bg.price}💰` : 'FREE';
                 let actionText = 'BUY';
                 let canBuy = !isOwned && homeCoins >= bg.price;
-                
+
                 if (isOwned) {
                     statusClass = 'owned';
                     if (isSelected) {
@@ -13827,7 +14036,7 @@ function shadeColor(hex, percent) {
                     actionText = 'BUY';
                     canBuy = false;
                 }
-                
+
                 html += `
                     <div class="bg-store-item ${isOwned ? 'unlocked' : ''} ${isSelected ? 'selected-bg' : ''}" data-bg-id="${bg.id}">
                         <div class="bg-store-icon">${bg.icon}</div>
@@ -13848,42 +14057,59 @@ function shadeColor(hex, percent) {
             homeMenu.style.opacity = '1';
         }
 
-        function purchaseOrEquipBackground(bgId) {
-            const bg = backgrounds.find(b => b.id === bgId);
-            if (!bg) return;
-            
-            if (ownedBackgrounds.includes(bgId)) {
-                if (selectedBackground !== bgId) {
-                    selectedBackground = bgId;
-                    saveBackgroundData();
-                    updateGalaxyBackground();
-                    addNotification('🎨 Background Changed!', `${bg.name} is now your sky theme!`, '🎨');
-                    playSound('gear');
-                    showBackgroundStore();
-                } else {
-                    addNotification('❌ Already Equipped', `${bg.name} is already your active background!`, '🎨');
-                }
-                return;
+       // ===== AMBIENT SPACE BACKGROUND (stars, asteroids, meteor showers - no images) =====
+        function applyBackgroundStyle() {
+            // No images anymore — space is rendered live with CSS/canvas stars + asteroids
+            return;
+        }
+
+        function updateGalaxyBackground() {
+            return;
+        }
+
+        function loadBackgroundData() {
+            initAmbientSpaceBackground();
+        }
+
+        function initAmbientSpaceBackground() {
+            spawnAmbientAsteroids();
+            setInterval(spawnAmbientAsteroids, 6000);
+            setInterval(spawnAmbientMeteorStreak, 2500);
+        }
+
+        function spawnAmbientAsteroids() {
+            const layer = document.getElementById('galaxy-background');
+            if (!layer) return;
+            const existing = layer.querySelectorAll('.space-asteroid');
+            if (existing.length > 12) return;
+            const count = 1 + Math.floor(Math.random() * 2);
+            for (let i = 0; i < count; i++) {
+                const roid = document.createElement('div');
+                roid.className = 'space-asteroid';
+                const size = 8 + Math.random() * 26;
+                roid.style.width = size + 'px';
+                roid.style.height = size + 'px';
+                roid.style.top = (Math.random() * 90) + '%';
+                roid.style.left = (100 + Math.random() * 20) + '%';
+                roid.style.borderRadius = '40% 60% 55% 45% / 50% 45% 55% 50%';
+                roid.style.background = `radial-gradient(circle at 35% 35%, #8b7355, #4a3c2a)`;
+                const duration = 25 + Math.random() * 35;
+                roid.style.animationDuration = duration + 's';
+                layer.appendChild(roid);
+                setTimeout(() => roid.remove(), duration * 1000);
             }
-            
-            if (homeCoins >= bg.price || bg.price === 0) {
-                if (bg.price > 0) {
-                    homeCoins -= bg.price;
-                    updateHomeCoinDisplay();
-                    addNotification('🛒 Background Purchased!', `You bought ${bg.name} for ${bg.price} coins!`, '🎨');
-                } else {
-                    addNotification('🎁 Free Background!', `You unlocked ${bg.name}!`, '🎨');
-                }
-                ownedBackgrounds.push(bgId);
-                selectedBackground = bgId;
-                saveBackgroundData();
-                updateGalaxyBackground();
-                saveGame();
-                playSound('coin');
-                showBackgroundStore();
-            } else {
-                addNotification('❌ Not Enough Coins', `Need ${bg.price} coins to buy ${bg.name}!`, '💰');
-            }
+        }
+
+        function spawnAmbientMeteorStreak() {
+            if (Math.random() > 0.5) return;
+            const layer = document.getElementById('galaxy-background');
+            if (!layer) return;
+            const streak = document.createElement('div');
+            streak.className = 'space-meteor-streak';
+            streak.style.top = (Math.random() * 60) + '%';
+            streak.style.left = (Math.random() * 90) + '%';
+            layer.appendChild(streak);
+            setTimeout(() => streak.remove(), 2600);
         }
 
         console.log('ULTIMATE EDITION WITH FIXED PLANE SAVING - Planes stay unlocked forever!');
